@@ -43,7 +43,7 @@ definition:
 
 *struct shader_code  
 {  
-char* code;  
+char&ast; code;  
 int   size;  
 }*  
 
