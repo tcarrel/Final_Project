@@ -41,10 +41,12 @@ for the variable with in the header will be SHINY_v.
 Shaders in the generated header are created as structs with the following
 definition:  
 
-*struct shader_code  
+```c
+struct shader_code  
 {  
-&nbsp;&nbsp;char&ast; code;  
-&nbsp;&nbsp;int   size;  
-}*  
+char* code;  
+int   size;  
+}
+```
 
 
