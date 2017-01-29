@@ -43,8 +43,8 @@ definition:
 
 *struct shader_code  
 {  
-char&ast; code;  
-int   size;  
+&nbsp;&nbsp;char&ast; code;  
+&nbsp;&nbsp;int   size;  
 }*  
 
 
