@@ -269,5 +269,11 @@ int main( int argc, char* argv[] )
 
         filenames.clear();
     }
+    else
+    {
+        cerr << "No files to process.\n" << endl;
+        of << " ";
+        of.close();
+    }
     return 0;
 }
