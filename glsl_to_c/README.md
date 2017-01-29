@@ -21,3 +21,30 @@ directives in the header file.
 The filenames for OpenGL shader files is important as well.  In order to follow
 a convention, of sorts, filenames for glsl code should be as follows:  
 ### [name].[type].glsl 
+* [name] is the name of the shader this can be arbitrary, but should be a name
+that makes sense within the rest of the code.  It should also be a name that
+can be used as a valid variable name within c/c++.
+* [type] is the type of the shader, i.e.: vertex, fragment, etc.  The types are
+abreviated as follows:
+* * v - vertex
+* * f - fragment
+* * others will be decided as development on the main program progresses.
+* glsl is the extension and must not be changed as this is how the program
+decides which files to include in its output.
+* No periods other than those listed should be used in the filename.
+* [name] and [type] together are used to generate the name of the instance of
+shader code.  For example, if the filename is *shiny.v.glsl* then the name used
+for the variable with in the header will be SHINY_v.
+
+##Structure of generated data.
+
+Shaders in the generated header are created as structs with the following
+definition:  
+
+*struct shader_code  
+{  
+char* code;  
+int   size;  
+}*  
+
+
