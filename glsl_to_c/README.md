@@ -19,8 +19,11 @@ directives in the header file.
 
 ##Input filenames
 The filenames for OpenGL shader files is important as well.  In order to follow
-a convention, of sorts, filenames for glsl code should be as follows:  
-### [name].[type].glsl 
+a convention, of sorts, filenames for glsl code should be as follows:
+
+&nbsp;[name].[type].glsl 
+
+
 * [name] is the name of the shader this can be arbitrary, but should be a name
 that makes sense within the rest of the code.  It should also be a name that
 can be used as a valid variable name within c/c++.
@@ -35,18 +38,18 @@ decides which files to include in its output.
 * [name] and [type] together are used to generate the name of the instance of
 shader code.  For example, if the filename is *shiny.v.glsl* then the name used
 for the variable with in the header will be SHINY_v.
+* Shaders can be given different names when they are later compiled on the gpu.
 
 ##Structure of generated data.
 
-Shaders in the generated header are created as structs with the following
-definition:  
+Shaders in the generated header are created as const structs with the following
+declaration:  
 
 ```c
 struct shader_code  
 {  
-char* code;  
-int   size;  
+  char* code;  
+  int   size;  
 }
 ```
-
 
