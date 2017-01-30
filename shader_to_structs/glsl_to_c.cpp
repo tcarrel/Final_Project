@@ -32,33 +32,8 @@ using std::vector;
 #include<cassert>
 //using std::assert;
 
+//Add options for different os's.
 #include<dirent.h>
-
-/*
-
-//Directory Parsing
-#ifdef __linux__
-
-# include<dirent.h>
-# define LINUX
-
-#else
-# ifdef _WIN32 || _WIN64
-
-//Include appropriate files for directory parsing in Windows.
-#  define WINDOWS
-
-# else
-#  ifdef __APPLE__&&__MACH__
-
-//Include appropriate files for directory parsing in OS X.
-#  define APPLE
-
-#  endif
-# endif
-#endif
-
-*/
 
 const char DQ = '\"';
 const char* SHADER_TYPE_NAME = "shader_code";
@@ -87,12 +62,12 @@ void header_def_start( ostream& out, const char* DEF_TAG )
     out << "#ifndef  " << DEF_TAG << "\n"
         << "# define " << DEF_TAG << "\n" << endl;
 
-    out << "struct " << SHADER_TYPE_NAME << " \n"
+    out << "struct " << SHADER_TYPE_NAME << "\n"
         << "{\n"
-        << "  char* code;\n"
-        << "  int   size;\n"
+        << "  const char* code;\n"
+        << "  const int   size;\n"
         << "\n"
-        << "  shader_code( string c, int s ) : code(c.c_str()), size(s)\n"
+        << "  " << SHADER_TYPE_NAME << "( const char* c, int s ) : code(c), size(s)\n"
         << "  {}\n"
         << "};\n" << endl;
 }
@@ -228,7 +203,7 @@ int main( int argc, char* argv[] )
                     string shader_var_name = shader_name + "_" + shader_type;
 
 
-                    of << "// From file:  " << filename << "\n" << endl;
+                    of << "//\n// From file:  " << filename << "\n//" << endl;
 
                     string file_text = "";
 
@@ -243,15 +218,15 @@ int main( int argc, char* argv[] )
                         }
                     }
 
-                    of << "const struct " << shader_var_name << "(\n";
-                    of << "{" << endl << "  ";
+                    of << "const " << SHADER_TYPE_NAME << " "
+                        << shader_var_name << "(\n  ";
                     for( unsigned i = 0; i < file_text.length(); i++ )
                     {
                         of << file_text[i];
                         if( file_text[i] == '\n' )
                             of << "  ";
                     }
-                    of << ", " << length.length() << endl;
+                    of << ",\n  " << length.length() << endl;
                     of << ");\n\n" << endl;
 
                     inf.close();
