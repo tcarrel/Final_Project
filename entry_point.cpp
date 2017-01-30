@@ -1,15 +1,13 @@
 
 
-#include "shaders.h"
 
-#include<cstdio>
+
+
+
+#include "app.h"
 
 int main()
 {
-
-    printf( "%s\n\n", SIMPLE_v.code );
-
-    printf( "%s\n\n", SIMPLE_f.code );
 
     return 0;
 }
