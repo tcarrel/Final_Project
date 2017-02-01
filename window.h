@@ -11,11 +11,15 @@
 #include<GL/glu.h>
 //#include<GL/freeglut.h>
 
+/*
 #include<iostream>
 using std::string;
 using std::cerr;
 using std::endl;
 using std::cout;
+*/
+
+#include<stdio.h>
 
 class Window
 {

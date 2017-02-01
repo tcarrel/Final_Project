@@ -16,21 +16,28 @@ Window::Window(void) ://: info_( SDL_GetVideoInfo() )
 
     if( 0 != SDL_GetDesktopDisplayMode(0, &mode_) )
     {
-        cerr <<
-            "WARNING!!\tCould not query display.\tSDL Error:\t" <<
-            SDL_GetError() << endl;
+        fprintf(
+                stderr,
+                "WARNING!!\tCould not query display.\tSDL Error:\t%s\n",
+                SDL_GetError()
+                );
         mode_.w = 1024; mode_.h = 768; mode_.refresh_rate = 60;
     }
 
     bpp_ = SDL_BITSPERPIXEL(mode_.format);
-    cerr
-        << "Display format selected:\n\n"
-        << "\tResolution\t" << mode_.w << "x" << mode_.h << "\n"
-        << "\tRefresh Rate\t" << mode_.refresh_rate << "\n" 
-        << "\tBPP\t\t" << bpp_ << "\n"
-        << "\tFormat\t\t" << mode_.format << "\n"
-        << "\tPixel Fmt Name\t" << SDL_GetPixelFormatName(mode_.format) << "\n"
-        << endl;
+    fprintf(
+            stderr,
+            "Display format selected:\n\n"
+            "\tResolution\t%dx%d\n"
+            "\tBPP\t\t%d\n"
+            "\tFormat\t\t%d\n"
+            "\tPixel Fmt Name\t%s\n\n",
+            mode_.w,
+            mode_.h,
+            bpp_,
+            mode_.format,
+            SDL_GetPixelFormatName(mode_.format)
+           );
 
     pos_x_  =   -1;
     pos_y_  =   -1;
@@ -77,9 +84,11 @@ void Window::init(void)
 
     if( 0 > SDL_SetWindowFullscreen( window_, SDL_WINDOW_FULLSCREEN ) )
     {
-        cerr <<
-            "WARNING!!\tFailed to set window to fullscreen.\tSDL Error:\t" <<
-            SDL_GetError() << endl;
+        fprintf(
+                stderr,
+                "WARNING!!\tFailed to set window to fullscreen.\tSDL Error:\t%s\n",
+                SDL_GetError() 
+               );
     }
     if( !window_ )
         return;
@@ -111,14 +120,18 @@ void Window::init_gl(void)
     glewExperimental    = GL_TRUE;
     GLenum glew_error   = glewInit();
     if( glew_error != GLEW_OK )
-        cerr
-            << "ERROR@@\tUnable to initialize GLEW.\t"
-            << glewGetErrorString( glew_error ) << endl;
+        fprintf(
+                stderr,
+                "ERROR@@\tUnable to initialize GLEW.\tGLEW Error:\t%s\n",
+                glewGetErrorString( glew_error )
+               );
 
     if( SDL_GL_SetSwapInterval(1) < 0 )
-        cerr <<
-            "WARNING!!\tUnable to set VSync.\tSDL Error:\t" <<
-            SDL_GetError() << endl;
+        fprintf(
+                stderr,
+                "WARNING!!\tUnable to set VSync.\tSDL Error:\t%s\n",
+                SDL_GetError()
+               );
 
     /*
      * Additional OpenGL initializations go here.
@@ -134,9 +147,11 @@ void Window::init_gl(void)
     error = glGetError();
     while( error !=  GL_NO_ERROR )
     {
-        cerr
-            << "ERROR##\tInitializing OpenGL!\t" << gluErrorString( error )
-            << endl;
+        fprintf(
+                stderr,
+                "ERROR##\tInitializing OpenGL!\tGLU Error:\t%s\t",
+                gluErrorString( error )
+               );
         error = glGetError();
     }
 

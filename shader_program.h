@@ -23,9 +23,13 @@ using std::ifstream;
 
 #include<cctype>
 
+#include<cassert>
+
 
 #include"constants.h"
 #include"shaders.h"
+
+
 
 class Shader
 {
@@ -35,28 +39,29 @@ class Shader
         
         bool compile( const char*, const char* );
         const GLuint& get( void ) { return program_; }
+
+
+        void add_code( SHADER_TYPE_NAME* s, int type );
       
     private:
 
         bool link( void ); ///< Called by compile().
         //bool load_source( string, GLchar*, string );
 
-        /*
-        struct Files
+        struct 
         {
-            GLchar* vertex_     = NULL;
-            GLchar* tcs_        = NULL;
-            GLchar* tev_        = NULL;
-            GLchar* geometry_   = NULL;
-            GLchar* fragment_   = NULL;
-        };
-        */
+            SHADER_TYPE_NAME* vertex      = NULL;
+            SHADER_TYPE_NAME* tcs         = NULL;
+            SHADER_TYPE_NAME* tev         = NULL;
+            SHADER_TYPE_NAME* geometry    = NULL;
+            SHADER_TYPE_NAME* fragment    = NULL;
+        } code_;
 
-        struct Shaders
+        struct 
         {
-            GLuint  vertex_;
-            GLuint  fragment_;
-        };
+            GLuint  vertex;
+            GLuint  fragment;
+        } shaders_;
 
         GLuint      program_;
         bool        ready_;
