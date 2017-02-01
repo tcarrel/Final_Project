@@ -11,6 +11,8 @@
 #include<stdio.h>
 
 
+/**  The main game object.
+ */
 class Application
 {
     public:
@@ -22,7 +24,7 @@ class Application
 
        void start_up( void );
 
-       Window*  window_;
+       Window*  window_; ///< The window object that the game will be displayed in.
 };
 
 #endif
