@@ -1,3 +1,7 @@
+/**
+ * \file window.h
+ * \author Thomas R. Carrel
+ */
 
 #ifndef WINDOW_H
 #define WINDOW_H
@@ -11,16 +15,11 @@
 #include<GL/glu.h>
 //#include<GL/freeglut.h>
 
-/*
-#include<iostream>
-using std::string;
-using std::cerr;
-using std::endl;
-using std::cout;
-*/
-
 #include<stdio.h>
 
+
+/**  The class for the game window.  Even though the game displays fullscreen.
+ */
 class Window
 {
     public:
@@ -41,16 +40,19 @@ class Window
 
         void init_gl( void );
 
-        SDL_Window*     window_;
-        SDL_GLContext   gl_;
+        SDL_Window*     window_; ///< Address of the actual window, needed for
+                                 ///< drawing.
+        SDL_GLContext   gl_; ///< The OpenGL context for this window.
 
-        string          title_;
-        SDL_DisplayMode mode_;
-        int             pos_x_, pos_y_, bpp_;
-        const GLfloat   clear_color_[4];
+        string          title_; ///< The window title.
+        SDL_DisplayMode mode_; ///< The display mode for the window.
+        int             pos_x_, ///< Window horizontal position.
+                        pos_y_, ///< Window vertical position.
+                        bpp_; ///< Bits Per Pixel
+        const GLfloat   clear_color_[4]; ///< The clear color for OpenGL.
 
-        Uint32          flags_;
-        double          aspect_;
+        Uint32          flags_; ///< SDL2 fllags related to the window.
+        double          aspect_; ///< The aspect ratio of the window.
 };
 
 #endif

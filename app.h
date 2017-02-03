@@ -1,4 +1,7 @@
-
+/**
+ * \file app.h
+ * \author Thomas R. Carrel
+ */
 
 #ifndef  APPLICATION_H
 # define APPLICATION_H

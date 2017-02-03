@@ -1,5 +1,6 @@
 /**
- * filename: shaders.h
+ * \file shaders.h
+ * \author glsl_to_c
  *
  *   Auto-generated header file containing code from all shadersused in this
  * program.  A list of the files used to generated this file can be found at

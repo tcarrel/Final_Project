@@ -1,23 +1,45 @@
-//
-//  Thomas Russel Carrel
-//
-//  shader_program.cpp
-//
+/**
+ *  \author Thomas R. Carrel
+ *  \file shader_program.cpp
+ */
 
 #include"shader_program.h"
 
 
+/** Ctor.
+ */
 Shader::Shader( void )
 {}
 
+
+
+
+/** Dtor.
+ *  Deletes the shader from the GPU's memory.
+ */
 Shader::~Shader( void )
 {
     glDeleteProgram( program_ );
 }
 
 
+/**  Add pointers to the code for the current shader program.
+ *  Since shader code is stored as a constant, this can be accomplished fairly
+ *  easily.
+ *
+ * param code The address for the struct containing the code.
+ * param type The type of shader being compiled (vertex, fragment, etc).
+ */
 void Shader::add_code( SHADER_TYPE_NAME* code, int type )
 {
+#ifdef DEBUG
+    fprintf(
+            stderr,
+            "%s\n\n",
+            code->code
+           );
+#endif
+
     switch( type )
     {
         case VERTEX_SHADER:
@@ -42,77 +64,12 @@ void Shader::add_code( SHADER_TYPE_NAME* code, int type )
 }
 
 
-/*
-// Wrapers to load shaders into their appropriate variables;
-bool Shader::load_vertex_shader( string filename )
-{
-if( !src )
-src = new Files;
-
-return load_source( filename + ".vert.glsl", src->vertex_, "Vertex" );
-}
-bool Shader::load_fragment_shader( string filename )
-{
-if( !src )
-src = new Files;
-
-return load_source( filename + ".frag.glsl", src->fragment_, "Fragment" );;
-}
-
-// Private load function.
-bool Shader::load_source( string filename, GLchar* mem, string type )
-{
-if( mem )
-{
-printf( "%s shader, already loaded.'n", type.c_str() );
-return ERROR;
-}
-ifstream file( filename.c_str() );
-
-if( !file.good() )
-{
-printf( "Could not open file <%s>.\n", filename.c_str() );
-return ERROR;
-}
-
-//Copy entire contents of file into a string;
-string* S =
-new string( 
-std::istreambuf_iterator<char>(file),
-std::istreambuf_iterator<char>() );
-
-//Copy into c-string.
 
 
-for( unsigned i = 0; i < S->length(); i++ )
-{
-mem[i] = (*S)[i];
-}
-
-
-#ifdef DEBUG
-//Print entire shader source for debug
-std::cerr <<
-"Successfully loaded " <<
-type <<
-" Shader source file <" <<
-filename <<
-">:\n\n" <<
-mem <<
-std::endl;
-#endif
-
-//Clean up.
-file.close();
-delete S;
-S = NULL;
-
-return !ERROR;
-}
-*/
-
-
-bool Shader::compile( const char* v, const char* f )
+/**    Performs final compilation of the shader code on the GPU.  This must be
+ *   done by the user, since it is unknown what shaders will be loaded.
+ */
+bool Shader::compile( void )
 {
     /*
        if( !src )
@@ -143,16 +100,16 @@ bool Shader::compile( const char* v, const char* f )
        }
        */
 
-    /*const*/ GLchar** source = new GLchar*;
+//    /*const*/ GLchar** source = new GLchar*;
     //*source = new GLchar( *src->vertex_ );
 
-    shd->vertex_   = glCreateShader( GL_VERTEX_SHADER );
-    glShaderSource( shd->vertex_, 1, source, NULL );
-    glCompileShader( shd->vertex_ );
+    shaders_.vertex    = glCreateShader( GL_VERTEX_SHADER );
+    glShaderSource( shaders_.vertex, 1, &code_.vertex->code, NULL );
+    glCompileShader( shaders_.vertex );
 
-    shd->fragment_ = glCreateShader( GL_FRAGMENT_SHADER );
-    glShaderSource( shd->fragment_, 1, src->fragment_, NULL );
-    glCompileShader( shd->fragment_ );
+    shaders_.fragment  = glCreateShader( GL_FRAGMENT_SHADER );
+    glShaderSource( shaders_.fragment, 1, &code_.fragment->code, NULL );
+    glCompileShader( shaders_.fragment );
 
     if( link() )
     {
@@ -161,6 +118,7 @@ bool Shader::compile( const char* v, const char* f )
         return ERROR;
     }
 
+    /*
     // Clean up
     if( shd )
     {
@@ -169,6 +127,7 @@ bool Shader::compile( const char* v, const char* f )
         delete shd;
         shd = NULL;
     }
+    */
 
     return !ERROR;
 }
@@ -180,8 +139,8 @@ bool Shader::compile( const char* v, const char* f )
 bool Shader::link()
 {
     program_ = glCreateProgram();
-    glAttachShader( program_, shd->vertex_ );
-    glAttachShader( program_, shd->fragment_ );
+    glAttachShader( program_, shaders_.vertex );
+    glAttachShader( program_, shaders_.fragment );
 
     glLinkProgram( program_ );
 

@@ -1,12 +1,14 @@
-
+/**
+ * \file window.cpp
+ * \author Thomas R. Carrel
+ */
 
 #include"window.h"
 
 
 
 
-/**
- * Create default window.
+/** Create default window.  Also sets the clear color for OpenGL.
  */
 Window::Window(void) ://: info_( SDL_GetVideoInfo() )
     clear_color_{1.0f, 0.5f, 0.25f, 1.0f}
@@ -52,8 +54,8 @@ Window::Window(void) ://: info_( SDL_GetVideoInfo() )
 
 
 
-/**
- * Window dtor.
+/** Window dtor.
+ *  Kills the OpenGL context and closes the window.
  */
 Window::~Window(void)
 {
@@ -66,8 +68,7 @@ Window::~Window(void)
 
 
 
-/**
- * Initialize window once 
+/**  Initialize window once 
  */
 void Window::init(void)
 {
@@ -161,8 +162,7 @@ void Window::init_gl(void)
 
 
 
-/**
- *
+/**  For checking the condition of the window.
  */
 bool Window::good(void)
 {
@@ -171,8 +171,7 @@ bool Window::good(void)
 
 
 
-/**
- * Get window aspect ratio.
+/**  Get window aspect ratio.
  */
 double Window::aspect(void)
 {
@@ -181,8 +180,7 @@ double Window::aspect(void)
 
 
 
-/**
- * A reference to the OpenGL context for this window.
+/**  A reference to the OpenGL context for this window.
  */
 SDL_GLContext& Window::gl(void)
 {
@@ -191,6 +189,8 @@ SDL_GLContext& Window::gl(void)
 
 
 
+/**  Draws to the window... ...
+ */
 void Window::draw( )
 {
 }

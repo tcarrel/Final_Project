@@ -1,3 +1,10 @@
+/**
+ * Define/set global constants.
+ *
+ * \file constants.h
+ * \author Thomas R. Carrel
+ */
+
 
 #ifndef CONSTANTS_H
 # define CONSTANTS_H
@@ -7,9 +14,14 @@ using std::string;
 
 #define SDLSYSTEMS SDL_INIT_VIDEO
 
-const string    TITLE   =   "Galaxy 5000X";
-const bool      ERROR   =   false;
+const string    TITLE   =   "Senior Project"; ///< The name of the game.
+                                              ///< Mainly used by the windowing
+                                              ///< system.
+const bool      ERROR   =   false; ///< For error checking, so that fuctions
+                                   ///< returning errors can be consistant.
 
+/** Shader types.  Used in compiling shaders.
+ */
 enum Shaders {
     VERTEX_SHADER,
     TCS_SHADER,

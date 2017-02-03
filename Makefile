@@ -12,12 +12,14 @@
 
 CXX = g++
 DEBUG = 0
-CXXFLAGS = -g -std=c++11 -Wall -W -pedantic -Werror -D TIMED #-D DEBUG
+CXXFLAGS = -g -std=c++11 -Wall -W -pedantic -Werror -D TIMED -D DEBUG
 MAIN = game
 
 SHADERS = simple.v.glsl simple.f.glsl
 SHADER_HEADER = shaders.h
 SHADER_PROCESSOR = glsl_to_c
+
+OBJ_FILES = .entry_point.o .app.o .window.o .shader_program.o 
 
 GCCERREXT = gccerr
 ERROR_DIR = ./Errors
@@ -28,20 +30,20 @@ SDL2_LIB = -lSDL2
 GLUT_LIB = -lGL -lGLU -lGLEW -lglut
 ALL_LIBS = $(SDL2_LIB) $(GLUT_LIB)
 
-$(MAIN): .entry_point.o .app.o .window.o .shader_program.o $(ERROR_DIR)
-	$(CXX) $(CXXFLAGS) $(ALL_LIBS) $^ -o $(MAIN) 2>&1 \
+$(MAIN): $(OBJ_FILES) $(ERROR_DIR)
+	$(CXX) $(CXXFLAGS) $(ALL_LIBS) $(OBJ_FILES) -o $(MAIN) 2>&1 \
 		| tee $(ERROR_DIR)/$(MAIN).$(GCCERREXT)
 
-.entry_point.o: entry_point.cpp $(SHADER_HEADER) app.h $(ERROR_DIR)
+.entry_point.o: entry_point.cpp app.h $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) $(ALL_LIBS) -c $< -o $@ $(COPYOUTPUT)
 
-.app.o: app.cpp app.h constants.h window.h shader_program.h $(ERROR_DIR)
+.app.o: app.cpp app.h constants.h window.h $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) $(ALL_LIBS) -c $< -o $@ $(COPYOUTPUT)
 
 .window.o: window.cpp window.h constants.h $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) $(ALL_LIBS) -c $< -o $@ $(COPYOUTPUT)
 
-.shader_program.o: shader_program.cpp shader_program.h constants.h $(ERROR_DIR)
+.shader_program.o: shader_program.cpp shader_program.h constants.h $(SHADER_HEADER) $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) $(ALL_LIBS) -c $< -o $@ $(COPYOUTPUT)
 
 

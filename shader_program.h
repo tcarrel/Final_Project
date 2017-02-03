@@ -1,8 +1,7 @@
-//
-//  Thomas Russel Carre
-//
-//  shader_program.h
-//
+/**
+ *  \author Thomas R. Carrel
+ *  \file shader_program.h
+ */
 
 
 #ifndef __SHADER_PROGRAM_H__
@@ -31,13 +30,15 @@ using std::ifstream;
 
 
 
+/**  A wraper class for a shader program.
+ */
 class Shader
 {
     public:
         Shader( void );
         ~Shader(void );
         
-        bool compile( const char*, const char* );
+        bool compile( void );
         const GLuint& get( void ) { return program_; }
 
 
@@ -55,16 +56,18 @@ class Shader
             SHADER_TYPE_NAME* tev         = NULL;
             SHADER_TYPE_NAME* geometry    = NULL;
             SHADER_TYPE_NAME* fragment    = NULL;
-        } code_;
+        } code_; ///<  Pointers to the source code for the various shaders.
 
         struct 
         {
             GLuint  vertex;
             GLuint  fragment;
-        } shaders_;
+        } shaders_; ///< The location of the shaders in the GPU's memory.
 
-        GLuint      program_;
-        bool        ready_;
+        GLuint      program_; ///<   The handle for the shader program after
+                              ///< it's been compiled.
+        bool        ready_; ///<   Flag indicating the shader has been compiled
+                            ///< and is ready for use.
 };
 
 #endif
