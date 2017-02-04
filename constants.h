@@ -25,6 +25,7 @@ const bool      ERROR   =   false; ///< For error checking, so that fuctions
 enum Shaders {
     VERTEX_SHADER,
     TCS_SHADER,
+    TESSELATION_CONTROL_SHADER = TCS_SHADER,
     TEV_SHADER,
     TESSELATION_EVALUATION_SHADER = TEV_SHADER,
     GEOMETRY_SHADER,

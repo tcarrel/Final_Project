@@ -6,17 +6,18 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include"constants.h"
-
 #include<GL/glew.h>
 #include<SDL2/SDL.h>
 #include<SDL2/SDL_opengl.h>
 
 #include<GL/glu.h>
-//#include<GL/freeglut.h>
+#include<GL/freeglut.h>
 
 #include<stdio.h>
 
+
+
+#include"constants.h"
 
 /**  The class for the game window.  Even though the game displays fullscreen.
  */
@@ -24,6 +25,7 @@ class Window
 {
     public:
         Window( void );
+        Window( float, float, float, float );
         ~Window( void );
 
         void    init( void );

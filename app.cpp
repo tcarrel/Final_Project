@@ -10,7 +10,7 @@
  *   Creates the window object for the game and initializes it.
  */
 Application::Application( void ) :
-    window_( new Window )
+    window_( new Window(0.5f, 0.5f, 0.5f, 1.0f) )
 {
 
     start_up();

@@ -8,10 +8,24 @@
 
 
 
-/** Create default window.  Also sets the clear color for OpenGL.
+/** Create default window.  Sets a hard coded clear color for OpenGL, ideally,
+ * this ctor should not be used in the final game..
  */
 Window::Window(void) ://: info_( SDL_GetVideoInfo() )
-    clear_color_{1.0f, 0.5f, 0.25f, 1.0f}
+    Window(1.0f, 0.5f, 0.25f, 1.0f)
+{}
+
+
+
+
+/** Create default window.  Also sets the clear color for OpenGL.
+ * param r Red value as a percentage (between 0.0 and 1.0.)
+ * param g Green value as a percentage (between 0.0 and 1.0.)
+ * param b Blue value as a percentage (between 0.0 and 1.0.)
+ * param a Alpha value as a percentage (between 0.0 and 1.0.)
+ */
+Window::Window( float r, float g, float b, float a ) :
+    clear_color_{r, g, b, a}
 {
     if( !(SDL_WasInit( SDL_INIT_EVERYTHING ) & SDL_INIT_VIDEO) )
         SDL_InitSubSystem( SDL_INIT_VIDEO );
@@ -29,11 +43,13 @@ Window::Window(void) ://: info_( SDL_GetVideoInfo() )
     bpp_ = SDL_BITSPERPIXEL(mode_.format);
     fprintf(
             stderr,
-            "Display format selected:\n\n"
-            "\tResolution\t%dx%d\n"
-            "\tBPP\t\t%d\n"
-            "\tFormat\t\t%d\n"
-            "\tPixel Fmt Name\t%s\n\n",
+            "Display format selected:\n"
+            "+===================+===========================+\n"
+            "| Resolution        | %dx%d\t\t\t|\n"
+            "| BPP               | %d\t\t\t|\n"
+            "| Format            | %d\t\t\t|\n"
+            "| Pixel Format Name | %s\t|\n"
+            "+===================+===========================+\n\n",
             mode_.w,
             mode_.h,
             bpp_,

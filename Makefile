@@ -17,10 +17,11 @@ MAIN = game
 
 SHADERS = simple.v.glsl simple.f.glsl
 SHADER_HEADER = shaders.h
+SHADER_DEF = shaders.cpp
+SHADER_OBJ = .shaders.o
 SHADER_PROCESSOR = glsl_to_c
 
-OBJ_FILES = .entry_point.o .app.o .window.o .shader_program.o 
-
+OBJ_FILES = .entry_point.o .app.o .window.o .shader_program.o $(SHADER_OBJ) 
 GCCERREXT = gccerr
 ERROR_DIR = ./Errors
 COPYOUTPUT = 2>&1 | tee $(ERROR_DIR)/$<.$(GCCERREXT)
@@ -31,34 +32,41 @@ GLUT_LIB = -lGL -lGLU -lGLEW -lglut
 ALL_LIBS = $(SDL2_LIB) $(GLUT_LIB)
 
 $(MAIN): $(OBJ_FILES) $(ERROR_DIR)
-	$(CXX) $(CXXFLAGS) $(ALL_LIBS) $(OBJ_FILES) -o $(MAIN) 2>&1 \
-		| tee $(ERROR_DIR)/$(MAIN).$(GCCERREXT)
+	$(CXX) $(CXXFLAGS) $(OBJ_FILES) $(ALL_LIBS) -o $(MAIN) \
+		2>&1 | tee $(ERROR_DIR)/$(MAIN).$(GCCERREXT)
 
-.entry_point.o: entry_point.cpp app.h $(ERROR_DIR)
-	$(CXX) $(CXXFLAGS) $(ALL_LIBS) -c $< -o $@ $(COPYOUTPUT)
+.entry_point.o: entry_point.cpp app.h constants.h $(SHADER_HEADER) $(ERROR_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
-.app.o: app.cpp app.h constants.h window.h $(ERROR_DIR)
-	$(CXX) $(CXXFLAGS) $(ALL_LIBS) -c $< -o $@ $(COPYOUTPUT)
+.app.o: app.cpp app.h constants.h window.h $(SHADER_HEADER) $(ERROR_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .window.o: window.cpp window.h constants.h $(ERROR_DIR)
-	$(CXX) $(CXXFLAGS) $(ALL_LIBS) -c $< -o $@ $(COPYOUTPUT)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .shader_program.o: shader_program.cpp shader_program.h constants.h $(SHADER_HEADER) $(ERROR_DIR)
-	$(CXX) $(CXXFLAGS) $(ALL_LIBS) -c $< -o $@ $(COPYOUTPUT)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
+$(SHADER_OBJ): $(SHADER_DEF) $(SHADER_HEADER)
+	$(CXX) $(CXXFLAGS) -c $(SHADER_DEF) -o $@
 
-$(SHADER_HEADER): $(SHADERS) $(SHADER_PROCESSOR) $(ERROR_DIR)
-	$(SHADER_PROCESSOR) $@ $(COPYOUTPUT)
+$(SHADER_HEADER): $(SHADER_DEF)
+
+$(SHADER_DEF): $(SHADERS) $(ERROR_DIR) shader_to_structs/glsl_to_c.cpp
+	$(SHADER_PROCESSOR) $(SHADER_HEADER) 2>&1 | tee $(ERROR_DIR)/$(SHADER_PROCESSOR).$(GCCERREXT)
 
 $(ERROR_DIR):
 	mkdir $@
 
-$(SHADER_PROCESSOR): shader_to_structs/glsl_to_c.cpp
-	$(CXX) $(CXXFLAGS) $< -o $@
+#$(SHADER_PROCESSOR): shader_to_structs/glsl_to_c.cpp
+#	$(CXX) $(CXXFLAGS) $< -o $@
 
 clean:
-	rm -f .*.o $(MAIN) $(SHADER_HEADER) a.out
+	rm -f .*.o $(MAIN) $(SHADER_HEADER) $(SHADER_DEF) a.out
 	rm -rf $(ERROR_DIR)
+
+doc: Doxyfile
+	doxygen
 
 all: Main
 

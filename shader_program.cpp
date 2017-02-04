@@ -14,6 +14,8 @@ Shader::Shader( void )
 
 
 
+
+
 /** Dtor.
  *  Deletes the shader from the GPU's memory.
  */
@@ -21,6 +23,9 @@ Shader::~Shader( void )
 {
     glDeleteProgram( program_ );
 }
+
+
+
 
 
 /**  Add pointers to the code for the current shader program.
@@ -71,37 +76,6 @@ void Shader::add_code( SHADER_TYPE_NAME* code, int type )
  */
 bool Shader::compile( void )
 {
-    /*
-       if( !src )
-       {
-       printf( "<Shader::compile> No source files have been loaded.\n" );
-       return ERROR;
-       }
-
-       if( !src->vertex_ )
-       {
-       printf( "<Shader::compile> No Vertex shader loaded.\n" );
-       return ERROR;
-       }
-
-       if( !src->fragment_ )
-       {
-       printf( "<Shader::compile> No Fragment shader loaded.\n" );
-       return ERROR;
-       }
-
-       if( !shd )
-       shd = new Shaders();
-       else
-       {
-       printf( "Cannot create more than one Shader " 
-       "program per Shader object.\n" );
-       return ERROR;
-       }
-       */
-
-//    /*const*/ GLchar** source = new GLchar*;
-    //*source = new GLchar( *src->vertex_ );
 
     shaders_.vertex    = glCreateShader( GL_VERTEX_SHADER );
     glShaderSource( shaders_.vertex, 1, &code_.vertex->code, NULL );
@@ -117,17 +91,6 @@ bool Shader::compile( void )
         printf( "linking.\n" );
         return ERROR;
     }
-
-    /*
-    // Clean up
-    if( shd )
-    {
-        glDeleteShader( shd->vertex_ );
-        glDeleteShader( shd->fragment_);
-        delete shd;
-        shd = NULL;
-    }
-    */
 
     return !ERROR;
 }

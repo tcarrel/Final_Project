@@ -4,7 +4,7 @@
  */
 
 
-#ifndef __SHADER_PROGRAM_H__
+#ifndef  __SHADER_PROGRAM_H__
 # define __SHADER_PROGRAM_H__
 
 #include<GL/glew.h>
@@ -14,19 +14,11 @@
 #include<GL/glu.h>
 #include<GL/freeglut.h>
 
-//For file loading and string manipulation;
-#include<iostream>
-using std::string;
-#include<fstream>
-using std::ifstream;
-
-#include<cctype>
-
 #include<cassert>
 
 
-#include"constants.h"
-#include"shaders.h"
+#include "constants.h"
+#include "shaders.h"
 
 
 

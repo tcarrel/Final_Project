@@ -15,7 +15,7 @@ int main()
 {
     Application app;
 
-//    app.run();
+    app.run();
 
     return 0;
 }
