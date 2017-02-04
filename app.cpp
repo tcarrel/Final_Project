@@ -6,6 +6,8 @@
 #include"app.h"
 
 
+
+
 /**  Ctor.
  *   Creates the window object for the game and initializes it.
  */
@@ -23,6 +25,8 @@ Application::Application( void ) :
 
 
 
+
+
 /**  Initializes SDL2 and the window object.
  */
 void Application::start_up( void )
@@ -30,6 +34,8 @@ void Application::start_up( void )
     SDL_Init( SDLSYSTEMS );
     window_->init();
 }
+
+
 
 
 
@@ -43,8 +49,6 @@ int Application::run( void )
 
     return 0;
 }
-
-
 
 
 

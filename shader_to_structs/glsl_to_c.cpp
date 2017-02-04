@@ -299,8 +299,15 @@ int main( int argc, char* argv[] )
                     {
                         if( line != "" )
                         {
-                            file_text += DQ + line + "\\n" + DQ + "\n";
-                            length += line + "\n";
+                            // Nested for readability.
+                            // Strips whole-line c-style comments,
+                            // (Those beginning with // as the first two
+                            // characters on the line.
+                            if( line.substr( 0, 2 ) != "//" )
+                            {
+                                file_text += DQ + line + "\\n" + DQ + "\n";
+                                length += line + "\n";
+                            }
                         }
                     }
 

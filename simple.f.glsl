@@ -1,4 +1,4 @@
-
+//Very basic fragment shader for use early in development.
 #version 450 core
 
 out vec4 color;
