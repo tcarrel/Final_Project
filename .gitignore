@@ -36,3 +36,5 @@ Errors/
 glsl_to_c
 .doxy/
 Doxyfile
+shaders.h
+shaders.cpp
