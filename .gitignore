@@ -38,3 +38,5 @@ glsl_to_c
 Doxyfile
 shaders.h
 shaders.cpp
+game
+a.out
