@@ -33,7 +33,7 @@ class Window
         bool    good( void );
         double  aspect( void );
 
-        void    draw( void );
+        inline void    draw( void );
 
         SDL_GLContext& gl( void );
 

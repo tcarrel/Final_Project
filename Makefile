@@ -38,17 +38,19 @@ $(MAIN): $(OBJ_FILES) $(ERROR_DIR)
 .entry_point.o: entry_point.cpp app.h constants.h $(SHADER_HEADER) $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
-.app.o: app.cpp app.h constants.h window.h $(SHADER_HEADER) $(ERROR_DIR)
+.app.o: app.cpp app.h constants.h window.h shader_externs.h $(SHADER_HEADER) $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .window.o: window.cpp window.h constants.h $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
-.shader_program.o: shader_program.cpp shader_program.h constants.h $(SHADER_HEADER) $(ERROR_DIR)
+.shader_program.o: shader_program.cpp shader_program.h constants.h shader_externs.h $(SHADER_HEADER) $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 $(SHADER_OBJ): $(SHADER_DEF) $(SHADER_HEADER)
 	$(CXX) $(CXXFLAGS) -c $(SHADER_DEF) -o $@
+
+shader_externs.h: $(SHADER_DEF)
 
 $(SHADER_HEADER): $(SHADER_DEF)
 

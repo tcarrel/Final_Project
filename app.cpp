@@ -3,8 +3,16 @@
  * \author Thomas R. Carrel
  */
 
-#include"app.h"
+#include "app.h"
 
+
+
+/*
+extern SHADER_TYPE_NAME SIMPLE_v;
+extern SHADER_TYPE_NAME SIMPLE_f;
+*/
+
+#include "shader_externs.h"
 
 
 
@@ -33,6 +41,10 @@ void Application::start_up( void )
 {
     SDL_Init( SDLSYSTEMS );
     window_->init();
+    
+    shader_ = new Shader;
+    shader_->add_code( &SIMPLE_v, VERTEX_SHADER );
+    shader_->add_code( &SIMPLE_f, FRAGMENT_SHADER );
 }
 
 
@@ -45,6 +57,8 @@ void Application::start_up( void )
  */
 int Application::run( void )
 {
+    
+
     SDL_Delay(3000);
 
     return 0;
@@ -60,5 +74,8 @@ int Application::run( void )
 Application::~Application( void )
 {
     SDL_Quit();
+
+    if( shader_ )
+        delete shader_;
 }
 

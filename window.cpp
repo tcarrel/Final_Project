@@ -132,6 +132,12 @@ void Window::init_gl(void)
             SDL_GL_CONTEXT_PROFILE_CORE );
     SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1);
 
+    SDL_GL_SetAttribute( SDL_GL_RED_SIZE,       5 );
+    SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE,     5 );
+    SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE,      5 );
+    SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE,     16 );
+    SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER,   1 );
+
     SDL_GL_MakeCurrent( window_, gl_ );
 
     glewExperimental    = GL_TRUE;
@@ -179,7 +185,7 @@ void Window::init_gl(void)
 
 
 /**  For checking the condition of the window.
- */
+*/
 bool Window::good(void)
 {
     return window_ != NULL;
@@ -188,7 +194,7 @@ bool Window::good(void)
 
 
 /**  Get window aspect ratio.
- */
+*/
 double Window::aspect(void)
 {
     return aspect_;
@@ -197,7 +203,7 @@ double Window::aspect(void)
 
 
 /**  A reference to the OpenGL context for this window.
- */
+*/
 SDL_GLContext& Window::gl(void)
 {
     return gl_;
@@ -206,7 +212,9 @@ SDL_GLContext& Window::gl(void)
 
 
 /**  Draws to the window... ...
- */
-void Window::draw( )
+*/
+inline void Window::draw( )
 {
+    SDL_GL_SwapWindow(this->window_);
 }
+

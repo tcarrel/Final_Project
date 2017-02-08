@@ -17,6 +17,7 @@
 #include"constants.h"
 #include"window.h"
 #include"shader_program.h"
+#include"shaders.h"
 
 
 #include<stdio.h>
@@ -36,6 +37,9 @@ class Application
        void start_up( void );
 
        Window*  window_; ///< The window object that the game will be displayed in.
+
+       Shader* shader_;
+       //Model* models_;
 };
 
 #endif

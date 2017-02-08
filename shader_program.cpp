@@ -6,6 +6,15 @@
 #include"shader_program.h"
 
 
+
+/*
+extern SHADER_TYPE_NAME SIMPLE_v;
+extern SHADER_TYPE_NAME SIMPLE_f;
+*/
+
+#include "shader_externs.h"
+
+
 /** Ctor.
  */
 Shader::Shader( void )
@@ -48,19 +57,19 @@ void Shader::add_code( SHADER_TYPE_NAME* code, int type )
     switch( type )
     {
         case VERTEX_SHADER:
-            code_.vertex    = code;
+            code_.vertex    = &code->code;
             return;
         case TCS_SHADER:
-            code_.tcs       = code;
+            code_.tcs       = &code->code;
             return;
         case TEV_SHADER:
-            code_.tev       = code;
+            code_.tev       = &code->code;
             return;
         case GEOMETRY_SHADER:
-            code_.geometry  = code;
+            code_.geometry  = &code->code;
             return;
         case FRAGMENT_SHADER:
-            code_.fragment  = code;
+            code_.fragment  = &code->code;
             return;
         case COMPUTE_SHADER:
             assert( false ); //Compute not implemented
