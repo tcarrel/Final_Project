@@ -17,7 +17,8 @@
 
 
 
-#include"constants.h"
+#include "constants.h"
+#include "shader_program.h"
 
 /**  The class for the game window.  Even though the game displays fullscreen.
  */
@@ -34,6 +35,10 @@ class Window
         double  aspect( void );
 
         inline void    draw( void );
+
+#ifdef DEBUG
+        void    debug_draw( Shader* );
+#endif
 
         SDL_GLContext& gl( void );
 

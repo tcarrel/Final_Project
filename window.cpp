@@ -218,3 +218,23 @@ inline void Window::draw( )
     SDL_GL_SwapWindow(this->window_);
 }
 
+
+
+#ifdef DEBUG
+void Window::debug_draw( Shader* s )
+{
+    glUseProgram( s->get() );
+
+    glClear( GL_COLOR_BUFFER_BIT );
+
+    GLint test[3];
+    test[0] = 1;
+    test[1] = 1;
+    test[2] = 1;
+
+
+    glDrawArrays( GL_POINTS, 0, 1 );
+
+    this->draw();
+}
+#endif

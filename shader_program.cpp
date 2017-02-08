@@ -44,21 +44,23 @@ Shader::~Shader( void )
  * param code The address for the struct containing the code.
  * param type The type of shader being compiled (vertex, fragment, etc).
  */
-void Shader::add_code( SHADER_TYPE_NAME* code, int type )
+void Shader::add_code( GLchar** code, int type )
 {
-#ifdef DEBUG
+#ifdef DEBUG_SHADER_PROG
     fprintf(
             stderr,
             "%s\n\n",
-            code->code
+            *code
            );
 #endif
 
     switch( type )
     {
         case VERTEX_SHADER:
-            code_.vertex    = &code->code;
+            //code_.vertex    = &code->code;
+            code_.vertex    = *code;
             return;
+            /*
         case TCS_SHADER:
             code_.tcs       = &code->code;
             return;
@@ -68,8 +70,10 @@ void Shader::add_code( SHADER_TYPE_NAME* code, int type )
         case GEOMETRY_SHADER:
             code_.geometry  = &code->code;
             return;
+            */
         case FRAGMENT_SHADER:
-            code_.fragment  = &code->code;
+            //code_.fragment  = &code->code;
+            code_.fragment  = *code;
             return;
         case COMPUTE_SHADER:
             assert( false ); //Compute not implemented
@@ -87,14 +91,16 @@ bool Shader::compile( void )
 {
 
     shaders_.vertex    = glCreateShader( GL_VERTEX_SHADER );
-    glShaderSource( shaders_.vertex, 1, &code_.vertex->code, NULL );
+    //glShaderSource( shaders_.vertex, 1, &code_.vertex->code, NULL );
+    glShaderSource( shaders_.vertex, 1, &code_.vertex, NULL );
     glCompileShader( shaders_.vertex );
 
     shaders_.fragment  = glCreateShader( GL_FRAGMENT_SHADER );
-    glShaderSource( shaders_.fragment, 1, &code_.fragment->code, NULL );
+    //glShaderSource( shaders_.fragment, 1, &code_.fragment->code, NULL );
+    glShaderSource( shaders_.fragment, 1, &code_.fragment, NULL );
     glCompileShader( shaders_.fragment );
 
-    if( link() )
+    if( link() == ERROR )
     {
         printf( "<Shader::compile (from link())> Error occurred when" );
         printf( "linking.\n" );
@@ -116,5 +122,8 @@ bool Shader::link()
 
     glLinkProgram( program_ );
 
+    // No longer needed in GPU RAM.
+    glDeleteShader( shaders_.vertex );
+    glDeleteShader( shaders_.fragment );
     return !ERROR;
 }

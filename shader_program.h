@@ -34,8 +34,9 @@ class Shader
         const GLuint& get( void ) { return program_; }
 
 
-        void add_code(  SHADER_TYPE_NAME* s, int type );
-      
+        //       void add_code(  SHADER_TYPE_NAME* s, int type );
+        void add_code( GLchar** s, int type );
+
     private:
 
         bool link( void ); ///< Called by compile().

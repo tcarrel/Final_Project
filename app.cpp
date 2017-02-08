@@ -20,7 +20,7 @@ extern SHADER_TYPE_NAME SIMPLE_f;
  *   Creates the window object for the game and initializes it.
  */
 Application::Application( void ) :
-    window_( new Window(0.5f, 0.5f, 0.5f, 1.0f) )
+    window_( new Window(0.0f, 0.0f, 0.0f, 1.0f) )
 {
 
     start_up();
@@ -43,8 +43,22 @@ void Application::start_up( void )
     window_->init();
     
     shader_ = new Shader;
+    /*
     shader_->add_code( &SIMPLE_v, VERTEX_SHADER );
     shader_->add_code( &SIMPLE_f, FRAGMENT_SHADER );
+    */
+    shader_->add_code( &SIMPLE_v.code, VERTEX_SHADER );
+    shader_->add_code( &SIMPLE_f.code, FRAGMENT_SHADER );
+
+    if( shader_->compile() == ERROR )
+    {
+        fprintf(
+                stderr,
+                "Could not compile shaders.\n\n"
+              );
+    }
+
+    window_->debug_draw( shader_ );
 }
 
 

@@ -12,7 +12,7 @@
 
 CXX = g++
 DEBUG = 0
-CXXFLAGS = -g -std=c++11 -Wall -W -pedantic -Werror -D TIMED -D DEBUG
+CXXFLAGS = -g -std=c++11 -D TIMED -D DEBUG -D GLEW_STATIC
 MAIN = game
 
 SHADERS = simple.v.glsl simple.f.glsl
