@@ -40,3 +40,4 @@ shaders.h
 shaders.cpp
 game
 a.out
+shader_externs.h
