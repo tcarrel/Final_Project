@@ -56,6 +56,7 @@ Window::Window( float r, float g, float b, float a ) :
             mode_.format,
             SDL_GetPixelFormatName(mode_.format)
            );
+    aspect_ = (double) mode_.w / (double) mode_.h;
 
     pos_x_  =   -1;
     pos_y_  =   -1;
@@ -85,7 +86,7 @@ Window::~Window(void)
 
 
 /**  Initialize window once 
- */
+*/
 void Window::init(void)
 {
     aspect_ = ((double) mode_.w) / ((double) mode_.h);
@@ -228,11 +229,11 @@ void Window::debug_draw( Shader* s )
     glClear( GL_COLOR_BUFFER_BIT );
 
     /*
-    GLint test[3];
-    test[0] = 1;
-    test[1] = 1;
-    test[2] = 1;
-    */
+       GLint test[3];
+       test[0] = 1;
+       test[1] = 1;
+       test[2] = 1;
+       */
 
 
     glDrawArrays( GL_POINTS, 0, 1 );

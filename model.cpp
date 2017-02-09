@@ -25,3 +25,7 @@ bool Model::render( void )
 }
 
 
+void Model::set_program( Shader* p )
+{
+    program_ = p;
+}

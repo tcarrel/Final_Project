@@ -141,6 +141,9 @@ bool Shader::compile( void )
  */
 bool Shader::link()
 {
+#ifdef DEBUG
+#endif
+
     program_ = glCreateProgram();
     glAttachShader( program_, shaders_.vertex );
 
@@ -165,6 +168,18 @@ bool Shader::link()
 
     // No longer needed in GPU RAM.
     glDeleteShader( shaders_.vertex );
+    if( code_.tcs )
+    {
+        glDeleteShader( shaders_.tcs );
+    }
+    if( code_.tev )
+    {
+        glDeleteShader( shaders_.tev );
+    }
+    if( code_.geometry )
+    {
+        glDeleteShader( shaders_.geometry );
+    }
     glDeleteShader( shaders_.fragment );
     return !ERROR;
 }

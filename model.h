@@ -24,6 +24,7 @@
 #include "shader_program.h"
 
 class Shader;
+class Mesh;
 
 class Model
 {
@@ -32,6 +33,8 @@ class Model
         ~Model( void );
 
         bool render( void );
+
+        void set_program( Shader* );
 
     private:
         //static Mesh
