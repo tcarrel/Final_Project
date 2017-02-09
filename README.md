@@ -12,6 +12,7 @@ A 3D graphics engine that can be used as a component of a larger game engine.
 * [SFML](https://www.sfml-dev.org/) for 2D image file manipulation.
 * [GLEW](http://glew.sourceforge.net/)
 * [GLM](http://glm.g-truc.net/0.9.4/) OpenGL mathematics library.
+
 ##Additional Technologies
 If time provide, these additional libraries may be used for additional goals
 listed above.
