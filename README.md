@@ -24,7 +24,9 @@ operating system agnostic windowing system and controls.
 * [GLEW](http://glew.sourceforge.net/), OpenGL Extension Wrangler.
 * [GLM](http://glm.g-truc.net/0.9.4/) OpenGL Mathematics, library.
 * git and [github](https://github.com/) Version control and backup.
-* [Doxygen](http://www.stack.nl/~dimitri/doxygen/) Documentation.
+* [Doxygen](http://www.stack.nl/~dimitri/doxygen/) Documentation.  View
+program documentation
+[here](http://www.ecst.csuchico.edu/~tcarrel/Senior_Project/html/index.html).
 
 ##Additional Technologies
 If time provide, these additional libraries may be used for additional goals
