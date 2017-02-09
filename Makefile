@@ -12,7 +12,7 @@
 
 CXX = g++
 DEBUG = 0
-CXXFLAGS = -time -g -std=c++11 -D TIMED -D DEBUG -D GLEW_STATIC
+CXXFLAGS = -time -Wall -g -std=c++11 -D TIMED -D DEBUG -D GLEW_STATIC
 MAIN = game
 
 SHADERS = simple.v.glsl simple.f.glsl
@@ -47,10 +47,10 @@ $(MAIN): $(OBJ_FILES) $(ERROR_DIR)
 .shader_program.o: shader_program.cpp shader_program.h constants.h shader_externs.h $(SHADER_HEADER) $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
-.model.o: model.cpp mesh.h model.h constants.h shader_program.h
+.model.o: model.cpp mesh.h model.h constants.h shader_program.h $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
-.mesh.o: mesh.cpp mesh.h
+.mesh.o: mesh.cpp mesh.h $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 $(SHADER_OBJ): $(SHADER_DEF) $(SHADER_HEADER)
@@ -73,7 +73,7 @@ clean:
 	rm -f .*.o $(MAIN) $(SHADER_HEADER) $(SHADER_DEF) a.out
 	rm -rf $(ERROR_DIR)
 
-doc: Doxyfile
+doc: Doxyfile *.cpp *.h
 	doxygen
 
 all: Main
