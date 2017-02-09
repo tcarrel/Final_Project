@@ -26,7 +26,9 @@ Application::Application( void ) :
     start_up();
 
     if( window_->good() )
+#ifdef DEBUG
         fprintf( stderr, "Window created successfully.\n" );
+#endif
     else
         fprintf( stderr, "Failed to create window.\n" );
 }
@@ -41,14 +43,13 @@ void Application::start_up( void )
 {
     SDL_Init( SDLSYSTEMS );
     window_->init();
+
+    //The follow... should all be removed later...
+    glPointSize(40.0f);
     
     shader_ = new Shader;
-    /*
     shader_->add_code( &SIMPLE_v, VERTEX_SHADER );
     shader_->add_code( &SIMPLE_f, FRAGMENT_SHADER );
-    */
-    shader_->add_code( &SIMPLE_v.code, VERTEX_SHADER );
-    shader_->add_code( &SIMPLE_f.code, FRAGMENT_SHADER );
 
     if( shader_->compile() == ERROR )
     {
@@ -74,6 +75,8 @@ int Application::run( void )
     
 
     SDL_Delay(3000);
+
+    shader_->print();
 
     return 0;
 }

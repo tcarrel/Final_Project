@@ -33,9 +33,11 @@ class Shader
         bool compile( void );
         const GLuint& get( void ) { return program_; }
 
+        bool operator==( Shader& );
 
-        //       void add_code(  SHADER_TYPE_NAME* s, int type );
-        void add_code( GLchar** s, int type );
+        void print( void ); 
+
+        void add_code( SHADER_TYPE_NAME*, int );
 
     private:
 
@@ -51,9 +53,21 @@ class Shader
             GLchar* fragment    = NULL;
         } code_; ///<  Pointers to the source code for the various shaders.
 
+        struct
+        {
+            GLuint  vertex      = 0;
+            GLuint  tcs         = 0;
+            GLuint  tev         = 0;
+            GLuint  geometry    = 0;
+            GLuint  fragment    = 0;
+        } ids_;
+
         struct 
         {
             GLuint  vertex;
+            GLuint  tcs;
+            GLuint  tev;
+            GLuint  geometry;
             GLuint  fragment;
         } shaders_; ///< The location of the shaders in the GPU's memory.
 

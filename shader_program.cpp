@@ -44,7 +44,7 @@ Shader::~Shader( void )
  * param code The address for the struct containing the code.
  * param type The type of shader being compiled (vertex, fragment, etc).
  */
-void Shader::add_code( GLchar** code, int type )
+void Shader::add_code( SHADER_TYPE_NAME* code, int type )
 {
 #ifdef DEBUG_SHADER_PROG
     fprintf(
@@ -57,23 +57,24 @@ void Shader::add_code( GLchar** code, int type )
     switch( type )
     {
         case VERTEX_SHADER:
-            //code_.vertex    = &code->code;
-            code_.vertex    = *code;
+            code_.vertex    = code->code;
+            ids_.vertex     = code->id;
             return;
-            /*
         case TCS_SHADER:
-            code_.tcs       = &code->code;
+            code_.tcs       = code->code;
+            ids_.tcs        = code->id;
             return;
         case TEV_SHADER:
-            code_.tev       = &code->code;
+            code_.tev       = code->code;
+            ids_.tev        = code->id;
             return;
         case GEOMETRY_SHADER:
-            code_.geometry  = &code->code;
+            code_.geometry  = code->code;
+            ids_.geometry   = code->id;
             return;
-            */
         case FRAGMENT_SHADER:
-            //code_.fragment  = &code->code;
-            code_.fragment  = *code;
+            code_.fragment  = code->code;
+            ids_.fragment   = code->id;
             return;
         case COMPUTE_SHADER:
             assert( false ); //Compute not implemented
@@ -89,35 +90,75 @@ void Shader::add_code( GLchar** code, int type )
  */
 bool Shader::compile( void )
 {
+    if( !(code_.vertex || code_.fragment) )
+    {
+        printf( "Missing shaders." );
+                return ERROR;
+    }
 
     shaders_.vertex    = glCreateShader( GL_VERTEX_SHADER );
-    //glShaderSource( shaders_.vertex, 1, &code_.vertex->code, NULL );
     glShaderSource( shaders_.vertex, 1, &code_.vertex, NULL );
     glCompileShader( shaders_.vertex );
 
+    if( code_.tcs )
+    {
+        shaders_.tcs       = glCreateShader( GL_TESS_CONTROL_SHADER );
+        glShaderSource( shaders_.tcs, 1, &code_.tcs, NULL );
+        glCompileShader( shaders_.tcs );
+    }
+
+    if( code_.tev )
+    {
+        shaders_.tev        = glCreateShader( GL_TESS_EVALUATION_SHADER );
+        glShaderSource( shaders_.tev, 1, &code_.tev, NULL );
+        glCompileShader( shaders_.tev );
+    }
+
+    if( code_.geometry )
+    {
+        shaders_.geometry   = glCreateShader( GL_GEOMETRY_SHADER );
+        glShaderSource( shaders_.geometry, 1, &code_.geometry, NULL );
+        glCompileShader( shaders_.geometry );
+    }
+
     shaders_.fragment  = glCreateShader( GL_FRAGMENT_SHADER );
-    //glShaderSource( shaders_.fragment, 1, &code_.fragment->code, NULL );
     glShaderSource( shaders_.fragment, 1, &code_.fragment, NULL );
     glCompileShader( shaders_.fragment );
 
     if( link() == ERROR )
     {
         printf( "<Shader::compile (from link())> Error occurred when" );
-        printf( "linking.\n" );
+        printf( " linking.\n" );
         return ERROR;
     }
 
     return !ERROR;
 }
 
-//TODO: Add additional error checking and debugging capabilities.
-//
-//Linker for shader programs.
-//
+/** \todo Add additional error checking and debugging capabilities.
+ *
+ * Linker for shader programs.
+ */
 bool Shader::link()
 {
     program_ = glCreateProgram();
     glAttachShader( program_, shaders_.vertex );
+
+    if( code_.tcs )
+    {
+        glAttachShader( program_, shaders_.tcs );
+    }
+
+    if( code_.tev )
+    {
+        glAttachShader( program_, shaders_.tev );
+    }
+
+    if( code_.geometry )
+    {
+        glAttachShader( program_, shaders_.geometry );
+    }
+
     glAttachShader( program_, shaders_.fragment );
 
     glLinkProgram( program_ );
@@ -126,4 +167,95 @@ bool Shader::link()
     glDeleteShader( shaders_.vertex );
     glDeleteShader( shaders_.fragment );
     return !ERROR;
+}
+
+
+
+
+
+
+
+/** Prints shader contents.
+ * Really just for debugging purposes.
+ */
+void Shader::print( void )
+{
+    const char format[] = "%s:\n\n%s\n\n";
+
+    printf( "==Shader Text=====================\n" );
+    printf( "Shader id: <%i.%i.%i.%i.%i>\n\n",
+            ids_.vertex,
+            ids_.tcs,
+            ids_.tev,
+            ids_.geometry,
+            ids_.fragment );
+
+    if( code_.vertex )
+    {
+        printf( format,
+                "Vertex",
+                code_.vertex );
+    }
+
+    if( code_.tcs )
+    {
+        printf( format,
+                "Tesselation Control",
+                code_.tcs );
+    }
+
+    if( code_.tev )
+    {
+        printf( format,
+                "Tesselation Evaluation",
+                code_.tev );
+    }
+
+    if( code_.geometry )
+    {
+        printf( format,
+                "Geometry",
+                code_.geometry );
+    }
+
+    if( code_.fragment )
+    {
+        printf( format,
+                "Fragment",
+                code_.fragment );
+    }
+
+    printf( "==End of Shader===============\n\n" );
+}
+
+
+
+bool Shader::operator==( Shader& rhs )
+{
+    if( this->ids_.vertex != rhs.ids_.vertex )
+    {
+        return false;
+    }
+
+    if( this->ids_.tcs != rhs.ids_.tcs )
+    {
+        return false;
+    }
+
+    if( this->ids_.tev != rhs.ids_.tev )
+    {
+        return false;
+    }
+
+    if( this->ids_.geometry != rhs.ids_.geometry )
+    {
+        return false;
+    }
+
+    if( this->ids_.fragment != rhs.ids_.fragment )
+    {
+        return false;
+    }
+
+    return true;
 }
