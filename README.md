@@ -3,10 +3,11 @@
 
 A 3D graphics engine that can be used as a component of a larger game engine.
 Primary features/goals:
-* Operating system agnostic.
+* Be operating system agnostic.
 * Use the most modern variant of OpenGL available today. (OpenGL 4.5)  If time
 permits and everthing else is working, I will add in compatability for earlier
-versions of the <abbr title="Application Program Interface">API</abbr>.
+versions of the <abbr title="Application Program Interface">API</abbr>, and, by
+extension, older hardware.
 
 ##Additional Goals
 
@@ -15,6 +16,7 @@ If time permits, these additional feature will be added.
 language.
 * Add collision detection and response.
 * Change to or add a Vulkan®-based rendering system.
+* Create a simple demo "game".
 
 ##Technologies, Libraries, and Languages Used
 * [C](http://en.cppreference.com/w/c/)/[C++](http://en.cppreference.com/w/cpp/),
