@@ -16,6 +16,7 @@ If time permits, these additional feature will be added.
 language.
 * Add collision detection and response.
 * Change to or add a Vulkan®-based rendering system.
+* Add support for multithreading.
 * Create a simple demo "game".
 
 ##Technologies, Libraries, and Languages Used
