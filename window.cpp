@@ -104,7 +104,8 @@ void Window::init(void)
     {
         fprintf(
                 stderr,
-                "WARNING!!\tFailed to set window to fullscreen.\tSDL Error:\t%s\n",
+                "WARNING!!\tFailed to set window to fullscreen.\t"
+                "SDL Error:\t%s\n",
                 SDL_GetError() 
                );
     }
@@ -205,9 +206,9 @@ double Window::aspect(void)
 
 /**  A reference to the OpenGL context for this window.
 */
-SDL_GLContext& Window::gl(void)
+SDL_GLContext* Window::gl(void)
 {
-    return gl_;
+    return &gl_;
 }
 
 
@@ -224,7 +225,7 @@ inline void Window::draw( )
 #ifdef DEBUG
 void Window::debug_draw( Shader* s )
 {
-    glUseProgram( s->get() );
+    s->use_program();
 
     glClear( GL_COLOR_BUFFER_BIT );
 

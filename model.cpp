@@ -22,6 +22,7 @@ Model::~Model( void )
 
 bool Model::render( void )
 {
+    return false;
 }
 
 

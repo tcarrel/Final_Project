@@ -40,7 +40,7 @@ class Window
         void    debug_draw( Shader* );
 #endif
 
-        SDL_GLContext& gl( void );
+        SDL_GLContext* gl( void );
 
     private:
 //        const       SDL_VideoInfo* info_;

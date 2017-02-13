@@ -20,17 +20,22 @@ extern SHADER_TYPE_NAME SIMPLE_f;
  *   Creates the window object for the game and initializes it.
  */
 Application::Application( void ) :
-    window_( new Window(0.0f, 0.0f, 0.0f, 1.0f) )
+    window_( new Window(0.0f, 0.0f, 0.0f, 1.0f) ), gl_( NULL )
 {
 
     start_up();
 
     if( window_->good() )
+    {
 #ifdef DEBUG
         fprintf( stderr, "Window created successfully.\n" );
 #endif
+        gl_ = window_->gl();
+    }
     else
+    {
         fprintf( stderr, "Failed to create window.\n" );
+    }
 }
 
 
@@ -38,28 +43,13 @@ Application::Application( void ) :
 
 
 /**  Initializes SDL2 and the window object.
- */
+*/
 void Application::start_up( void )
 {
     SDL_Init( SDLSYSTEMS );
     window_->init();
 
-    //The follow... should all be removed later...
-    glPointSize(40.0f);
-    
-    shader_ = new Shader;
-    shader_->add_code( &SIMPLE_v, VERTEX_SHADER );
-    shader_->add_code( &SIMPLE_f, FRAGMENT_SHADER );
 
-    if( shader_->compile() == ERROR )
-    {
-        fprintf(
-                stderr,
-                "Could not compile shaders.\n\n"
-              );
-    }
-
-    window_->debug_draw( shader_ );
 }
 
 
@@ -72,11 +62,35 @@ void Application::start_up( void )
  */
 int Application::run( void )
 {
-    
 
-    SDL_Delay(3000);
 
-    shader_->print();
+    if( window_->good() )
+    {
+        //The following... should all be removed later...
+        glPointSize(40.0f);
+
+        shader_ = new Shader;
+        shader_->add_code( &SIMPLE_v, VERTEX_SHADER );
+        shader_->add_code( &SIMPLE_f, FRAGMENT_SHADER );
+
+        if( shader_->compile() == ERROR )
+        {
+            fprintf(
+                    stderr,
+                    "Could not compile shaders.\n\n"
+                   );
+        }
+
+
+        window_->debug_draw( shader_ );
+        //Remove to here.
+
+
+
+        SDL_Delay(3000); /// Replace with a typical game loop.
+
+        shader_->print();
+    }
 
     return 0;
 }
@@ -93,6 +107,15 @@ Application::~Application( void )
     SDL_Quit();
 
     if( shader_ )
+    {
         delete shader_;
+    }
+
+    if( window_ )
+    {
+        delete window_;
+        gl_ = NULL;
+    }
+
 }
 

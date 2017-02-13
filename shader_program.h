@@ -3,10 +3,6 @@
  *  \file shader_program.h
  */
 
-
-#ifndef  __SHADER_PROGRAM_H__
-# define __SHADER_PROGRAM_H__
-
 #include<GL/glew.h>
 #include<SDL2/SDL.h>
 #include<SDL2/SDL_opengl.h>
@@ -15,10 +11,18 @@
 #include<GL/freeglut.h>
 
 #include<cassert>
+#include<limits.h>
 
 
 #include "constants.h"
 #include "shaders.h"
+
+
+
+
+#ifndef  __SHADER_PROGRAM_H__
+# define __SHADER_PROGRAM_H__
+
 
 
 
@@ -38,6 +42,8 @@ class Shader
         void print( void ); 
 
         void add_code( SHADER_TYPE_NAME*, int );
+
+        void use_program( void );
 
     private:
 
@@ -60,7 +66,8 @@ class Shader
             GLuint  tev         = 0;
             GLuint  geometry    = 0;
             GLuint  fragment    = 0;
-        } ids_;
+        } ids_; ///< Store the ids of the individual shaders.  This may be used
+                ///< later for some additional optimization.
 
         struct 
         {
@@ -72,9 +79,12 @@ class Shader
         } shaders_; ///< The location of the shaders in the GPU's memory.
 
         GLuint      program_; ///<   The handle for the shader program after
-        ///< it's been compiled.
+                              ///< it's been compiled.
         bool        ready_; ///<   Flag indicating the shader has been compiled
-        ///< and is ready for use.
+                            ///< and is ready for use.
+
+        static GLuint current_program_; ///< Used to reduce the number
+                                        ///< glUseProgram calls.
 };
 
-#endif
+#endif /* __SHADER_PROGRAM_H__ */

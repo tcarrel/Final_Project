@@ -36,7 +36,10 @@ class Application
 
        void start_up( void );
 
-       Window*  window_; ///< The window object that the game will be displayed in.
+       Window*  window_; ///< The window object that the game will be
+                         ///< displayed in.
+
+       SDL_GLContext* gl_;
 
        Shader* shader_;
        //Model* models_;

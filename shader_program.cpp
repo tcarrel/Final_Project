@@ -5,20 +5,30 @@
 
 #include"shader_program.h"
 
-
-
-/*
-extern SHADER_TYPE_NAME SIMPLE_v;
-extern SHADER_TYPE_NAME SIMPLE_f;
-*/
-
 #include "shader_externs.h"
+
+
+
+
+
+
+
+/**
+ *   Tracks the current shader program used for rendering.  This is used to
+ * minimize the number of calls to glUseProgram().
+ */
+GLuint Shader::current_program_(UINT_MAX);
+
+
+
 
 
 /** Ctor.
  */
-Shader::Shader( void )
-{}
+Shader::Shader( void ) 
+{
+//    current_program_ = UINT_MAX;
+}
 
 
 
@@ -135,6 +145,30 @@ bool Shader::compile( void )
     return !ERROR;
 }
 
+
+
+
+
+
+/** Calls glUseProgram, if necessary.
+ * Calls to glUseProgram are expensive and to be avoided, if possible.
+ */
+void Shader::use_program( void )
+{
+    if( current_program_ != program_ )
+    {
+        glUseProgram( program_ );
+        current_program_ = program_;
+    }
+}
+
+
+
+
+
+
+
+
 /** \todo Add additional error checking and debugging capabilities.
  *
  * Linker for shader programs.
@@ -181,9 +215,53 @@ bool Shader::link()
         glDeleteShader( shaders_.geometry );
     }
     glDeleteShader( shaders_.fragment );
+
+
+
+    if( current_program_ == UINT_MAX )
+    {
+        use_program();
+    }
+
     return !ERROR;
 }
 
+
+
+
+/**
+ * Check if this shader is equivilant to another one.
+ * If there is time later, this will allow for some memory optimization.
+ */
+bool Shader::operator==( Shader& rhs )
+{
+    if( this->ids_.vertex != rhs.ids_.vertex )
+    {
+        return false;
+    }
+
+    if( this->ids_.tcs != rhs.ids_.tcs )
+    {
+        return false;
+    }
+
+    if( this->ids_.tev != rhs.ids_.tev )
+    {
+        return false;
+    }
+
+    if( this->ids_.geometry != rhs.ids_.geometry )
+    {
+        return false;
+    }
+
+    if( this->ids_.fragment != rhs.ids_.fragment )
+    {
+        return false;
+    }
+
+    return true;
+}
 
 
 
@@ -245,32 +323,3 @@ void Shader::print( void )
 
 
 
-bool Shader::operator==( Shader& rhs )
-{
-    if( this->ids_.vertex != rhs.ids_.vertex )
-    {
-        return false;
-    }
-
-    if( this->ids_.tcs != rhs.ids_.tcs )
-    {
-        return false;
-    }
-
-    if( this->ids_.tev != rhs.ids_.tev )
-    {
-        return false;
-    }
-
-    if( this->ids_.geometry != rhs.ids_.geometry )
-    {
-        return false;
-    }
-
-    if( this->ids_.fragment != rhs.ids_.fragment )
-    {
-        return false;
-    }
-
-    return true;
-}
