@@ -30,7 +30,6 @@ Application::Application( void ) :
 #ifdef DEBUG
         fprintf( stderr, "Window created successfully.\n" );
 #endif
-        gl_ = window_->gl();
     }
     else
     {
@@ -47,9 +46,10 @@ Application::Application( void ) :
 void Application::start_up( void )
 {
     SDL_Init( SDLSYSTEMS );
-    window_->init();
-
-
+    if( window_->good() )
+    {
+        window_->init();
+    }
 }
 
 
@@ -106,6 +106,8 @@ Application::~Application( void )
 {
     SDL_Quit();
 
+//    gl_ = NULL;
+
     if( shader_ )
     {
         delete shader_;
@@ -114,7 +116,6 @@ Application::~Application( void )
     if( window_ )
     {
         delete window_;
-        gl_ = NULL;
     }
 
 }

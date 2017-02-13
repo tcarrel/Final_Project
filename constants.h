@@ -12,7 +12,10 @@
 # include<string>
 using std::string;
 
-#define SDLSYSTEMS SDL_INIT_VIDEO
+/**
+ * The SDL sub-systems to be initialized.
+ */
+#define SDLSYSTEMS (SDL_INIT_VIDEO)
 
 const string    TITLE   =   "Senior Project"; ///< The name of the game.
                                               ///< Mainly used by the windowing

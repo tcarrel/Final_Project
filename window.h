@@ -47,6 +47,9 @@ class Window
 
         void init_gl( void );
 
+        const GLfloat   clear_color_[4]; ///< The clear color for OpenGL.
+        bool            is_good_; ///< Window condition.
+
         SDL_Window*     window_; ///< Address of the actual window, needed for
                                  ///< drawing.
         SDL_GLContext   gl_; ///< The OpenGL context for this window.
@@ -56,10 +59,10 @@ class Window
         int             pos_x_, ///< Window horizontal position.
                         pos_y_, ///< Window vertical position.
                         bpp_; ///< Bits Per Pixel
-        const GLfloat   clear_color_[4]; ///< The clear color for OpenGL.
 
         Uint32          flags_; ///< SDL2 fllags related to the window.
         double          aspect_; ///< The aspect ratio of the window.
+
 };
 
 #endif

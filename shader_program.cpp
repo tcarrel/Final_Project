@@ -40,6 +40,36 @@ Shader::Shader( void )
  */
 Shader::~Shader( void )
 {
+    if( code_.vertex )
+    {
+        delete code_.vertex;
+        code_.vertex = NULL;
+    }
+
+    if( code_.tcs )
+    {
+        delete code_.tcs;
+        code_.tcs = NULL;
+    }
+
+    if( code_.tev )
+    {
+        delete code_.tev;
+        code_.tev = NULL;
+    }
+
+    if( code_.geometry )
+    {
+        delete code_.geometry;
+        code_.geometry = NULL;
+    }
+
+    if( code_.fragment )
+    {
+        delete code_.fragment;
+        code_.fragment = NULL;
+    }
+
     glDeleteProgram( program_ );
 }
 

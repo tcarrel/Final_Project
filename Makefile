@@ -51,7 +51,8 @@ $(MAIN): $(OBJ_FILES) $(ERROR_DIR)
 		shader_externs.h $(SHADER_HEADER) $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
-.model.o: model.cpp mesh.h model.h constants.h shader_program.h $(ERROR_DIR)
+.model.o: model.cpp mesh.h model.h constants.h shader_program.h vertex.h \
+		$(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .mesh.o: mesh.cpp mesh.h vertex.h $(ERROR_DIR)
