@@ -21,7 +21,8 @@ SHADER_DEF = shaders.cpp
 SHADER_OBJ = .shaders.o
 SHADER_PROCESSOR = glsl_to_c
 
-OBJ_FILES = .entry_point.o .app.o .window.o .shader_program.o .model.o .mesh.o $(SHADER_OBJ) 
+OBJ_FILES = .entry_point.o .app.o .window.o .shader_program.o .model.o .mesh.o \
+			$(SHADER_OBJ) 
 GCCERREXT = gccerr
 ERROR_DIR = ./Errors
 COPYOUTPUT = 2>&1 | tee $(ERROR_DIR)/$<.$(GCCERREXT)
@@ -35,16 +36,19 @@ $(MAIN): $(OBJ_FILES) $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) $(OBJ_FILES) $(ALL_LIBS) -o $(MAIN) \
 		2>&1 | tee $(ERROR_DIR)/$(MAIN).$(GCCERREXT)
 
-.entry_point.o: entry_point.cpp app.h constants.h $(SHADER_HEADER) $(ERROR_DIR)
+.entry_point.o: entry_point.cpp app.h constants.h \
+		$(SHADER_HEADER) $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
-.app.o: app.cpp app.h constants.h window.h shader_externs.h $(SHADER_HEADER) $(ERROR_DIR)
+.app.o: app.cpp app.h constants.h window.h shader_externs.h $(SHADER_HEADER) \
+		$(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .window.o: window.cpp window.h constants.h $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
-.shader_program.o: shader_program.cpp shader_program.h constants.h shader_externs.h $(SHADER_HEADER) $(ERROR_DIR)
+.shader_program.o: shader_program.cpp shader_program.h constants.h \
+		shader_externs.h $(SHADER_HEADER) $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .model.o: model.cpp mesh.h model.h constants.h shader_program.h $(ERROR_DIR)
@@ -60,8 +64,9 @@ shader_externs.h: $(SHADER_DEF)
 
 $(SHADER_HEADER): $(SHADER_DEF)
 
-$(SHADER_DEF): $(SHADERS) $(ERROR_DIR) shader_to_structs/glsl_to_c.cpp
-	$(SHADER_PROCESSOR) $(SHADER_HEADER) 2>&1 | tee $(ERROR_DIR)/$(SHADER_PROCESSOR).$(GCCERREXT)
+$(SHADER_DEF): $(SHADERS) $(ERROR_DIR) $(SHADER_PROCESSOR)
+	$(SHADER_PROCESSOR) $(SHADER_HEADER) \
+			2>&1 | tee $(ERROR_DIR)/$(SHADER_PROCESSOR).$(GCCERREXT)
 
 $(ERROR_DIR):
 	mkdir $@
