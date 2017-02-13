@@ -1,5 +1,5 @@
 
-#As-yet Untitled 3D Graphics Engine 
+#Untitled 3D Graphics Engine 
 
 A 3D graphics engine that can be used as a component of a larger game engine.
 Primary features/goals:
