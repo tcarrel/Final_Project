@@ -39,8 +39,6 @@ class Application
        Window*  window_; ///< The window object that the game will be
                          ///< displayed in.
 
-       SDL_GLContext* gl_;
-
        Shader* shader_;
        //Model* models_;
 };

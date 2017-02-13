@@ -40,35 +40,12 @@ Shader::Shader( void )
  */
 Shader::~Shader( void )
 {
-    if( code_.vertex )
-    {
-        delete code_.vertex;
-        code_.vertex = NULL;
-    }
-
-    if( code_.tcs )
-    {
-        delete code_.tcs;
-        code_.tcs = NULL;
-    }
-
-    if( code_.tev )
-    {
-        delete code_.tev;
-        code_.tev = NULL;
-    }
-
-    if( code_.geometry )
-    {
-        delete code_.geometry;
-        code_.geometry = NULL;
-    }
-
-    if( code_.fragment )
-    {
-        delete code_.fragment;
-        code_.fragment = NULL;
-    }
+    // Do not delete these explicitly.
+    code_.vertex = NULL;
+    code_.tcs = NULL;
+    code_.tev = NULL;
+    code_.geometry = NULL;
+    code_.fragment = NULL;
 
     glDeleteProgram( program_ );
 }
@@ -133,7 +110,7 @@ bool Shader::compile( void )
     if( !(code_.vertex || code_.fragment) )
     {
         printf( "Missing shaders." );
-                return ERROR;
+        return ERROR;
     }
 
     shaders_.vertex    = glCreateShader( GL_VERTEX_SHADER );

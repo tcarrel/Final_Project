@@ -20,7 +20,7 @@ extern SHADER_TYPE_NAME SIMPLE_f;
  *   Creates the window object for the game and initializes it.
  */
 Application::Application( void ) :
-    window_( new Window(0.0f, 0.0f, 0.0f, 1.0f) ), gl_( NULL )
+    window_( new Window(0.0f, 0.0f, 0.0f, 1.0f) )
 {
 
     start_up();
@@ -105,8 +105,6 @@ int Application::run( void )
 Application::~Application( void )
 {
     SDL_Quit();
-
-//    gl_ = NULL;
 
     if( shader_ )
     {
