@@ -54,7 +54,7 @@ $(MAIN): $(OBJ_FILES) $(ERROR_DIR)
 .model.o: model.cpp mesh.h model.h constants.h shader_program.h $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
-.mesh.o: mesh.cpp mesh.h $(ERROR_DIR)
+.mesh.o: mesh.cpp mesh.h vertex.h $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 $(SHADER_OBJ): $(SHADER_DEF) $(SHADER_HEADER)
