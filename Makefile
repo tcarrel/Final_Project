@@ -11,8 +11,11 @@
 #
 
 CXX = g++
-DEBUG = 0
-CXXFLAGS = -time -Wall -g -std=c++11 -D TIMED -D DEBUG -D GLEW_STATIC
+
+SDL2_CFLAGS := $(shell sdl2-config --cflags)
+
+CXXFLAGS = $(SDL2_CFLAGS) -time -Wall -g -std=c++11 -D TIMED -D DEBUG \
+		   -D GLEW_STATIC
 MAIN = gg
 
 SHADERS = simple.v.glsl simple.f.glsl
@@ -28,7 +31,7 @@ ERROR_DIR = ./Errors
 COPYOUTPUT = 2>&1 | tee $(ERROR_DIR)/$<.$(GCCERREXT)
 
 jFML_LIB = -lsfml-graphics
-SDL2_LIB = -lSDL2
+SDL2_LIB := $(shell sdl2-config --libs)
 GLUT_LIB = -lGL -lGLU -lGLEW -lglut
 ALL_LIBS = $(SDL2_LIB) $(GLUT_LIB)
 
