@@ -1,6 +1,8 @@
 /**
  *  \author Thomas R. Carrel
  *  \file shader_program.cpp
+ *
+ *  \brief Provides definitions for the Shader class.
  */
 
 #include"shader_program.h"

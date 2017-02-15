@@ -2,6 +2,7 @@
  * \file model.cpp
  * \author Thomas R. Carrel
  *
+ * \brief Defines the Model class.
  */
 
 

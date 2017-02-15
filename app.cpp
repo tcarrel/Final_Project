@@ -1,6 +1,8 @@
 /**
  * \file app.cpp
  * \author Thomas R. Carrel
+ *
+ * \brief Application framework definition.
  */
 
 #include "app.h"

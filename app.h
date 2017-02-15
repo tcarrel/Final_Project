@@ -1,6 +1,8 @@
 /**
  * \file app.h
  * \author Thomas R. Carrel
+ *
+ * \brief Application framework (Application class) declaration.
  */
 
 #ifndef  APPLICATION_H

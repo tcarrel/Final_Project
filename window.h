@@ -1,6 +1,8 @@
 /**
  * \file window.h
  * \author Thomas R. Carrel
+ *
+ * \brief Window object declaration.
  */
 
 #ifndef WINDOW_H

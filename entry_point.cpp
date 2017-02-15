@@ -1,6 +1,8 @@
 /**
  * \file entry_point.cpp
  * \author Thomas R. Carrel
+ *
+ * \brief Program entry point.
  */
 
 

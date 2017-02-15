@@ -2,7 +2,7 @@
  * \file mesh.cpp
  * \author Thomas R. Carrel
  *
- * Definitions for mesh class.
+ * \brief Definitions for Mesh class.
  */
 
 

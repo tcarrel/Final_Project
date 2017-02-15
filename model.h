@@ -1,6 +1,8 @@
 /**
  * \file model.h
  * \author Thomas R. Carrel
+ *
+ * \brief Model class declaration.
  */
 
 
@@ -24,10 +26,14 @@
 #include "shader_program.h"
 
 class Mesh;
-
 class Shader;
-class Mesh;
 
+
+/**
+ * The class for a single model, eventually these will be able to contain
+ * multiple meshes that are to be transformed as one unit.  This may also
+ * end up as a node in the scene graph.
+ */
 class Model
 {
     public:

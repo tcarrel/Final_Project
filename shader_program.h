@@ -1,6 +1,8 @@
 /**
  *  \author Thomas R. Carrel
  *  \file shader_program.h
+ *
+ *  \brief Shader class declaration.
  */
 
 #include<GL/glew.h>

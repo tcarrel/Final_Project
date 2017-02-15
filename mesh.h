@@ -1,6 +1,8 @@
 /**
  * \file mesh.h
  * \author Thomas R. Carrel
+ *
+ * \brief Mesh class declaration.
  */
 
 

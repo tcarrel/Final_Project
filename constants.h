@@ -1,8 +1,9 @@
 /**
- * Define/set global constants.
- *
  * \file constants.h
  * \author Thomas R. Carrel
+ *
+ * \brief Provides a single location for the definition of all global
+ * constants, enums, and macros.
  */
 
 

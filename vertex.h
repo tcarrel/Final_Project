@@ -1,6 +1,8 @@
 /**
  * \file vertex.h
  * \author Thomas R. Carrel
+ *
+ * \brief Declares the format of Vertex data.
  */
 
 

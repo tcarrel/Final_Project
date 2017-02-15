@@ -1,6 +1,8 @@
 /**
  * \file window.cpp
  * \author Thomas R. Carrel
+ *
+ * \brief Defines the Window object.
  */
 
 #include"window.h"
