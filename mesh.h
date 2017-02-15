@@ -33,10 +33,14 @@ class Mesh
 
         void set_shader( Shader* );
 
-        const GLuint& indices_per_vertex( void ){ return ipv_; }
+        /**  Return the number of indices per vertex.
+         */
+        const GLuint& indices_per_vertex( void )
+        { return ipv_; }
 
         void draw( Shader* );
     private:
+
         Vertex* vertices_; ///< Array of vertex data.
         GLboolean verts_sent_to_gpu_; ///< true if vertices were sent to the
                                       ///< gpu, this mean our local vertex
@@ -55,6 +59,10 @@ class Mesh
         /** \todo Additional fields for texture info.
          * Some texture info may need to be passed with each draw call.
          */
+
+
+//        static const 
+        static GLuint cull_state_;
 };
 
 #endif

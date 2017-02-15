@@ -23,6 +23,8 @@
 #include "constants.h"
 #include "shader_program.h"
 
+class Mesh;
+
 class Shader;
 class Mesh;
 
@@ -32,12 +34,13 @@ class Model
         Model( void );
         ~Model( void );
 
+
         bool render( void );
 
         void set_program( Shader* );
 
     private:
-        //static Mesh
+        Mesh* mesh_;
         //Program
         Shader* program_;
 };

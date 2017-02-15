@@ -35,6 +35,9 @@ class Shader
         ~Shader(void );
         
         bool compile( void );
+
+        /** Returns the location of the program on the GPU.
+         */
         const GLuint& get( void ) { return program_; }
 
         bool operator==( Shader& );

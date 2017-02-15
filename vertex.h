@@ -18,10 +18,10 @@ struct Vertex
     GLfloat x; ///< x-coordinate.
     GLfloat y; ///< y-coordinate.
     GLfloat z; ///< z-coordinate.
-/*
-    GLfloat u; ///< Texture coordinate, u.
-    GLfloat v; ///< Texture coordinate, v
-*/
+    /*
+       GLfloat u; ///< Texture coordinate, u.
+       GLfloat v; ///< Texture coordinate, v
+       */
 };
 
 #endif /* VERTEX_H */
