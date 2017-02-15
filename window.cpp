@@ -17,9 +17,6 @@ char warning_text[] = "\033[1;35;40mWARNING!!\033[0m";
 char error_text[]   = "\033[1;31;40mERROR!!\033[0m";
 
 
-
-
-
 /** Create default window.  Sets a hard coded clear color for OpenGL, ideally,
  * this ctor should not be used in the final game..
  */
@@ -224,7 +221,10 @@ void Window::init_gl(void)
         return;
     }
 
-    glClear( GL_COLOR_BUFFER_BIT );
+    glEnable( GL_CULL_FACE ); glEnable( GL_DEPTH_TEST );
+    glCullFace( GL_BACK );
+
+    glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     SDL_GL_SwapWindow( window_ );
 }
 
