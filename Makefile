@@ -3,17 +3,17 @@
 #
 #   Makefile
 #
-#   Define DEBUG, by uncommenting the last argument in CXXFLAGS, will enable
-#  detailed debug out put.
+#   Define DEBUG, by uncommenting the last argument in CXXFLAGS, will
+#  enable detailed debug out put.
 #   
-#   All of these compile lines are set up to duplicate all output (errors) from
-#  g++ and copy it into a file.
+#   All of these compile lines are set up to duplicate all output (errors) 
+#  from g++ and copy it into a file.
 #
 
 CXX = g++
 DEBUG = 0
 CXXFLAGS = -time -Wall -g -std=c++11 -D TIMED -D DEBUG -D GLEW_STATIC
-MAIN = game
+MAIN = gg
 
 SHADERS = simple.v.glsl simple.f.glsl
 SHADER_HEADER = shaders.h
@@ -21,8 +21,8 @@ SHADER_DEF = shaders.cpp
 SHADER_OBJ = .shaders.o
 SHADER_PROCESSOR = glsl_to_c
 
-OBJ_FILES = .entry_point.o .app.o .window.o .shader_program.o .model.o .mesh.o \
-			$(SHADER_OBJ) 
+OBJ_FILES = .entry_point.o .app.o .window.o .shader_program.o .model.o \
+			.mesh.o $(SHADER_OBJ) 
 GCCERREXT = gccerr
 ERROR_DIR = ./Errors
 COPYOUTPUT = 2>&1 | tee $(ERROR_DIR)/$<.$(GCCERREXT)
@@ -40,8 +40,8 @@ $(MAIN): $(OBJ_FILES) $(ERROR_DIR)
 		$(SHADER_HEADER) $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
-.app.o: app.cpp app.h constants.h window.h shader_externs.h $(SHADER_HEADER) \
-		$(ERROR_DIR)
+.app.o: app.cpp app.h constants.h window.h shader_externs.h \
+		$(SHADER_HEADER) $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .window.o: window.cpp window.h constants.h $(ERROR_DIR)
@@ -51,8 +51,8 @@ $(MAIN): $(OBJ_FILES) $(ERROR_DIR)
 		shader_externs.h $(SHADER_HEADER) $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
-.model.o: model.cpp mesh.h model.h constants.h shader_program.h vertex.h \
-		$(ERROR_DIR)
+.model.o: model.cpp mesh.h model.h constants.h shader_program.h \
+		vertex.h $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .mesh.o: mesh.cpp mesh.h vertex.h $(ERROR_DIR)

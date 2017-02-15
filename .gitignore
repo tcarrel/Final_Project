@@ -37,6 +37,6 @@ glsl_to_c
 .doxy/
 shaders.h
 shaders.cpp
-game
+gg
 a.out
 shader_externs.h
