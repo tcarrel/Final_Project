@@ -16,14 +16,15 @@
 #include<GL/glu.h>
 #include<GL/freeglut.h>
 
-#include"constants.h"
-#include"window.h"
-#include"shader_program.h"
-#include"shaders.h"
+#include "../constants.h"
+#include "../shader_program.h"
+#include "../shaders.h"
 
+#include "window.h"
 
 #include<stdio.h>
 
+class Mesh;
 
 /**  The main game object.
  */
@@ -42,6 +43,8 @@ class Application
                          ///< displayed in.
 
        Shader* shader_;
+
+       Mesh* mesh_;
        //Model* models_;
 };
 

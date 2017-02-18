@@ -22,8 +22,8 @@
 
 
 
-#include "constants.h"
-#include "shader_program.h"
+#include "../constants.h"
+#include "../shader_program.h"
 
 class Mesh;
 class Shader;

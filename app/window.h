@@ -17,18 +17,14 @@
 
 #include<stdio.h>
 
-
-
-#include "constants.h"
-#include "shader_program.h"
+#include "../constants.h"
+#include "../shader_program.h"
 
 /**  The class for the game window.  Even though the game displays fullscreen.
  */
 class Window
 {
     public:
-        Window( void );
-        Window( float, float, float, float );
         ~Window( void );
 
         void    init( void );
@@ -44,8 +40,13 @@ class Window
 
         SDL_GLContext* gl( void );
 
+        friend class Application;
+
     private:
 //        const       SDL_VideoInfo* info_;
+
+        Window( void );
+        Window( float, float, float, float );
 
         void init_gl( void );
 

@@ -7,11 +7,11 @@
 
 
 #include "mesh.h"
+#include "../shader_program.h"
+#include "../app/window.h"
 
-#include "shader_program.h"
 
-
-Mesh::Mesh( void ) : verts_sent_to_gpu_( false ), ipv_( 3 )
+Mesh::Mesh( Window* w ) : verts_sent_to_gpu_( false ), ipv_( 3 )
 {
     /** Hard coded cube mesh
      * Delete later.
@@ -34,6 +34,8 @@ Mesh::Mesh( void ) : verts_sent_to_gpu_( false ), ipv_( 3 )
             { 1.0f, 1.0f, 1.0f }, { -1.0f, 1.0f, 1.0f }, { 1.0f,-1.0f, 1.0 },
     };
     qty_ = 36;
+
+    window_ = w;
 }
 
 
@@ -45,10 +47,12 @@ Mesh::Mesh( void ) : verts_sent_to_gpu_( false ), ipv_( 3 )
  * \todo this cannot be implented until the recursive descent parser for
  * loading .obj's has been writen.
  */
+/*
 Mesh::Mesh( GLchar* filename ) : Mesh()
 {
     /// Call the .obj loader, etc.
 }
+*/
 
 
 
@@ -58,12 +62,14 @@ Mesh::Mesh( GLchar* filename ) : Mesh()
  * \param verts And array of vertices.
  * \param count the number of vertices.
  */
+/*
 Mesh::Mesh( Vertex* verts, GLuint count ) :
     Mesh()//, vertices_( verts ), qty_( count )
 {
     vertices_   = verts;
     qty_        = count;
 }
+*/
 
 
 
@@ -87,6 +93,7 @@ Mesh::~Mesh( void )
      * sooner.
      */
     shader_ = NULL;
+    window_ = NULL;
 }
 
 
@@ -110,6 +117,7 @@ void Mesh::draw( Shader* prog )
         shader_->use_program();
     }
 
+
 }
 
 
@@ -127,4 +135,25 @@ void Mesh::draw( Shader* prog )
 void Mesh::set_shader( Shader* p )
 {
     shader_ = p;
+}
+
+
+
+
+
+
+void Mesh::init_gpu_buffers( void )
+{
+
+    glCreateBuffers( 1, &buffer_ );
+
+    glNamedBufferStorage(
+            buffer_,
+            sizeof(Vertex) * qty_,
+            vertices_,
+            GL_MAP_READ_BIT
+            );
+
+    glBindBuffer( GL_ARRAY_BUFFER, buffer_ );
+
 }

@@ -6,6 +6,7 @@
  */
 
 #include "app.h"
+#include "../model/mesh.h"
 
 
 
@@ -14,7 +15,7 @@ extern SHADER_TYPE_NAME SIMPLE_v;
 extern SHADER_TYPE_NAME SIMPLE_f;
 */
 
-#include "shader_externs.h"
+#include "../shader_externs.h"
 
 
 
@@ -24,6 +25,8 @@ extern SHADER_TYPE_NAME SIMPLE_f;
 Application::Application( void ) :
     window_( new Window(0.0f, 0.0f, 0.0f, 1.0f) )
 {
+
+    mesh_ = new Mesh( window_ );
 
     start_up();
 
@@ -83,9 +86,10 @@ int Application::run( void )
                    );
         }
 
-
         window_->debug_draw( shader_ );
         //Remove to here.
+
+        mesh_->set_shader( shader_ );
 
 
 
