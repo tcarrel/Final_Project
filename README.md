@@ -3,7 +3,8 @@
 
 A 3D graphics engine that can be used as a component of a larger game engine.
 Primary features/goals:
-* Be operating system agnostic.
+* Be operating system agnostic.  Will be initially programmed on Linux, but
+should only require minor changes to make it compile and run on Windows.
 * Use the most modern variant of OpenGL available today. (OpenGL 4.5)  If time
 permits and everthing else is working, I will add in compatability for earlier
 versions of the <abbr title="Application Program Interface">API</abbr>, and, by
