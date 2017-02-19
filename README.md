@@ -41,3 +41,7 @@ listed above.
 * [OpenMP](http://www.openmp.org/) Multithreading.
 * [Lua](https://www.lua.org/) A scripting language.
 * [Vulkan®](https://www.khronos.org/vulkan/)
+
+##Additional Credits
+* The basics of the code for handling errors in the shader compilation process
+came from the book "OpenGL 4 Shading Language Cookbook" 2nd Ed. by David Wolff.
