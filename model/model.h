@@ -25,30 +25,34 @@
 #include "../constants.h"
 #include "../shader_program.h"
 
-class Mesh;
 class Shader;
 
-
-/**
- * The class for a single model, eventually these will be able to contain
- * multiple meshes that are to be transformed as one unit.  This may also
- * end up as a node in the scene graph.
- */
-class Model
+namespace Model
 {
-    public:
-        Model( void );
-        ~Model( void );
+
+    class Mesh;
+
+    /**
+     * The class for a single model, eventually these will be able to contain
+     * multiple meshes that are to be transformed as one unit.  This may also
+     * end up as a node in the scene graph.
+     */
+    class Model
+    {
+        public:
+            Model( void );
+            ~Model( void );
 
 
-        bool render( void );
+            bool render( void );
 
-        void set_program( Shader* );
+            void set_program( Shader* );
 
-    private:
-        Mesh* mesh_;
-        //Program
-        Shader* program_;
-};
+        private:
+            Mesh* mesh_;
+            //Program
+            Shader* program_;
+    };
 
+} //Model namespace.
 #endif

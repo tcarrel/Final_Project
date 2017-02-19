@@ -18,34 +18,45 @@
 
 #include "../constants.h"
 #include "../shader_program.h"
-#include "../shaders.h"
 
-#include "window.h"
+#include "../input/input_handler.h"
 
 #include<stdio.h>
 
-class Mesh;
-
-/**  The main game object.
- */
-class Application
+namespace Model
 {
-    public:
-        Application( void );
-        ~Application(void );
+    class Mesh;
+}
 
-       int run( void ); 
-    private:
 
-       void start_up( void );
+namespace App
+{
 
-       Window*  window_; ///< The window object that the game will be
-                         ///< displayed in.
+    class Window;
 
-       Shader* shader_;
+    /**  The main game object.
+    */
+    class Application
+    {
+        public:
+            Application( void );
+            ~Application(void );
 
-       Mesh* mesh_;
-       //Model* models_;
-};
+            int run( void ); 
+        private:
+
+            void start_up( void );
+
+            Window*  window_; ///< The window object that the game will be
+            ///< displayed in.
+
+            Shader* shader_;
+            Model::Mesh* mesh_;
+            //Model* models_;
+
+            Input::Input_Handler input;
+    };
+
+} //App namespace.
 
 #endif

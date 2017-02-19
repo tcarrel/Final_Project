@@ -12,18 +12,40 @@
 #include<initializer_list>
 
 #include<GL/gl.h>
+#include<glm/glm.hpp>
 
-/** Struct for storing vertex coordinates.
- */
-struct Vertex
+namespace Model
 {
-    GLfloat x; ///< x-coordinate.
-    GLfloat y; ///< y-coordinate.
-    GLfloat z; ///< z-coordinate.
-    /*
-       GLfloat u; ///< Texture coordinate, u.
-       GLfloat v; ///< Texture coordinate, v
-       */
-};
+
+    /** Struct for storing vertex coordinates.
+    */
+    struct Vertex
+    {
+        glm::vec3 pos; ///< The coordinate of the vertex.
+
+
+        /** Ctor, inits vertex with a vec3 as input.
+         * \param p The coordinates of the vertex.
+         */
+        Vertex( const glm::vec3& p ) : pos(p) {}
+
+        /** Ctor, inits vertex with three floating point numbers.
+         * \param x The x-coordinate.
+         * \param y The y-coordinate.
+         * \param z The z-coordinate.
+         */
+        Vertex( float x, float y, float z ) :
+            pos( glm::vec3( x, y, z ) )
+        {}
+
+        /** Generic ctor, inits the vertex to (0, 0, 0).
+         */
+        Vertex( void ) :
+            Vertex( 0.0f, 0.0f, 0.0f )
+        {}
+    };
+
+} //Model namespace.
+
 
 #endif /* VERTEX_H */

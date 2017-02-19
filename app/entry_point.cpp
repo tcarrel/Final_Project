@@ -13,14 +13,11 @@
 
 
 
-
-
-
 /**  The entry point for the game.
  */
 int main()
 {
-    Application app;
+    App::Application app;
 
     app.run();
 

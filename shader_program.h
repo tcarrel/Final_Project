@@ -17,6 +17,8 @@
 
 
 #include "constants.h"
+#include "GLSL_except.h"
+
 #include "shaders.h"
 
 
@@ -34,24 +36,46 @@ class Shader
         Shader( void );
         ~Shader(void );
         
-        bool compile( void );
+        bool compile( void ) throw(GLSL_Program_Exception);
+
+        /** Returns whether or not the shader program is ready for use.
+         */
+        bool is_linked( void );
 
         /** Returns the location of the program on the GPU.
          */
         const GLuint& get( void ) { return program_; }
-
         bool operator==( Shader& );
-
         void print( void ); 
-
         void add_code( SHADER_TYPE_NAME*, int );
-
         void use_program( void );        
+        
+        /*
+        void bind_attrib_location( GLuint, const char* );
+        void bind_frag_data_location( GLuint, const char* );
+        void set_uniform( const char*, float, float, float );
+        void set_uniform( const char*, const glm::vec3& );
+        void set_uniform( const char*, const glm::vec4& );
+        void set_uniform( const char*, const glm::mat4& );
+        void set_uniform( const char*, const glm::mat3& );
+        void set_uniform( const char*, float );
+        void set_uniform( const char*, int );
+        void set_uniform( const char*, bool );
+        
+        void print_active_uniforms( void );
+        void print_active_attribs( void );
+        void print_active_uniform_blocks( void );
+
+        This function will be implemented later.
+        */
 
     private:
 
-        bool link( void ); ///< Called by compile().
-        //bool load_source( string, GLGLchar*, string );
+        void compile_shader( GLchar*, Shaders, GLuint* )
+            throw( GLSL_Program_Exception );
+        void link( void ) throw( GLSL_Program_Exception ); ///< Called by
+                                                           ///< compile().
+        int type_id( Shaders );
 
         struct 
         {
@@ -60,6 +84,7 @@ class Shader
             GLchar* tev         = NULL;
             GLchar* geometry    = NULL;
             GLchar* fragment    = NULL;
+            GLchar* compute     = NULL;
         } code_; ///<  Pointers to the source code for the various shaders.
 
         struct
@@ -69,8 +94,9 @@ class Shader
             GLuint  tev         = 0;
             GLuint  geometry    = 0;
             GLuint  fragment    = 0;
+            GLuint  compute     = 0;
         } ids_; ///< Store the ids of the individual shaders.  This may be used
-                ///< later for some additional optimization.
+        ///< later for some additional optimization.
 
         struct 
         {
@@ -79,15 +105,23 @@ class Shader
             GLuint  tev;
             GLuint  geometry;
             GLuint  fragment;
+            GLuint  compute;
         } shaders_; ///< The location of the shaders in the GPU's memory.
 
-        GLuint      program_; ///<   The handle for the shader program after
-                              ///< it's been compiled.
-        bool        ready_; ///<   Flag indicating the shader has been compiled
-                            ///< and is ready for use.
+        GLuint      program_; ///<  The handle for the shader program after
+        ///< it's been compiled.
+        bool        ready_; ///<  Flag indicating the shader has been compiled,
+        ///< linked, and is ready for use.
 
         static GLuint current_program_; ///< Used to reduce the number
-                                        ///< glUseProgram calls.
+        ///< glUseProgram calls.
+
+
+        GLint get_uniform_location( const char* );
+
+        //Prevent copying
+        Shader( const Shader& o ) { };
+        Shader& operator=( const Shader& o ) { return *this; }
 };
 
 #endif /* __SHADER_PROGRAM_H__ */

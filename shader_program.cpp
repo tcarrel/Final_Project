@@ -13,6 +13,51 @@
 #include "shader_program.h"
 #include "shader_externs.h"
 
+#include<sstream>
+#include<climits>
+
+
+
+//helper functions
+
+
+/**  Converts and integer to a string.
+ * \param i The integer.
+ */
+string numtoa( GLuint i )
+{
+    std::stringstream S;
+    S << i;
+    return S.str();
+}
+
+
+
+
+/**  Returns a string containing the name of the shader type.
+ * \param s A value from the shader type enum (Shaders).
+ */
+string get_shader_type_string( Shaders s )
+{
+    switch( s )
+    {
+        case VERTEX_SHADER:
+            return "vertex";
+        case TCS_SHADER:
+            return "tesselation control";
+        case TEV_SHADER:
+            return "tesselation evaluation";
+        case GEOMETRY_SHADER:
+            return "geometry";
+        case FRAGMENT_SHADER:
+                return "fragment";
+        case COMPUTE_SHADER:
+                return "compute";
+        default:
+                return "unkown shader type";
+    }
+}
+
 
 
 
@@ -23,7 +68,7 @@
  *   Tracks the current shader program used for rendering.  This is used to
  * minimize the number of calls to glUseProgram().
  */
-GLuint Shader::current_program_(UINT_MAX);
+GLuint Shader::current_program_( 0 );
 
 
 
@@ -31,7 +76,7 @@ GLuint Shader::current_program_(UINT_MAX);
 
 /** Ctor.
  */
-Shader::Shader( void ) 
+Shader::Shader( void ) : program_( 0 ), ready_( false )
 {}
 
 
@@ -44,13 +89,34 @@ Shader::Shader( void )
  */
 Shader::~Shader( void )
 {
-    // Do not delete these explicitly.
-    code_.vertex = NULL;
-    code_.tcs = NULL;
-    code_.tev = NULL;
-    code_.geometry = NULL;
-    code_.fragment = NULL;
+    if( program_ == 0 )
+    {
+        return;
+    }
 
+    //Get shader qty.
+    GLint shader_qty;
+    glGetProgramiv( program_, GL_ATTACHED_SHADERS, &shader_qty );
+
+    //Get shader names
+    GLuint* shader_names = new GLuint[shader_qty];
+    glGetAttachedShaders( program_, shader_qty, NULL, shader_names );
+
+    // Do not delete these explicitly.
+    code_.vertex    = NULL;
+    code_.tcs       = NULL;
+    code_.tev       = NULL;
+    code_.geometry  = NULL;
+    code_.fragment  = NULL;
+    code_.compute   = NULL;
+
+    //Delete shaders from GPU memory.
+    for( int i = 0; i < shader_qty; i++ )
+    {
+        glDeleteShader( shader_names[i] );
+    }
+
+    delete[] shader_names;
     glDeleteProgram( program_ );
 }
 
@@ -98,7 +164,8 @@ void Shader::add_code( SHADER_TYPE_NAME* code, int type )
             ids_.fragment   = code->id;
             return;
         case COMPUTE_SHADER:
-            assert( false ); //Compute not implemented
+            code_.compute   = code->code;
+            ids_.compute    = code->id;
             return;
     }
 }
@@ -109,7 +176,7 @@ void Shader::add_code( SHADER_TYPE_NAME* code, int type )
 /**    Performs final compilation of the shader code on the GPU.  This must be
  *   done by the user, since it is unknown what shaders will be loaded.
  */
-bool Shader::compile( void )
+bool Shader::compile( void ) throw( GLSL_Program_Exception )
 {
     if( !(code_.vertex || code_.fragment) )
     {
@@ -117,44 +184,76 @@ bool Shader::compile( void )
         return ERROR;
     }
 
-    shaders_.vertex    = glCreateShader( GL_VERTEX_SHADER );
-    glShaderSource( shaders_.vertex, 1, &code_.vertex, NULL );
-    glCompileShader( shaders_.vertex );
+    compile_shader( code_.vertex,   VERTEX_SHADER,      &shaders_.vertex );
+    compile_shader( code_.tcs,      TCS_SHADER,         &shaders_.tcs );
+    compile_shader( code_.tev,      TEV_SHADER,         &shaders_.tev );
+    compile_shader( code_.geometry, GEOMETRY_SHADER,    &shaders_.geometry );
+    compile_shader( code_.fragment, FRAGMENT_SHADER,    &shaders_.fragment );
 
-    if( code_.tcs )
+    link();
+    if( program_ == 0 )
     {
-        shaders_.tcs       = glCreateShader( GL_TESS_CONTROL_SHADER );
-        glShaderSource( shaders_.tcs, 1, &code_.tcs, NULL );
-        glCompileShader( shaders_.tcs );
+        throw GLSL_Program_Exception( "Unable to create shader program.\n" );
     }
 
-    if( code_.tev )
-    {
-        shaders_.tev        = glCreateShader( GL_TESS_EVALUATION_SHADER );
-        glShaderSource( shaders_.tev, 1, &code_.tev, NULL );
-        glCompileShader( shaders_.tev );
-    }
 
-    if( code_.geometry )
+    if( current_program_ == 0 )
     {
-        shaders_.geometry   = glCreateShader( GL_GEOMETRY_SHADER );
-        glShaderSource( shaders_.geometry, 1, &code_.geometry, NULL );
-        glCompileShader( shaders_.geometry );
-    }
-
-    shaders_.fragment  = glCreateShader( GL_FRAGMENT_SHADER );
-    glShaderSource( shaders_.fragment, 1, &code_.fragment, NULL );
-    glCompileShader( shaders_.fragment );
-
-    if( link() == ERROR )
-    {
-        printf( "<Shader::compile (from link())> Error occurred when" );
-        printf( " linking.\n" );
-        return ERROR;
+        ready_ = true;
+        use_program();
     }
 
     return !ERROR;
 }
+
+
+
+
+void Shader::compile_shader(
+        GLchar*   source,
+        Shaders type,
+        GLuint* handle )
+throw( GLSL_Program_Exception )
+{
+    if( source == NULL )
+    {
+        return;
+    }
+
+    *handle = glCreateShader( type );
+    glShaderSource( *handle, 1, &source, NULL );
+    glCompileShader( *handle );
+
+    int result;
+    glGetShaderiv( *handle, GL_COMPILE_STATUS, &result );
+    if( result == GL_FALSE )
+    {
+        // Compilation failed, get log.
+        int length = 0;
+        string log_text;
+        glGetShaderiv( *handle, GL_INFO_LOG_LENGTH, &length );
+        if( length > 0 )
+        {
+            char* log = new char[length];
+            int written = 0;
+            glGetShaderInfoLog( *handle, length, &written, log );
+            log_text = log;
+            delete [] log;
+        }
+
+        string msg;
+        msg =
+            get_shader_type_string( type ) + " shader with id=" + 
+            numtoa( type_id( type ) ) + " compilation failed.\n" + log_text;
+
+        throw GLSL_Program_Exception( msg );
+    }
+
+    glAttachShader( program_, *handle );
+}
+
+
+
 
 
 
@@ -184,57 +283,42 @@ void Shader::use_program( void )
  *
  * Linker for shader programs.
  */
-bool Shader::link()
+void Shader::link() throw( GLSL_Program_Exception )
 {
-#ifdef DEBUG
-#endif
-
-    program_ = glCreateProgram();
-    glAttachShader( program_, shaders_.vertex );
-
-    if( code_.tcs )
+    if( ready_ )
     {
-        glAttachShader( program_, shaders_.tcs );
+        return;
     }
 
-    if( code_.tev )
+    if( program_ <= 0 )
     {
-        glAttachShader( program_, shaders_.tev );
+        throw GLSL_Program_Exception( "Program has not been compiled." );
     }
-
-    if( code_.geometry )
-    {
-        glAttachShader( program_, shaders_.geometry );
-    }
-
-    glAttachShader( program_, shaders_.fragment );
 
     glLinkProgram( program_ );
 
-    // No longer needed in GPU RAM.
-    glDeleteShader( shaders_.vertex );
-    if( code_.tcs )
+    int status = 0;
+    glGetProgramiv( program_, GL_LINK_STATUS, &status );
+    if( status == GL_FALSE )
     {
-        glDeleteShader( shaders_.tcs );
-    }
-    if( code_.tev )
-    {
-        glDeleteShader( shaders_.tev );
-    }
-    if( code_.geometry )
-    {
-        glDeleteShader( shaders_.geometry );
-    }
-    glDeleteShader( shaders_.fragment );
+        //Get log from GPU and throw exception.
+        int length = 0;
+        string log_text;
 
+        glGetProgramiv( program_, GL_INFO_LOG_LENGTH, &length );
 
+        if( length > 0 )
+        {
+            char* clog = new char[length];
+            int written = 0; //Dummy var.
 
-    if( current_program_ == UINT_MAX )
-    {
-        use_program();
+            glGetProgramInfoLog( program_, length, &written, clog );
+            log_text = clog;
+            delete[] clog;
+        }
+
+        throw GLSL_Program_Exception( "Program link failed:\n" + log_text );
     }
-
-    return !ERROR;
 }
 
 
@@ -334,3 +418,30 @@ void Shader::print( void )
 
 
 
+
+
+
+
+/**  Gets the id of the specified shader.
+ * \param t A value from the shader types enum (Shaders).
+ */
+int  Shader::type_id( Shaders t )
+{
+    switch( t )
+    {
+        case VERTEX_SHADER:
+            return shaders_.vertex;
+        case TCS_SHADER:
+            return shaders_.tcs;
+        case TEV_SHADER:
+            return shaders_.tev;
+        case GEOMETRY_SHADER:
+            return shaders_.geometry;
+        case FRAGMENT_SHADER:
+            return shaders_.fragment;
+        case COMPUTE_SHADER:
+            return shaders_.compute;
+        default:
+            return INT_MAX;
+    }
+}
