@@ -15,6 +15,8 @@
 #include<cassert>
 #include<limits.h>
 
+#include<string>
+#include<map>
 
 #include "constants.h"
 #include "GLSL_except.h"
@@ -115,6 +117,9 @@ class Shader
 
         static GLuint current_program_; ///< Used to reduce the number
         ///< glUseProgram calls.
+
+
+        std::map<std::string, int> uniform_locations_;
 
 
         GLint get_uniform_location( const char* );

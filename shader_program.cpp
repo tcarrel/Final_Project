@@ -191,6 +191,7 @@ bool Shader::compile( void ) throw( GLSL_Program_Exception )
     compile_shader( code_.fragment, FRAGMENT_SHADER,    &shaders_.fragment );
 
     link();
+
     if( program_ == 0 )
     {
         throw GLSL_Program_Exception( "Unable to create shader program.\n" );
@@ -215,6 +216,17 @@ void Shader::compile_shader(
         GLuint* handle )
 throw( GLSL_Program_Exception )
 {
+
+    if( program_ <= 0 )
+    {
+        program_ = glCreateProgram();
+
+        if( program_ <= 0 )
+        {
+            throw GLSL_Program_Exception( "Unable to create shader program." );
+        }
+    }
+
     if( source == NULL )
     {
         return;

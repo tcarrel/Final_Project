@@ -24,7 +24,7 @@ class GLSL_Program_Exception : public std::runtime_error
          * \param msg The message related to the error.
          */
         GLSL_Program_Exception( const string& msg ) :
-            std::runtime_error( "\033[1;31;40mEXCEPTION!!\033[0m" + msg ) {};
+            std::runtime_error( "\033[1;31;40mEXCEPTION!!\033[0m " + msg ) {};
 };
 
 #endif
