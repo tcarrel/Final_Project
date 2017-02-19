@@ -54,7 +54,7 @@ namespace App
             Model::Mesh* mesh_;
             //Model* models_;
 
-            Input::Input_Handler input;
+            Input::Input_Handler input_;
     };
 
 } //App namespace.

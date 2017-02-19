@@ -73,7 +73,8 @@ $(MAIN): $(OBJ_FILES) $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .input_handler.o: $(CONS_DIR)input_handler.cpp $(CONS_DIR)input_handler.h \
-		$(CONS_DIR)command.h $(CONS_DIR)exit.h $(ERROR_DIR)
+		$(CONS_DIR)command.h $(CONS_DIR)exit.h $(CONS_DIR)window_show.h \
+		$(APP_DIR)window.h $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 

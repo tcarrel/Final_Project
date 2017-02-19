@@ -28,7 +28,7 @@ namespace App
      *   Creates the window object for the game and initializes it.
      */
     Application::Application( void ) :
-        window_( new Window )
+        window_( new Window ), input_( window_ )
     {
 
         start_up();
@@ -111,7 +111,7 @@ namespace App
 
             while( 1 )
             {
-                input.process();
+                input_.process();
             }
 
         }

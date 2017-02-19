@@ -13,7 +13,7 @@
 namespace Input
 {
 
-    Input_Handler::Input_Handler( void )
+    Input_Handler::Input_Handler( App::Window* w )
     {
         uint32_t init = SDL_WasInit( SDL_INIT_EVERYTHING );
         if( !(init & SDL_INIT_EVENTS) )
@@ -29,6 +29,7 @@ namespace Input
             SDL_InitSubSystem( SDL_INIT_GAMECONTROLLER );
         }
 
+        com_[WINDOW_SHOW_COMMAND] = new Window_Redraw( w );
         com_[EXIT_COMMAND] = new Exit_Command;
     }
 
@@ -54,6 +55,22 @@ namespace Input
             {
                 case SDL_QUIT:
                     com_[EXIT_COMMAND]->execute();
+                    break;
+                case SDL_WINDOWEVENT:
+                    switch( q_.window.event )
+                    {
+                        case SDL_WINDOWEVENT_RESTORED:
+                            //Fallthrough.
+                        case SDL_WINDOWEVENT_FOCUS_GAINED:
+                            //Fallthrough.
+                        case SDL_WINDOWEVENT_SHOWN:
+                            //Fallthrough.
+                        case SDL_WINDOWEVENT_EXPOSED:
+                            com_[WINDOW_SHOW_COMMAND]->execute();
+                            break;
+                        default:
+                            ;
+                    }
                     break;
                 case SDL_KEYUP:
                     switch( q_.key.keysym.sym )

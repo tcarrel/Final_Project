@@ -274,6 +274,13 @@ namespace App
         SDL_GL_SwapWindow( this->window_ );
     }
 
+    /**  Redraws the window after it's been minimized.
+     */
+    void Window::redraw( void )
+    {
+        SDL_RestoreWindow( this->window_ );
+    }
+
 
 
 #ifdef DEBUG

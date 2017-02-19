@@ -40,6 +40,7 @@ namespace App
             double  aspect( void );
 
             void    swap( void );
+            void    redraw( void );
 
 #ifdef DEBUG
             void    debug_draw( Shader* );
