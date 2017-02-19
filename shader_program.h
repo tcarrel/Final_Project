@@ -26,7 +26,6 @@
 
 
 
-
 /**  A wraper class for a shader program.
  */
 class Shader
@@ -47,7 +46,7 @@ class Shader
 
         void add_code( SHADER_TYPE_NAME*, int );
 
-        void use_program( void );
+        void use_program( void );        
 
     private:
 

@@ -22,8 +22,8 @@ char error_text[]   = "\033[1;31;40mERROR!!\033[0m";
 /** Create default window.  Sets a hard coded clear color for OpenGL, ideally,
  * this ctor should not be used in the final game..
  */
-Window::Window(void) ://: info_( SDL_GetVideoInfo() )
-    Window(1.0f, 0.5f, 0.25f, 1.0f)
+Window::Window(void) :
+    Window(0.7f, 0.5f, 0.25f, 1.0f)
 {}
 
 
@@ -214,7 +214,7 @@ void Window::init_gl(void)
     {
         fprintf(
                 stderr,
-                "%s\tInitializing OpenGL!\tGLU Error:\t%s\t",
+                "%s\tCould not initialize OpenGL!\tGLU Error:\t%s\n\n",
                 error_text,
                 gluErrorString( error )
                );
@@ -287,7 +287,7 @@ void Window::debug_draw( Shader* s )
        */
 
 
-    glDrawArrays( GL_POINTS, 0, 1 );
+    //glDrawArrays( GL_POINTS, 0, 1 );
 
     this->draw();
 }

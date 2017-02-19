@@ -5,8 +5,12 @@
  *  \brief Provides definitions for the Shader class.
  */
 
-#include"shader_program.h"
 
+
+
+
+
+#include "shader_program.h"
 #include "shader_externs.h"
 
 
@@ -28,9 +32,7 @@ GLuint Shader::current_program_(UINT_MAX);
 /** Ctor.
  */
 Shader::Shader( void ) 
-{
-//    current_program_ = UINT_MAX;
-}
+{}
 
 
 

@@ -84,6 +84,8 @@ int Application::run( void )
                     stderr,
                     "Could not compile shaders.\n\n"
                    );
+
+            shader_->print();
         }
 
         window_->debug_draw( shader_ );
@@ -95,7 +97,6 @@ int Application::run( void )
 
         SDL_Delay(3000); /// Replace with a typical game loop.
 
-        shader_->print();
     }
 
     return 0;
