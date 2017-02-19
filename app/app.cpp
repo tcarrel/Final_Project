@@ -44,7 +44,6 @@ namespace App
             fprintf( stderr, "Failed to create window.\n" );
         }
 
-        mesh_ = new Model::Mesh( window_, GL_TRIANGLES );
     }
 
 
@@ -81,6 +80,8 @@ namespace App
             glPointSize(40.0f);
 #endif
 
+            mesh_ = new Model::Mesh( window_, GL_TRIANGLES );
+
             shader_ = new Shader;
             shader_->add_code( &SIMPLE_v, VERTEX_SHADER );
             shader_->add_code( &SIMPLE_f, FRAGMENT_SHADER );
@@ -106,7 +107,7 @@ namespace App
             window_->swap();
 
 
-//            SDL_Delay(3000); /// Replace with a typical game loop.
+            //            SDL_Delay(3000); /// Replace with a typical game loop.
 
             while( 1 )
             {
