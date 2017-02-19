@@ -44,4 +44,5 @@ listed above.
 
 ##Additional Credits
 * The basics of the code for handling errors in the shader compilation process
-came from the book "OpenGL 4 Shading Language Cookbook" 2nd Ed. by David Wolff.
+came from the book "OpenGL 4 Shading Language Cookbook" 2nd Ed. by
+[David Wolff](https://github.com/daw42/glslcookbook).
