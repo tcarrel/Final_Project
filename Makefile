@@ -26,9 +26,11 @@ SHADER_PROCESSOR = glsl_to_c
 
 APP_DIR = app/
 MODEL_DIR = model/
+CONS_DIR = input/
+DOC_DIR = .doxy/
 
 OBJ_FILES = .entry_point.o .app.o .window.o .shader_program.o .model.o \
-			.mesh.o $(SHADER_OBJ) 
+			.mesh.o .vertex_array.o .input_handler.o $(SHADER_OBJ) 
 GCCERREXT = gccerr
 ERROR_DIR = ./Errors
 COPYOUTPUT = 2>&1 | tee $(ERROR_DIR)/$<.$(GCCERREXT)
@@ -54,7 +56,7 @@ $(MAIN): $(OBJ_FILES) $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .shader_program.o: shader_program.cpp shader_program.h constants.h \
-		shader_externs.h $(SHADER_HEADER) $(ERROR_DIR)
+		shader_externs.h GLSL_except.h $(SHADER_HEADER) $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .model.o: $(MODEL_DIR)model.cpp $(MODEL_DIR)mesh.h \
@@ -65,6 +67,16 @@ $(MAIN): $(OBJ_FILES) $(ERROR_DIR)
 .mesh.o: $(MODEL_DIR)mesh.cpp $(MODEL_DIR)mesh.h \
 		$(MODEL_DIR)vertex.h $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
+.vertex_array.o: $(MODEL_DIR)vertex_array.cpp $(MODEL_DIR)vertex_array.h \
+		$(MODEL_DIR)vertex.h $(ERROR_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
+.input_handler.o: $(CONS_DIR)input_handler.cpp $(CONS_DIR)input_handler.h \
+		$(CONS_DIR)command.h $(CONS_DIR)exit.h $(ERROR_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
+
 
 $(SHADER_OBJ): $(SHADER_DEF) $(SHADER_HEADER)
 	$(CXX) $(CXXFLAGS) -c $(SHADER_DEF) -o $@
@@ -81,6 +93,7 @@ $(ERROR_DIR):
 	mkdir $@
 	mkdir $@/$(MODEL_DIR)
 	mkdir $@/$(APP_DIR)
+	mkdir $@/$(CONS_DIR)
 
 #$(SHADER_PROCESSOR): shader_to_structs/glsl_to_c.cpp
 #	$(CXX) $(CXXFLAGS) $< -o $@
@@ -88,14 +101,14 @@ $(ERROR_DIR):
 clean:
 	rm -f .*.o $(MAIN) $(SHADER_HEADER) $(SHADER_DEF) a.out
 	rm -rf $(ERROR_DIR)
-	rm -rf .doxy/
+	rm -rf $(DOC_DIR)
 
-doc: Doxyfile .doxy/ *.cpp *.h $(MAIN)
+doc: Doxyfile $(DOC_DIR) *.cpp *.h $(MAIN)
 	doxygen
 
-.doxy/:
+$(DOC_DIR):
 	mkdir .doxy
 
-all: Main
+all: Main doc
 
 Main: $(MAIN)
