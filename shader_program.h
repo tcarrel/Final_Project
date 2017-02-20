@@ -12,6 +12,8 @@
 #include<GL/glu.h>
 #include<GL/freeglut.h>
 
+#include<glm/glm.hpp>
+
 #include<cassert>
 #include<limits.h>
 
@@ -50,26 +52,27 @@ class Shader
         bool operator==( Shader& );
         void print( void ); 
         void add_code( SHADER_TYPE_NAME*, int );
-        void use_program( void );        
+        void use_program( void ) throw( GLSL_Program_Exception);
         
-        /*
+
         void bind_attrib_location( GLuint, const char* );
         void bind_frag_data_location( GLuint, const char* );
         void set_uniform( const char*, float, float, float );
         void set_uniform( const char*, const glm::vec3& );
         void set_uniform( const char*, const glm::vec4& );
+        void set_uniform( const char*, const glm::vec2& );
         void set_uniform( const char*, const glm::mat4& );
         void set_uniform( const char*, const glm::mat3& );
         void set_uniform( const char*, float );
         void set_uniform( const char*, int );
+        void set_uniform( const char*, GLuint );
         void set_uniform( const char*, bool );
         
         void print_active_uniforms( void );
         void print_active_attribs( void );
         void print_active_uniform_blocks( void );
 
-        This function will be implemented later.
-        */
+        const char* get_type_string( GLenum );
 
     private:
 
