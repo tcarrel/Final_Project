@@ -1,6 +1,7 @@
 /**
  * \file GLSL_except.h
  * \author Thomas R. Carrel
+ * \author David Wolff
  * 
  * \brief Taken from the book "OpenGL 4 SHading Language Cookbook"
  * by David Wolff.  This file defines a class for handling errors from the
