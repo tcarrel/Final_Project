@@ -29,8 +29,8 @@ MODEL_DIR = model/
 CONS_DIR = input/
 DOC_DIR = .doxy/
 
-OBJ_FILES = .entry_point.o .app.o .window.o .shader_program.o .model.o \
-			.mesh.o .vertex_array.o .input_handler.o $(SHADER_OBJ) 
+OBJ_FILES = .entry_point.o .app.o .window.o .GLSL_except.o .shader_program.o \
+			.model.o .mesh.o .vertex_array.o .input_handler.o $(SHADER_OBJ) 
 GCCERREXT = gccerr
 ERROR_DIR = ./Errors
 COPYOUTPUT = 2>&1 | tee $(ERROR_DIR)/$<.$(GCCERREXT)
@@ -53,6 +53,9 @@ $(MAIN): $(OBJ_FILES) $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .window.o: $(APP_DIR)window.cpp $(APP_DIR)window.h constants.h $(ERROR_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
+.GLSL_except.o: GLSL_except.cpp GLSL_except.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .shader_program.o: shader_program.cpp shader_program.h constants.h \
