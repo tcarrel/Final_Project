@@ -2,7 +2,9 @@
  *  \author Thomas R. Carrel
  *  \file shader_program.cpp
  *
- *  \brief Provides definitions for the Shader class.
+ *  \brief Provides definitions for the Shader class.  Some of the functions in
+ *  this class are based of those in "OpenGL 4 Shading Language Cookbook" by
+ *  David Wolff.
  */
 
 
