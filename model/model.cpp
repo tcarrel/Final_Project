@@ -17,7 +17,7 @@ namespace Model
     /**
      * Ctor.
      */
-    Model::Model( void )
+    Model::Model( void ) : dirty_( true )
     {
     }
 
@@ -33,6 +33,31 @@ namespace Model
 
 
 
+    /** Updates the position of the model.
+     */
+    void Model::update( const glm::mat4& transform, bool d )
+    {
+        bool draw = dirty_ || d;
+
+       
+        if( draw )
+        {
+            //Update the local transformation matrix.
+
+            for( 
+                    auto iter = children_.begin(); 
+                    iter != children_.end();
+                    iter++
+               )
+            {
+                //Walk the tree.
+                (*iter)->update( transform, draw );
+            }
+            
+            dirty_ = false;
+        }
+    }
+
 
     /**  Calls the mesh's draw command.
     */
@@ -41,6 +66,15 @@ namespace Model
         if( mesh_ )
         {
             mesh_->draw( NULL );
+            // Draw the children.
+            for(
+                    auto iter = children_.begin();
+                    iter != children_.end();
+                    iter++
+               )
+            {
+                (*iter)->render();
+            }
             return !ERROR;
         }
 

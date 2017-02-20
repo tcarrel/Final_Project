@@ -16,9 +16,17 @@ namespace Input
     class Window_Redraw : public Command
     {
         public:
+            /** Ctor
+             * \param w The window that program is running in.
+             */
             Window_Redraw( App::Window* w ) : w_(w) {}
+
+            /** Dtor.
+             */
             ~Window_Redraw( void ) { w_ = NULL; }
 
+            /** Redraws the window after it has been minimized.
+             */
             void execute( void )
             {
                 w_->redraw();

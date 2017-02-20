@@ -3,6 +3,7 @@
 
 
 
+#include<glm/glm.hpp>
 
 
 #ifndef  _SCENE_GRAPH_H_
@@ -18,12 +19,15 @@ namespace Model
     /**
      * The scene graph.  For render the "world."
      */
-    class Scene_Graph
+    class Scene_Graph_Root
     {
         public:
+            Scene_Graph( void );
 
         private:
-            Model* world_; ///< The root of the scene graph.
+
+            Model* root_;
+            glm::mat4 camera_;
     };
 
 } //Model namespace.

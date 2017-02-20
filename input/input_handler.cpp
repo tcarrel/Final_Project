@@ -13,6 +13,9 @@
 namespace Input
 {
 
+    /** Ctor.
+     * \param w The window that the app is running in.
+     */
     Input_Handler::Input_Handler( App::Window* w )
     {
         uint32_t init = SDL_WasInit( SDL_INIT_EVERYTHING );

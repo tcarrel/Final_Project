@@ -18,9 +18,11 @@
 #include<GL/glu.h>
 #include<GL/freeglut.h>
 
+#include<glm/glm.hpp>
+
 #include<stdio.h>
 
-
+#include<forward_list>
 
 #include "../constants.h"
 #include "../shader_program.h"
@@ -43,6 +45,7 @@ namespace Model
             Model( void );
             ~Model( void );
 
+            void update( const glm::mat4&, bool );
 
             bool render( void );
 
@@ -50,8 +53,18 @@ namespace Model
 
         private:
             Mesh* mesh_;
-            //Program
+
+            //
+
+            /** The shader program used for rendering.
+             */
             Shader* program_;
+
+            bool dirty_;
+            /** A list of sub-models whose position is dependant on the parent
+             * model's position.
+             */
+            std::forward_list<Model*> children_;
     };
 
 } //Model namespace.
