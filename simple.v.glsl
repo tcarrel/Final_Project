@@ -10,5 +10,6 @@ void main()
 
 // Cast to vec4 and add w-coordinate.
   gl_Position = vec4(position, 1.0);
+
 }
 
