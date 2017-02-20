@@ -22,12 +22,14 @@ namespace Model
     class Scene_Graph_Root
     {
         public:
+            /** Ctor.
+             */
             Scene_Graph( void );
 
         private:
 
-            Model* root_;
-            glm::mat4 camera_;
+            Model* root_; ///< The root of the scene graph.
+            glm::mat4 camera_; ///< The camera/viewport xform.
     };
 
 } //Model namespace.

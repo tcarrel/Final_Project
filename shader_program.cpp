@@ -127,7 +127,7 @@ Shader::~Shader( void )
 
 
 /**  Binds an attribute from the shader program.
- * \param location
+ * \param location The location.
  * \param name The name of the attribute variable in the shader.
  */
 void Shader::bind_attrib_location( GLuint location, const char* name )
@@ -137,7 +137,9 @@ void Shader::bind_attrib_location( GLuint location, const char* name )
 
 
 
-/*
+/**  Binds fragment data.
+ * \param loc The location.
+ * \param name The name.
 */
 void Shader::bind_frag_data_location( GLuint loc, const char* name )
 {
@@ -146,7 +148,12 @@ void Shader::bind_frag_data_location( GLuint loc, const char* name )
 
 
 
-/*
+/**  Sends 3-element vectors to the GPU from individual values.
+ * \param name The name of the uniform.
+ * \param x The first value.
+ * \param y The second value.
+ * \param z The third value.
+ *
 */
 void Shader::set_uniform( const char* name, float x, float y, float z )
 {
@@ -157,7 +164,9 @@ void Shader::set_uniform( const char* name, float x, float y, float z )
 
 
 
-/*
+/**  Sends 3-element vectors to the GPU.
+ *  \param name The name of the uniform.
+ *  \param v The vec3 containing the data to be sent.
 */
 void Shader::set_uniform( const char* name, const glm::vec3& v )
 {
@@ -167,7 +176,9 @@ void Shader::set_uniform( const char* name, const glm::vec3& v )
 
 
 
-/*
+/**  Sends 4-element vectors to the GPU.
+ * \param name The name of the uniform.
+ * \param v The vec4 containing the data to be sent.
 */
 void Shader::set_uniform( const char* name, const glm::vec4& v )
 {
@@ -178,7 +189,9 @@ void Shader::set_uniform( const char* name, const glm::vec4& v )
 
 
 
-/*
+/**  Sends 2-element vectors to the GPU.
+ * \param name The name of the uniform.
+ * \param v The vec2 containing the data to be sent.
 */
 void Shader::set_uniform( const char* name, const glm::vec2& v )
 {
@@ -191,7 +204,9 @@ void Shader::set_uniform( const char* name, const glm::vec2& v )
 
 
 
-/*
+/**  Sends a 4x4 matrix to the GPU.
+ * \param name The name of the uniform.
+ * \param m The mat4 to be sent.
 */
 void Shader::set_uniform( const char* name, const glm::mat4& m )
 {
@@ -202,7 +217,9 @@ void Shader::set_uniform( const char* name, const glm::mat4& m )
 
 
 
-/*
+/**  Sends a 3x3 matrix to the GPU.
+ * \param name The name of the uniform.
+ * \param m The mat3 to be sent.
 */
 void Shader::set_uniform( const char* name, const glm::mat3& m )
 {
@@ -213,7 +230,9 @@ void Shader::set_uniform( const char* name, const glm::mat3& m )
 
 
 
-/*
+/**  Sends a single floating point value to the GPU.
+ * \param name The name of the uniform.
+ * \param f The value to be sent.
 */
 void Shader::set_uniform( const char* name, float f )
 {
@@ -225,7 +244,9 @@ void Shader::set_uniform( const char* name, float f )
 
 
 
-/*
+/**  Sends a single integer to the GPU.
+ * \param name The name of the uniform.
+ * \param i The integer to be sent.
 */
 void Shader::set_uniform( const char* name, int i )
 {
@@ -237,7 +258,9 @@ void Shader::set_uniform( const char* name, int i )
 
 
 
-/*
+/**  Sends a single unsigned integer to the GPU.
+ * \param name The name of the uniform.
+ * \param u The value to be sent.
 */
 void Shader::set_uniform( const char* name, GLuint u )
 {
@@ -249,7 +272,9 @@ void Shader::set_uniform( const char* name, GLuint u )
 
 
 
-/*
+/**  Sends a single boolean to the GPU.
+ * \param name The name of the uniform.
+ * \param b The value to be sent.
 */
 void Shader::set_uniform( const char* name, bool b )
 {
@@ -262,6 +287,9 @@ void Shader::set_uniform( const char* name, bool b )
 
 
 
+/**  Prints out all the uniform variables in the current shader program.
+ * \todo Apple compatability.
+ */
 void Shader::print_active_uniforms( void )
 {
 #ifdef __APPLE__
@@ -329,6 +357,8 @@ void Shader::print_active_uniforms( void )
 
 
 
+/**  Prints out all the attributes in the current program.
+ */
 void Shader::print_active_attribs( void )
 {
 #ifdef __APPLE__
@@ -386,6 +416,11 @@ void Shader::print_active_attribs( void )
 
 
 
+
+
+/**  Prints out all of the uniform blocks in the current shader program along
+ *  with a list of each of the uniforms within each block.
+ */
 void Shader::print_active_uniform_blocks( void )
 {
 #ifdef __APPLE__
@@ -496,8 +531,8 @@ void Shader::print_active_uniform_blocks( void )
  *  Since shader code is stored as a constant, this can be accomplished fairly
  *  easily.
  *
- * param code The address for the struct containing the code.
- * param type The type of shader being compiled (vertex, fragment, etc).
+ * \param code The address for the struct containing the code.
+ * \param type The type of shader being compiled (vertex, fragment, etc).
  */
 void Shader::add_code( SHADER_TYPE_NAME* code, int type )
 {
@@ -578,6 +613,12 @@ bool Shader::compile( void ) throw( GLSL_Program_Exception )
 
 
 
+
+/**  Compiles an individual shader.
+ * \param source The actual code to be compiled.
+ * \param type The type of shader to be compiled.
+ * \param handle The address where the shader's handle is to be stored.
+ */
 void Shader::compile_shader(
         GLchar*   source,
         Shaders type,

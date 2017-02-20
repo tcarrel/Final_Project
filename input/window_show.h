@@ -12,7 +12,8 @@
 
 namespace Input
 {
-    //Redraw window.
+    /** Redraw window.
+     */
     class Window_Redraw : public Command
     {
         public:
