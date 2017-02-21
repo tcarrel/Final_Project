@@ -11,6 +11,6 @@
  * \param msg The message related to the error.
  */
 GLSL_Program_Exception::GLSL_Program_Exception( const std::string& msg ) :
-    std::runtime_error( "\033[1;31;40mGLSL EXCEPTION!!\033[0m " + msg )
+    std::runtime_error( "\033[1;31;40mGLSL EXCEPTION :\033[0m " + msg )
 {}
 
