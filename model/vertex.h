@@ -23,6 +23,11 @@ namespace Model
     {
         glm::vec3 pos; ///< The coordinate of the vertex.
 
+        /* To be re-included later.
+        glm::vec2 texture_coords;
+        glm::vec2 phong_coord;
+        */
+
 
         /** Ctor, inits vertex with a vec3 as input.
          * \param p The coordinates of the vertex.
