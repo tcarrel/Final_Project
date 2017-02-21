@@ -79,7 +79,7 @@ namespace App
                     mode_.format,
                     SDL_GetPixelFormatName(mode_.format)
                    );
-            aspect_ = (double) mode_.w / (double) mode_.h;
+            aspect_ = (float) mode_.w / (float) mode_.h;
 
             pos_x_  =   -1;
             pos_y_  =   -1;
@@ -250,7 +250,7 @@ namespace App
 
     /**  Get window aspect ratio.
     */
-    double Window::aspect(void)
+    float Window::aspect(void)
     {
         return aspect_;
     }

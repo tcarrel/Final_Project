@@ -37,7 +37,7 @@ namespace App
             void    init( void );
 
             bool    good( void );
-            double  aspect( void );
+            float   aspect( void );
 
             void    swap( void );
             void    redraw( void );
@@ -72,7 +72,7 @@ namespace App
                             bpp_; ///< Bits Per Pixel
 
             Uint32          flags_; ///< SDL2 fllags related to the window.
-            double          aspect_; ///< The aspect ratio of the window.
+            float           aspect_; ///< The aspect ratio of the window.
 
     };
 
