@@ -164,6 +164,15 @@ namespace App
         GLenum error = GL_NO_ERROR;
 
         gl_ = SDL_GL_CreateContext( window_ );
+        if( !gl_ )
+        {
+            fprintf(
+                    stderr,
+                    "%s\tCould not create OpenGL context.\tSDL Error.\n",
+                    error_text
+                   );
+            is_good_ = false;
+        }
 
         SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 4 );
         SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 5 );
@@ -248,6 +257,19 @@ namespace App
 
 
 
+
+
+    /**  Check if the window is ready for use, i.e. whether or not there is a
+     * valid OpenGL context.
+     */
+    bool Window::ready(void)
+    {
+        return gl_ != NULL;
+    }
+
+
+
+
     /**  Get window aspect ratio.
     */
     float Window::aspect(void)
@@ -275,7 +297,7 @@ namespace App
     }
 
     /**  Redraws the window after it's been minimized.
-     */
+    */
     void Window::redraw( void )
     {
         SDL_RestoreWindow( this->window_ );

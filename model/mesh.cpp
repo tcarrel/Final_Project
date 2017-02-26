@@ -177,15 +177,20 @@ namespace Model
      * sending those to the command buffer.
      * \param prog If using a shader other than the 
      */
-    void Mesh::draw( Shader* prog )
+    void Mesh::draw( Shader* prog ) throw( Scene_Graph_Exception )
     {
         if( prog )
         {
             prog->use_program();
         }
-        else
+        else if( shader_ )
         {
             shader_->use_program();
+        }
+        else
+        {
+            throw( Scene_Graph_Exception(
+                        "No shader program provided to mesh object.\n" ) );
         }
 
         if( curr_vao_ != vao_ )

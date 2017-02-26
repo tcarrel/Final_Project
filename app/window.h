@@ -37,6 +37,8 @@ namespace App
             void    init( void );
 
             bool    good( void );
+            bool    ready( void );
+
             float   aspect( void );
 
             void    swap( void );

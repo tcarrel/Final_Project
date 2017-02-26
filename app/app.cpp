@@ -8,7 +8,9 @@
 #include "app.h"
 #include "window.h"
 
+#include "../model/scene_graph.h"
 #include "../model/mesh.h"
+#include "../model/model.h"
 
 
 
@@ -19,7 +21,6 @@
 
 #include "../shader_externs.h"
 
-
 namespace App
 {
 
@@ -28,16 +29,65 @@ namespace App
      *   Creates the window object for the game and initializes it.
      */
     Application::Application( void ) :
-        window_( new Window ), input_( window_ )
+        window_( new Window ),
+        input_( window_ ),
+        world_( NULL ),
+        mesh_( NULL )
     {
 
         start_up();
 
-        if( window_->good() )
+        if( window_->ready() )
         {
 #ifdef DEBUG
             fprintf( stderr, "Window created successfully.\n" );
 #endif
+
+
+#ifdef DEBUG
+            //The following... should all be removed later...
+            glPointSize(40.0f);
+#endif
+
+
+
+
+            Model::SG_Setup* sg = new Model::SG_Setup;
+
+            sg->position( 0.0f, 0.0f, 0.0f );
+            sg->eye_position( 0.0f, 0.0f, 5.0f );
+            sg->target( 0.0f, 0.0f, 0.0f );
+            sg->up_dir( 0.0f, 1.0f, 0.0f );
+            sg->perspective( 35.0f, 5.0f, 20.0f );
+            sg->window( window_ );
+
+            world_ = new Model::Scene_Graph( sg );
+
+            delete sg;
+
+            mesh_ = new Model::Mesh( window_, GL_TRIANGLES );
+
+
+            fprintf( stderr, "Mesh addr: %lx\n", (unsigned long int) mesh_ );
+
+            shader_ = new Shader;
+            shader_->add_code( &SIMPLE_v, VERTEX_SHADER );
+            shader_->add_code( &SIMPLE_f, FRAGMENT_SHADER );
+
+            if( shader_->compile() == ERROR )
+            {
+                fprintf(
+                        stderr,
+                        "Could not compile shaders.\n\n"
+                       );
+
+            }
+
+            shader_->print();
+            world_->add_models( mesh_ );
+            mesh_->set_shader( shader_ );
+
+
         }
         else
         {
@@ -71,49 +121,12 @@ namespace App
      */
     int Application::run( void )
     {
+        world_->render();
+        window_->swap();
 
-
-        if( window_->good() )
+        while( 1 )
         {
-#ifdef DEBUG
-            //The following... should all be removed later...
-            glPointSize(40.0f);
-#endif
-
-            mesh_ = new Model::Mesh( window_, GL_TRIANGLES );
-
-            shader_ = new Shader;
-            shader_->add_code( &SIMPLE_v, VERTEX_SHADER );
-            shader_->add_code( &SIMPLE_f, FRAGMENT_SHADER );
-
-            if( shader_->compile() == ERROR )
-            {
-                fprintf(
-                        stderr,
-                        "Could not compile shaders.\n\n"
-                       );
-
-            }
-
-            shader_->print();
-
-            //window_->debug_draw( shader_ );
-            //Remove to here.
-
-            mesh_->set_shader( shader_ );
-
-            mesh_->draw( NULL );
-
-            window_->swap();
-
-
-            //            SDL_Delay(3000); /// Replace with a typical game loop.
-
-            while( 1 )
-            {
-                input_.process();
-            }
-
+            input_.process();
         }
 
         return 0;

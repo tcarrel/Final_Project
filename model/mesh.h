@@ -18,7 +18,11 @@
 #ifndef  _MESH_H_
 # define _MESH_H_
 
+
+
+
 #include "vertex_array.h"
+#include "SG_except.h"
 
 
 
@@ -40,12 +44,13 @@ namespace Model
     class Mesh
     {
         public:
+
             Mesh( App::Window*, GLenum );
             Mesh( App::Window*, GLchar*, GLenum );
             ~Mesh( void );
 
             void set_shader( Shader* );
-            void draw( Shader* );
+            void draw( Shader* ) throw( Scene_Graph_Exception );
 
         private:
 

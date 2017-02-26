@@ -19,6 +19,7 @@
 #include "../constants.h"
 #include "../shader_program.h"
 
+
 #include "../input/input_handler.h"
 
 #include<stdio.h>
@@ -26,6 +27,8 @@
 namespace Model
 {
     class Mesh;
+    class Scene_Graph;
+    class SG_Setup;
 }
 
 
@@ -51,10 +54,11 @@ namespace App
             ///< displayed in.
 
             Shader* shader_;
-            Model::Mesh* mesh_;
-            //Model* models_;
-
             Input::Input_Handler input_;
+            Model::Scene_Graph* world_;
+
+
+            Model::Mesh* mesh_;
     };
 
 } //App namespace.

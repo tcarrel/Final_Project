@@ -29,6 +29,7 @@ namespace Model
      */
     Model::~Model( void )
     {
+        delete mesh_;
     }
 
 
