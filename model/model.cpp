@@ -66,7 +66,7 @@ namespace Model
     {
         if( mesh_ )
         {
-            mesh_->draw( NULL );
+//            mesh_->draw( NULL );
             // Draw the children.
             for(
                     auto iter = children_.begin();

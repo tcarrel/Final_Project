@@ -56,7 +56,7 @@ namespace App
             //        const       SDL_VideoInfo* info_;
 
             Window( void );
-            Window( float, float, float, float );
+            Window( float, float, float );
 
             void init_gl( void );
 

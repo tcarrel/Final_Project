@@ -9,6 +9,7 @@
 #include "window.h"
 
 #include "../model/scene_graph.h"
+#include "../model/sg_setup.h"
 #include "../model/mesh.h"
 #include "../model/model.h"
 
@@ -29,7 +30,7 @@ namespace App
      *   Creates the window object for the game and initializes it.
      */
     Application::Application( void ) :
-        window_( new Window ),
+        window_( new Window( 0.0f, 0.1f, 0.3f ) ),
         input_( window_ ),
         world_( NULL ),
         mesh_( NULL )
@@ -84,6 +85,9 @@ namespace App
             }
 
             shader_->print();
+            shader_->print_active_uniforms();
+
+
             world_->add_models( mesh_ );
             mesh_->set_shader( shader_ );
 

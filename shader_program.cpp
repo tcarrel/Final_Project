@@ -70,7 +70,7 @@ string get_shader_type_string( Shaders s )
  *   Tracks the current shader program used for rendering.  This is used to
  * minimize the number of calls to glUseProgram().
  */
-GLuint Shader::current_program_( 0 );
+Shader* Shader::current_program_ = NULL;
 
 
 
@@ -601,7 +601,7 @@ bool Shader::compile( void ) throw( GLSL_Program_Exception )
     }
 
 
-    if( current_program_ == 0 )
+    if( current_program_ == NULL )
     {
         ready_ = true;
         use_program();
@@ -691,10 +691,10 @@ void Shader::use_program( void ) throw(GLSL_Program_Exception)
         throw GLSL_Program_Exception( "Shader Program has not been linked." );
     }
 
-    if( current_program_ != program_ )
+    if( current_program_ != this )
     {
         glUseProgram( program_ );
-        current_program_ = program_;
+        current_program_ = this;
     }
 }
 
@@ -876,10 +876,29 @@ int  Shader::type_id( Shaders t )
 
 
 
+
+GLint Shader::get_uniform_location( const char* name )
+{
+    auto pos = uniform_locations_.find(name);
+
+    if( pos == uniform_locations_.end() )
+    {
+        uniform_locations_[name] = glGetUniformLocation( program_, name );
+    }
+
+    return uniform_locations_[name];
+}
+
+
+
+
+
+
+
 /** Returns the human-readable name of the type.
  * \param t The type.
  */
-const char* Shader::get_type_string( GLenum t )
+const char* get_type_string( GLenum t )
 {
     switch( t )
     {
@@ -999,20 +1018,4 @@ const char* Shader::get_type_string( GLenum t )
         default: 
                                     return "\033[1;31;40munknown type\033[0m";
     }
-}
-
-
-
-
-
-GLint Shader::get_uniform_location( const char* name )
-{
-    auto pos = uniform_locations_.find(name);
-
-    if( pos == uniform_locations_.end() )
-    {
-        uniform_locations_[name] = glGetUniformLocation( program_, name );
-    }
-
-    return uniform_locations_[name];
 }

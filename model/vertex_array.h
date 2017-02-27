@@ -42,6 +42,8 @@ namespace Model
 
             void add( Vertex );
 
+            void done( void );
+
             /**
              * \return The current size of the array.
              */

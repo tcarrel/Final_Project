@@ -27,20 +27,20 @@ namespace App
      * this ctor should not be used in the final game..
      */
     Window::Window(void) :
-        Window(0.7f, 0.5f, 0.25f, 1.0f)
+        Window(0.7f, 0.5f, 0.25f )
     {}
 
 
 
 
-    /** Create default window.  Also sets the clear color for OpenGL.
+    /** Create default window.  Also sets the clear color for OpenGL.  The
+     * alpha value if fixed to 100%.
      * param r Red value as a percentage (between 0.0 and 1.0.)
      * param g Green value as a percentage (between 0.0 and 1.0.)
      * param b Blue value as a percentage (between 0.0 and 1.0.)
-     * param a Alpha value as a percentage (between 0.0 and 1.0.)
      */
-    Window::Window( float r, float g, float b, float a ) :
-        clear_color_{r, g, b, a},
+    Window::Window( float r, float g, float b ) :
+        clear_color_{r, g, b, 1.0f },
         is_good_( true ),
         window_( NULL ),
         gl_( NULL )

@@ -50,12 +50,16 @@ namespace Model
             ~Mesh( void );
 
             void set_shader( Shader* );
-            void draw( Shader* ) throw( Scene_Graph_Exception );
+
+            void draw( Shader*, glm::mat4* )
+                throw( Scene_Graph_Exception );
 
         private:
 
 
             void init_gpu_buffers( void );
+
+            GLboolean dirty_;
 
             Vertex_Array vertices_; ///< Array of vertex data.
             GLboolean verts_sent_to_gpu_; ///< true if vertices were sent to the

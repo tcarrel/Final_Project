@@ -57,6 +57,7 @@ class Shader
 
         void bind_attrib_location( GLuint, const char* );
         void bind_frag_data_location( GLuint, const char* );
+
         void set_uniform( const char*, float, float, float );
         void set_uniform( const char*, const glm::vec3& );
         void set_uniform( const char*, const glm::vec4& );
@@ -71,8 +72,6 @@ class Shader
         void print_active_uniforms( void );
         void print_active_attribs( void );
         void print_active_uniform_blocks( void );
-
-        const char* get_type_string( GLenum );
 
     private:
 
@@ -118,7 +117,7 @@ class Shader
         bool        ready_; ///<  Flag indicating the shader has been compiled,
         ///< linked, and is ready for use.
 
-        static GLuint current_program_; ///< Used to reduce the number
+        static Shader* current_program_; ///< Used to reduce the number
         ///< glUseProgram calls.
 
 
@@ -130,6 +129,9 @@ class Shader
         //Prevent copying
         Shader( const Shader& o ) { };
         Shader& operator=( const Shader& o ) { return *this; }
-};
+
+};  // Shader class.
+
+const char* get_type_string( GLenum );
 
 #endif /* __SHADER_PROGRAM_H__ */

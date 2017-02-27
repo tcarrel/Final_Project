@@ -26,6 +26,7 @@ namespace Model
      * \param m The rendering mode to be used for this mesh.
      */
     Mesh::Mesh( App::Window* w, GLenum m = GL_TRIANGLES ) :
+        dirty_( true ),
         verts_sent_to_gpu_( false ),
         mode_( m ),
         vbo_( 0 ),
@@ -112,6 +113,8 @@ namespace Model
         vertices_.add( Vertex( glm::vec3(  0.5f, -0.5f, 0.0f ) ) );
         */
 
+        vertices_.done();
+
         qty_ = vertices_.size();;
 
         window_ = w;
@@ -177,15 +180,20 @@ namespace Model
      * sending those to the command buffer.
      * \param prog If using a shader other than the 
      */
-    void Mesh::draw( Shader* prog ) throw( Scene_Graph_Exception )
+    void Mesh::draw( Shader* prog, glm::mat4* vp )
+        throw( Scene_Graph_Exception )
     {
+        Shader* sh = NULL;
+
         if( prog )
         {
             prog->use_program();
+            sh = prog;
         }
         else if( shader_ )
         {
             shader_->use_program();
+            sh = shader_;
         }
         else
         {
@@ -193,15 +201,19 @@ namespace Model
                         "No shader program provided to mesh object.\n" ) );
         }
 
+
         if( curr_vao_ != vao_ )
         {
             glBindVertexArray( vao_ );
             curr_vao_ = vao_;
         }
 
-        glDrawArrays( mode_, 0, qty_ );
+        if( vp )
+        {
+            sh->set_uniform( "vp", *vp );
+        }
 
-        //window_->swap();
+        glDrawArrays( mode_, 0, qty_ );
     }
 
 

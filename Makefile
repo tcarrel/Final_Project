@@ -31,7 +31,7 @@ DOC_DIR = .doxy/
 
 OBJ_FILES = .entry_point.o .app.o .window.o .GLSL_except.o .shader_program.o \
 			.model.o .mesh.o .vertex_array.o .input_handler.o .SG_except.o \
-			.scene_graph.o $(SHADER_OBJ) 
+			.scene_graph.o .sg_setup.o $(SHADER_OBJ) 
 GCCERREXT = gccerr
 ERROR_DIR = ./Errors
 COPYOUTPUT = 2>&1 | tee $(ERROR_DIR)/$<.$(GCCERREXT)
@@ -50,7 +50,8 @@ $(MAIN): $(OBJ_FILES) $(ERROR_DIR)
 	$(TIME) $(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .app.o: $(APP_DIR)app.cpp $(APP_DIR)app.h constants.h $(APP_DIR)window.h \
-		shader_externs.h $(SHADER_HEADER) $(ERROR_DIR)
+		shader_externs.h $(SHADER_HEADER) $(MODEL_DIR)scene_graph.h \
+		$(MODEL_DIR)model.h $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .window.o: $(APP_DIR)window.cpp $(APP_DIR)window.h constants.h $(ERROR_DIR)
@@ -74,10 +75,15 @@ $(MAIN): $(OBJ_FILES) $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .scene_graph.o: $(MODEL_DIR)scene_graph.cpp $(MODEL_DIR)scene_graph.h \
-		$(MODEL_DIR)SG_except.h $(MODEL_DIR)model.h $(APP_DIR)window.h
+		$(MODEL_DIR)sg_setup.h $(MODEL_DIR)SG_except.h \
+		$(MODEL_DIR)model.h $(APP_DIR)window.h $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
-.SG_except.o: $(MODEL_DIR)SG_except.cpp $(MODEL_DIR)SG_except.h
+.sg_setup.o: $(MODEL_DIR)sg_setup.cpp $(MODEL_DIR)sg_setup.h \
+		$(MODEL_DIR)scene_graph.h $(APP_DIR)window.h $(ERROR_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
+.SG_except.o: $(MODEL_DIR)SG_except.cpp $(MODEL_DIR)SG_except.h $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .vertex_array.o: $(MODEL_DIR)vertex_array.cpp $(MODEL_DIR)vertex_array.h \

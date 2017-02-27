@@ -12,7 +12,7 @@ void main()
 {
 
 // Cast to vec4 and add w-coordinate.
-  gl_Position = vec4(vert_position, 1.0);
+  gl_Position = vec4(vert_position, 1.0) * mv;
 
 }
 

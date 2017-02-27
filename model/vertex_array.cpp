@@ -97,4 +97,32 @@ namespace Model
 
         delete [] temp;
     }
+
+
+
+
+
+    /**  To be called when it is no longer necessary to add vertices to the
+     * array.  Shrinks the array back down to the size that is currently
+     * filled.
+     */
+    void Vertex_Array::done( void )
+    {
+        if( max_size_ == size_ )
+        {
+            return;
+        }
+
+        Vertex* temp = data_;
+        data_ = new Vertex[size_];
+
+        for( GLuint i = 0; i < size_; i++ )
+        {
+            data_[i] = temp[i];
+        }
+        delete [] temp;
+
+        max_size_ = size_;
+    }
+
 } //Model namespace.
