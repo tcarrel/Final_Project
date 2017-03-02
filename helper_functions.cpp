@@ -1,8 +1,19 @@
-
+/**
+ * \file helper_functions.h
+ * \author Thomas R. Carrel
+ * 
+ * \brief Defines some useful helper functions.
+ */
 
 #include "helper_functions.h"
 
 
+
+/**
+ *  Converts a hex integer to a vec4 color.
+ *  \param color The hex value of the desired color, RGBA-format, 8-bits per
+ *  field.
+ */
 glm::vec4 to_vec_color( int32_t color )
 {
     /*

@@ -1,3 +1,10 @@
+/*
+ * \file helper_functions.h
+ * \author Thomas R. Carrel
+ *
+ * \brief Declares some useful helper functions.
+ *
+ */
 
 #include<glm/glm.hpp>
 

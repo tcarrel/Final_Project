@@ -1,4 +1,12 @@
-
+/**
+ * \file colors.h
+ * \author Thomas R. Carrel
+ *
+ * \brief Defines an enum for converting the names of many colors to their
+ * equivalent RGBA 32-bit integer format.  All colors are set so that they can
+ * be bitwise ORed with values between 0x00 and 0xFF to get the equivilant color
+ * at the desired level of transparency.
+ */
 
 
 #ifndef  _COLORS_H_
@@ -6,6 +14,9 @@
 
 namespace Color
 {
+    /**  An enum of many color names.  Their value is their RGBA 32-bit integer
+     * equivalent.
+     */
     enum Colors
     {
         OPAQUE                  = 0x000000FF,
