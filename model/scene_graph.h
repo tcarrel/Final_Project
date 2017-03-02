@@ -1,4 +1,14 @@
-
+/**
+ *
+ * \file scene_graph.h
+ * \author Thomas R. Carrel
+ *
+ * \brief The Scene_Graph "locates" the world in space.  In a way, it serves as
+ * the camera or the main view of the world.  In more mathematical terms, it
+ * creates the basis for the space, i.e. it creates the axes and the origin in
+ * the world.  As a result, no seperate "camera" object is necessary as
+ * transforming the basis moves the entire world about the camera as necessary.
+ */
 
 #include<GL/glew.h>
 #include<SDL2/SDL.h>
@@ -14,12 +24,10 @@
 #include<glm/gtc/matrix_transform.hpp>
 
 #include "SG_except.h"
+#include "../constants.h"
 
 #ifndef  _SCENE_GRAPH_H_
 # define _SCENE_GRAPH_H
-
-# define PERSPECTIVE true
-# define ORTHOGRAPHIC false
 
 namespace Model
 {
@@ -27,6 +35,7 @@ namespace Model
     class Mesh;
     class Model;
     class SG_Setup;
+    class Scene_Graph_Exception;
 
     /**
      * The scene graph.  Renders the world, and acts as the camera view.
@@ -34,12 +43,19 @@ namespace Model
     class Scene_Graph
     {
         public:
-            /** Ctor.
-            */
-            Scene_Graph( SG_Setup* );
+
+            static Scene_Graph* instance( void )
+                throw( Scene_Graph_Exception );
+            static Scene_Graph* ctor( SG_Setup* )
+                throw( Scene_Graph_Exception );
+
             ~Scene_Graph( void );
 
-            void render( void ) { this->draw(); }
+            /**  Just calls the draw function.  This does nothing other than
+             * provide a different name for the draw function.
+             */
+            inline void render( void ) { this->draw(); }
+
             void draw( void );
 
             //void update( );
@@ -51,6 +67,13 @@ namespace Model
         private:
 
 
+            /** Ctor. 
+            */
+            Scene_Graph( SG_Setup* );
+            static Scene_Graph* __instance__; ///< Scene_Graph is a singleton,
+                                              ///< but, it should be avoided to
+                                              ///< treat it as a global
+                                              ///< variable.
 
             GLuint model_qty_; ///< Size of the model array.
 

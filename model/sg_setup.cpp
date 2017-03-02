@@ -1,4 +1,12 @@
-
+/**
+ *
+ * \file sg_setup.cpp
+ * \author Thomas R. Carrel
+ *
+ * \brief Defines all the necessary functions for filling an SG_Setup
+ * container.
+ *
+ */
 
 #include "scene_graph.h"
 #include "sg_setup.h"
@@ -40,7 +48,6 @@ namespace Model
 
     /**  Helper function for the scene graph setup struct.
      * Sets the position.
-     * \param S A pointer to the setup struct.
      * \param x The x-coordinate.
      * \param y The y-coordinate.
      * \param z The z-coordinate.
@@ -57,7 +64,6 @@ namespace Model
 
     /**  Helper function for the scene graph setup struct.
      * Sets the eye position.
-     * \param S A pointer to the setup struct.
      * \param x The x-coordinate.
      * \param y The y-coordinate.
      * \param z The z-coordinate.
@@ -74,7 +80,6 @@ namespace Model
 
     /**  Helper function for the scene graph setup struct.
      * Sets the coordinate that the camera is looking at.
-     * \param S A pointer to the setup struct.
      * \param x The x-coordinate.
      * \param y The y-coordinate.
      * \param z The z-coordinate.
@@ -94,7 +99,6 @@ namespace Model
      * (0, 1, 0), so calling this is not really necessary unless a
      * a different axis is desired for the up-direction or if
      * loading from a saved state where the up may be different.
-     * \param S A pointer to the setup struct.
      * \param x The x-coordinate.
      * \param y The y-coordinate.
      * \param z The z-coordinate.
@@ -115,11 +119,10 @@ namespace Model
     /**  Helper function for the scene graph setup struct.
      * This sets the scene graph up for the perspective projection.
      * If orthographic is already set, this will overwrite those settings.
-     * \param S A pointer to the setup struct.
      * \param fov The Field Of Veiw angle.
      * \param p1 The distance to the near plane or far plane, the function
      * sets the smaller of p1 or p2 as the near plane.
-     * \param p1 The distance to the near plane or far plane, the function
+     * \param p2 The distance to the near plane or far plane, the function
      * sets the greater of p1 or p2 as the far plane..
      */
     void SG_Setup::perspective(
@@ -142,7 +145,6 @@ namespace Model
     /**  Helper function for the scene graph setup struct.
      * This sets the scene graph up for the orthographic projection.
      * If perspective is already set, this will overwrite those settings.
-     * \param S A pointer to the setup struct.
      * \param l The distance to the left plane from the center of the view.
      * \param r The distance to the right plane from the center of the view.
      * \param b The distance to the bottom plane from the center of the view.
@@ -177,7 +179,6 @@ namespace Model
 
     /**  Helper function for the scene graph setup struct.
      * This provides the pointer to the window.
-     * \param S A pointer to the setup struct.
      * \param w The pointer to the window.
      */
     void SG_Setup::window( App::Window* w )

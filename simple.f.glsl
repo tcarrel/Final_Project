@@ -1,7 +1,9 @@
 //Very basic fragment shader for use early in development.
 #version 450 core
 
-out vec4  color;
+
+in  vec4  Color;
+out vec4  frag_color;
 
 
 
@@ -9,12 +11,6 @@ out vec4  color;
 
 void main()
 {
-
-
-
-  color = vec4( 0.0, 1.0, 0.0, 1.0 );
-
-
-
+  frag_color = Color;
 }
 

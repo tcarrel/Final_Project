@@ -2,17 +2,22 @@
 #version 450 core
 
 layout (location = 0) in vec3 vert_position;
+layout (location = 1) in vec4 vert_color;
 
 //Model-View matrix.
-uniform vec4 mv;
+uniform mat4 vp = 
+  mat4( 1.0, 0.0, 0.0, 0.0,
+        0.0, 1.0, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0,
+        0.0, 0.0, 0.0, 1.0 );
 
-//out vec4 color;
+out vec4 Color;
 
 void main()
 {
+  Color = vert_color;
 
 // Cast to vec4 and add w-coordinate.
-  gl_Position = vec4(vert_position, 1.0) * mv;
-
+  gl_Position = vp * vec4(vert_position, 1.0);
 }
 

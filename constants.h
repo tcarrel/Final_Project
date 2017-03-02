@@ -32,7 +32,8 @@ const bool      ERROR   =   false; ///< For error checking, so that fuctions
 
 /** Shader types.  Used in compiling shaders.
  */
-enum Shaders {
+enum Shaders
+{
     VERTEX_SHADER = GL_VERTEX_SHADER,
     TCS_SHADER = GL_TESS_CONTROL_SHADER,
     TESSELATION_CONTROL_SHADER = TCS_SHADER,
@@ -42,5 +43,14 @@ enum Shaders {
     FRAGMENT_SHADER = GL_FRAGMENT_SHADER,
     COMPUTE_SHADER = GL_COMPUTE_SHADER
 };
+
+
+
+/** Used for setting up the Scene_Graph.
+ */
+# define PERSPECTIVE true
+/** Used for setting up the Scene_Graph.
+ */
+# define ORTHOGRAPHIC false
 
 #endif

@@ -14,12 +14,19 @@
 
 
 /**  The entry point for the game.
- */
-int main()
+*/
+int main( int argc, char* argv[] )
 {
-    App::Application app;
-
-    app.run();
+    if( argc > 1 )
+    {
+        App::Application app(argc, argv);
+        app.run();
+    }
+    else
+    {
+        App::Application app;
+        app.run();
+    }
 
     return 0;
 }

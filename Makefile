@@ -31,7 +31,7 @@ DOC_DIR = .doxy/
 
 OBJ_FILES = .entry_point.o .app.o .window.o .GLSL_except.o .shader_program.o \
 			.model.o .mesh.o .vertex_array.o .input_handler.o .SG_except.o \
-			.scene_graph.o .sg_setup.o $(SHADER_OBJ) 
+			.scene_graph.o .sg_setup.o .helper_functions.o $(SHADER_OBJ) 
 GCCERREXT = gccerr
 ERROR_DIR = ./Errors
 COPYOUTPUT = 2>&1 | tee $(ERROR_DIR)/$<.$(GCCERREXT)
@@ -71,7 +71,8 @@ $(MAIN): $(OBJ_FILES) $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .mesh.o: $(MODEL_DIR)mesh.cpp $(MODEL_DIR)mesh.h \
-		$(MODEL_DIR)vertex.h $(ERROR_DIR)
+		$(MODEL_DIR)vertex.h helper_functions.h colors.h \
+		$(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .scene_graph.o: $(MODEL_DIR)scene_graph.cpp $(MODEL_DIR)scene_graph.h \
@@ -93,6 +94,9 @@ $(MAIN): $(OBJ_FILES) $(ERROR_DIR)
 .input_handler.o: $(CONS_DIR)input_handler.cpp $(CONS_DIR)input_handler.h \
 		$(CONS_DIR)command.h $(CONS_DIR)exit.h $(CONS_DIR)window_show.h \
 		$(APP_DIR)window.h $(ERROR_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
+.helper_functions.o: helper_functions.cpp helper_functions.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 

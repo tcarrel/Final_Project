@@ -24,9 +24,6 @@
 namespace App
 {
 
-    class Application;
-
-
     /**  The class for the game window.  Even though the game displays fullscreen.
     */
     class Window

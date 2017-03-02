@@ -25,15 +25,21 @@
 namespace App
 {
 
+    Application::Application( void ) :
+        Application( (int) 1, (char**) NULL )
+    {}
+
 
     /**  Ctor.
      *   Creates the window object for the game and initializes it.
      */
-    Application::Application( void ) :
-        window_( new Window( 0.0f, 0.1f, 0.3f ) ),
+    Application::Application( int argc, char* argv[] ) :
+        window_( new Window( 0.0f, 0.0f, 0.0f ) ),
         input_( window_ ),
         world_( NULL ),
-        mesh_( NULL )
+        mesh_( NULL ),
+        argc_( argc ),
+        argv_( argv )
     {
 
         start_up();
@@ -56,13 +62,13 @@ namespace App
             Model::SG_Setup* sg = new Model::SG_Setup;
 
             sg->position( 0.0f, 0.0f, 0.0f );
-            sg->eye_position( 0.0f, 0.0f, 5.0f );
+            sg->eye_position( 2.0f, 1.75f, -2.0f );
             sg->target( 0.0f, 0.0f, 0.0f );
             sg->up_dir( 0.0f, 1.0f, 0.0f );
-            sg->perspective( 35.0f, 5.0f, 20.0f );
+            sg->perspective( 45.0f, 1.0f, 5.0f );
             sg->window( window_ );
 
-            world_ = new Model::Scene_Graph( sg );
+            world_ = Model::Scene_Graph::ctor( sg );
 
             delete sg;
 

@@ -11,6 +11,11 @@
 
 #include "../shader_program.h"
 #include "../app/window.h"
+#include "../helper_functions.h"
+#include "../colors.h"
+
+#include<stdio.h>
+#include<glm/ext.hpp>
 
 
 namespace Model
@@ -48,64 +53,64 @@ namespace Model
 
 
         //1
-        vertices_.add( Vertex( glm::vec3( -1.0f,-1.0f,-1.0f ) ) );
-        vertices_.add( Vertex( glm::vec3( -1.0f,-1.0f, 1.0f ) ) );
-        vertices_.add( Vertex( glm::vec3( -1.0f, 1.0f, 1.0f ) ) );
+        vertices_.add( Vertex( glm::vec3( -1.0f,-1.0f,-1.0f ), to_vec_color( Color::FERRARI_RED | 0xff ) ) );
+        vertices_.add( Vertex( glm::vec3( -1.0f,-1.0f, 1.0f ), to_vec_color( Color::FRENCH_LIME | 0xff ) ) );
+        vertices_.add( Vertex( glm::vec3( -1.0f, 1.0f, 1.0f ), to_vec_color( Color::ELECTRIC_BLUE | 0xff ) ) );
 
         //2
-        vertices_.add( Vertex( glm::vec3( 1.0f, 1.0f,-1.0f ) ) );
-        vertices_.add( Vertex( glm::vec3( -1.0f,-1.0f,-1.0f ) ) );
-        vertices_.add( Vertex( glm::vec3( -1.0f, 1.0f,-1.0f ) ) );
+        vertices_.add( Vertex( glm::vec3( 1.0f, 1.0f,-1.0f ), to_vec_color( Color::FLOURESCENT_YELLOW | 0xff) ) );
+        vertices_.add( Vertex( glm::vec3( -1.0f,-1.0f,-1.0f ), to_vec_color( Color::FLOURESCENT_PINK | 0xff ) ) );
+        vertices_.add( Vertex( glm::vec3( -1.0f, 1.0f,-1.0f ), to_vec_color( Color::EUCALYPTUS | 0xff ) ) );
 
         //3
-        vertices_.add( Vertex( glm::vec3( 1.0f,-1.0f, 1.0f ) ) );
-        vertices_.add( Vertex( glm::vec3( -1.0f,-1.0f,-1.0f ) ) );
-        vertices_.add( Vertex( glm::vec3( 1.0f,-1.0f,-1.0f ) ) );
+        vertices_.add( Vertex( glm::vec3( 1.0f,-1.0f, 1.0f ), to_vec_color( Color::ELECTRIC_LIME | 0xff ) ) );
+        vertices_.add( Vertex( glm::vec3( -1.0f,-1.0f,-1.0f ), to_vec_color( Color::DOLLAR_BILL | 0xff ) ) );
+        vertices_.add( Vertex( glm::vec3( 1.0f,-1.0f,-1.0f ), to_vec_color( Color::DEEP_PINK | 0xff ) ) );
 
         //4
-        vertices_.add( Vertex( glm::vec3( 1.0f, 1.0f,-1.0f ) ) );
-        vertices_.add( Vertex( glm::vec3( 1.0f,-1.0f,-1.0f ) ) );
-        vertices_.add( Vertex( glm::vec3( -1.0f,-1.0f,-1.0f ) ) );
+        vertices_.add( Vertex( glm::vec3( 1.0f, 1.0f,-1.0f ), to_vec_color( Color::DESERT | 0xff ) ) );
+        vertices_.add( Vertex( glm::vec3( 1.0f,-1.0f,-1.0f ), to_vec_color( Color::DEEP_JUNGLE_GREEN | 0xff ) ) );
+        vertices_.add( Vertex( glm::vec3( -1.0f,-1.0f,-1.0f ), to_vec_color( Color::DARK_VANILLA | 0xff ) ) );
 
         //5
-        vertices_.add( Vertex( glm::vec3( -1.0f,-1.0f,-1.0f ) ) );
-        vertices_.add( Vertex( glm::vec3( -1.0f, 1.0f, 1.0f ) ) );
-        vertices_.add( Vertex( glm::vec3( -1.0f, 1.0f,-1.0f ) ) );
+        vertices_.add( Vertex( glm::vec3( -1.0f,-1.0f,-1.0f ), to_vec_color( Color::DARK_KHAKI | 0xff ) ) );
+        vertices_.add( Vertex( glm::vec3( -1.0f, 1.0f, 1.0f ), to_vec_color( Color::CYAN | 0xff ) ) );
+        vertices_.add( Vertex( glm::vec3( -1.0f, 1.0f,-1.0f ), to_vec_color( Color::COQUELICOT | 0xff ) ) );
 
         //6
-        vertices_.add( Vertex( glm::vec3( 1.0f,-1.0f, 1.0f ) ) );
-        vertices_.add( Vertex( glm::vec3( -1.0f,-1.0f, 1.0f ) ) );
-        vertices_.add( Vertex( glm::vec3( -1.0f,-1.0f,-1.0f ) ) );
+        vertices_.add( Vertex( glm::vec3( 1.0f,-1.0f, 1.0f ), to_vec_color( Color::CHLOROPHYLL_GREEN | 0xff ) ) );
+        vertices_.add( Vertex( glm::vec3( -1.0f,-1.0f, 1.0f ), to_vec_color( Color::CHAMPAGNE | 0xff ) ) );
+        vertices_.add( Vertex( glm::vec3( -1.0f,-1.0f,-1.0f ), to_vec_color( Color::CADMIUM_ORANGE | 0xff ) ) );
 
         //7
-        vertices_.add( Vertex( glm::vec3( -1.0f, 1.0f, 1.0f ) ) );
-        vertices_.add( Vertex( glm::vec3( -1.0f,-1.0f, 1.0f ) ) );
-        vertices_.add( Vertex( glm::vec3( 1.0f,-1.0f, 1.0f ) ) );
+        vertices_.add( Vertex( glm::vec3( -1.0f, 1.0f, 1.0f ), to_vec_color( Color::BYZANTINE | 0xff ) ) );
+        vertices_.add( Vertex( glm::vec3( -1.0f,-1.0f, 1.0f ), to_vec_color( Color::BRIGHT_GREEN | 0xff ) ) );
+        vertices_.add( Vertex( glm::vec3( 1.0f,-1.0f, 1.0f ), to_vec_color( Color::BRASS | 0xff ) ) );
 
         //8
-        vertices_.add( Vertex( glm::vec3( 1.0f, 1.0f, 1.0f ) ) );
-        vertices_.add( Vertex( glm::vec3( 1.0f,-1.0f,-1.0f ) ) );
-        vertices_.add( Vertex( glm::vec3( 1.0f, 1.0f,-1.0f ) ) );
+        vertices_.add( Vertex( glm::vec3( 1.0f, 1.0f, 1.0f ), to_vec_color( Color::ALIEN_ARMPIT | 0xff ) ) );
+        vertices_.add( Vertex( glm::vec3( 1.0f,-1.0f,-1.0f ), to_vec_color( Color::ALIZARIN_CRIMSON | 0xff ) ) );
+        vertices_.add( Vertex( glm::vec3( 1.0f, 1.0f,-1.0f ), to_vec_color( Color::ALABASTER | 0xff ) ) );
 
         //9
-        vertices_.add( Vertex( glm::vec3( 1.0f,-1.0f,-1.0f ) ) );
-        vertices_.add( Vertex( glm::vec3( 1.0f, 1.0f, 1.0f ) ) );
-        vertices_.add( Vertex( glm::vec3( 1.0f,-1.0f, 1.0f ) ) );
+        vertices_.add( Vertex( glm::vec3( 1.0f,-1.0f,-1.0f ), to_vec_color( Color::ACID_GREEN | 0xff ) ) );
+        vertices_.add( Vertex( glm::vec3( 1.0f, 1.0f, 1.0f ), to_vec_color( Color::BAZAAR | 0xff ) ) );
+        vertices_.add( Vertex( glm::vec3( 1.0f,-1.0f, 1.0f ), to_vec_color( Color::BIG_FOOT_FEET | 0xff ) ) );
 
         //10
-        vertices_.add( Vertex( glm::vec3( 1.0f, 1.0f, 1.0f ) ) );
-        vertices_.add( Vertex( glm::vec3( 1.0f, 1.0f,-1.0f ) ) );
-        vertices_.add( Vertex( glm::vec3( -1.0f, 1.0f,-1.0f ) ) );
+        vertices_.add( Vertex( glm::vec3( 1.0f, 1.0f, 1.0f ), to_vec_color( Color::BATTLESHIP_GREY | 0xff ) ) );
+        vertices_.add( Vertex( glm::vec3( 1.0f, 1.0f,-1.0f ), to_vec_color( Color::BITTER_LEMON | 0xff ) ) );
+        vertices_.add( Vertex( glm::vec3( -1.0f, 1.0f,-1.0f ), to_vec_color( Color::BLEU_DE_FRANCE | 0xff ) ) );
 
         //11
-        vertices_.add( Vertex( glm::vec3( 1.0f, 1.0f, 1.0f ) ) );
-        vertices_.add( Vertex( glm::vec3( -1.0f, 1.0f,-1.0f ) ) );
-        vertices_.add( Vertex( glm::vec3( -1.0f, 1.0f, 1.0f ) ) );
+        vertices_.add( Vertex( glm::vec3( 1.0f, 1.0f, 1.0f ), to_vec_color( Color::BRONZE_YELLOW | 0xff ) ) );
+        vertices_.add( Vertex( glm::vec3( -1.0f, 1.0f,-1.0f ), to_vec_color( Color::BUBBLES | 0xff ) ) );
+        vertices_.add( Vertex( glm::vec3( -1.0f, 1.0f, 1.0f ), to_vec_color( Color::BURLYWOOD | 0xff ) ) );
 
         //12
-        vertices_.add( Vertex( glm::vec3( 1.0f, 1.0f, 1.0f ) ) );
-        vertices_.add( Vertex( glm::vec3( -1.0f, 1.0f, 1.0f ) ) );
-        vertices_.add( Vertex( glm::vec3( 1.0f,-1.0f, 1.0 ) ) );
+        vertices_.add( Vertex( glm::vec3( 1.0f, 1.0f, 1.0f ), to_vec_color( Color::CADMIUM_YELLOW | 0xff ) ) );
+        vertices_.add( Vertex( glm::vec3( -1.0f, 1.0f, 1.0f ), to_vec_color( Color::FUZZY_WUZZY | 0xff ) ) );
+        vertices_.add( Vertex( glm::vec3( 1.0f,-1.0f, 1.0 ), to_vec_color( Color::EMERALD | 0xff ) ) );
 
         /*
         vertices_.add( Vertex( glm::vec3( -0.5f, -0.5f, 0.0f ) ) );
@@ -114,6 +119,13 @@ namespace Model
         */
 
         vertices_.done();
+
+        fprintf( stderr,
+                "Position\t[%s]\nColor\t\t[%s]\n\n",
+                glm::to_string( vertices_[0].pos ).c_str(),
+                glm::to_string( vertices_[0].color ).c_str()
+               );
+
 
         qty_ = vertices_.size();;
 
@@ -179,6 +191,7 @@ namespace Model
      * Later, this will be responsible only for creating command packets and
      * sending those to the command buffer.
      * \param prog If using a shader other than the 
+     * \param vp The view-projection matrix
      */
     void Mesh::draw( Shader* prog, glm::mat4* vp )
         throw( Scene_Graph_Exception )
@@ -262,6 +275,8 @@ namespace Model
 
         glEnableVertexAttribArray( 0 );
         glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) 0 );
+        glEnableVertexAttribArray( 1 );
+        glVertexAttribPointer( 1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) (3 * sizeof(GLfloat)) );
     }
 
 } //Model namespace.

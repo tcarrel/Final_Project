@@ -5,8 +5,10 @@
  * \brief Defines the Window object.
  */
 
-#include "app.h"
 #include "window.h"
+
+
+//#define REMOTE_WINDOW
 
 
 namespace App
@@ -63,6 +65,11 @@ namespace App
                 return;
             }
 
+#ifdef REMOTE_WINDOW
+            mode_.w = 1024;
+            mode_.h = 768;
+#endif
+
             bpp_ = SDL_BITSPERPIXEL(mode_.format);
             fprintf(
                     stderr,
@@ -80,15 +87,22 @@ namespace App
                     SDL_GetPixelFormatName(mode_.format)
                    );
             aspect_ = (float) mode_.w / (float) mode_.h;
-
+#ifdef REMOTE_WINDOW
+            pos_x_  =   20;
+            pos_y_  =   20;
+# else
             pos_x_  =   -1;
             pos_y_  =   -1;
+#endif
             title_  =   TITLE;
             flags_  =   
                 SDL_WINDOW_OPENGL |
+#ifndef REMOTE_WINDOW
                 SDL_WINDOW_FULLSCREEN |
+#endif
                 SDL_WINDOW_BORDERLESS |
-                SDL_WINDOW_ALLOW_HIGHDPI;
+                SDL_WINDOW_ALLOW_HIGHDPI |
+                0;
             window_ = NULL;
         }
 
@@ -129,6 +143,7 @@ namespace App
                 flags_
                 );
 
+#ifndef REMOTE_WINDOW
         if( 0 > SDL_SetWindowFullscreen( window_, SDL_WINDOW_FULLSCREEN ) )
         {
             is_good_ = false;
@@ -141,6 +156,7 @@ namespace App
                    );
             return;
         }
+#endif
 
         if( !window_ )
         {
@@ -238,9 +254,10 @@ namespace App
             return;
         }
 
-        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-        //glEnable( GL_CULL_FACE ); glEnable( GL_DEPTH_TEST );
-        //glCullFace( GL_BACK );
+        glPolygonMode( GL_FRONT, GL_FILL );
+        glEnable( GL_CULL_FACE );
+        //glEnable( GL_DEPTH_TEST );
+        glCullFace( GL_BACK );
 
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
         SDL_GL_SwapWindow( window_ );

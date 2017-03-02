@@ -1,15 +1,93 @@
-
+/**
+ *
+ * \file scene_graph.cpp
+ * \author scene_graph.h
+ *
+ * \brief This file provides the definitions for the Scene_Graph object.
+ *
+ */
 
 
 #include "scene_graph.h"
 #include "sg_setup.h"
+#include "SG_except.h"
 #include "model.h"
 #include "mesh.h"
+
+
+//#define SCENE_GRAPH_DEBUG
+
+#ifdef SCENE_GRAPH_DEBUG
+# include<iostream>
+#endif
 
 namespace Model
 {
 
-    /** Ctor.
+    Scene_Graph* Scene_Graph::__instance__ = NULL;
+
+
+
+
+    /**  Returns the Scene_Graph object.  Throws an exception if one has not
+     * already been created.
+     */
+    Scene_Graph* Scene_Graph::instance( void ) throw( Scene_Graph_Exception )
+    {
+        if( !__instance__ )
+        {
+            throw(
+                    Scene_Graph_Exception(
+                        "Scene_Graph::instance was called before the "
+                        "a Scene_Graph object was instanciated.\n" )
+                 );
+        }
+
+        return __instance__;
+    }
+
+
+    /**  Instantiates and returns the Scene_Graph object if it has not already
+     * been created or simply returns it if it has been created.
+     * \param args A point to the SG_Setup used to initialize the graph.  NULL
+     * can be passed in if an already created Scene_Graph is known to exist,
+     * however, an exception will be thrown if NULL is passed in and no
+     * Scene_Graph has yet to be created.
+     */
+    Scene_Graph* Scene_Graph::ctor( SG_Setup* args )
+        throw( Scene_Graph_Exception )
+        {
+            if( !args )
+            {
+                if( __instance__ )
+                {
+                    return __instance__;
+                }
+                else
+                {
+                    throw(
+                            Scene_Graph_Exception(
+                                "Scene_Graph::ctor(args) called with NULL argument"
+                                " before a Scene_Graph class was instanciated.\n"
+                                )
+                         );
+                }
+            }
+
+            if( !__instance__ )
+            {
+                __instance__ = new Scene_Graph( args );
+            }
+
+            return __instance__;
+        }
+
+
+
+
+
+
+    /** Private Ctor.
      * \param su pointer to a setup struct. Must not be NULL.
      */
     Scene_Graph::Scene_Graph( SG_Setup* su ) :
@@ -64,25 +142,34 @@ namespace Model
 
         }
 
-        vp_     =   view_ * frustum_;
-        dirty_  =   false;
+        vp_     =   frustum_ * view_;
+        dirty_  =   true;
+
+#ifdef SCENE_GRAPH_DEBUG
+        std::cout
+            << "pos_\t\t: " << glm::to_string( pos_ ) << "\n"
+            << "view_\t\t: " << glm::to_string( view_ ) << "\n"
+            << "frustum_\t: " << glm::to_string( frustum_ ) << "\n"
+            << "vp_\t\t: " << glm::to_string( vp_ ) << std::endl;
+#endif
+
     }; 
 
 
 
-    
+
 
     /**  Dtor.
-     */
+    */
     Scene_Graph::~Scene_Graph( void )
     {
         /*
-        for( int i = 0; i < model_qty_; i++ )
-        {
-            delete moodels_[i];
-        }
-        delete [] models_;
-        */
+           for( int i = 0; i < model_qty_; i++ )
+           {
+           delete moodels_[i];
+           }
+           delete [] models_;
+           */
 
         if( models_[0] )
         {
@@ -141,9 +228,18 @@ namespace Model
      */
     void Scene_Graph::draw( void )
     {
+
         for( GLuint i = 0; i < model_qty_; i++ )
         {
-            models_[i]->draw( NULL, dirty_ ? NULL : &vp_ );
+            if( dirty_ )
+            {
+                models_[i]->draw( NULL, &vp_ );
+                dirty_ = false;
+            }
+            else
+            {
+                models_[i]->draw( NULL, NULL );
+            }
         }
     }
 

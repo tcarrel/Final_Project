@@ -43,6 +43,7 @@ namespace App
     {
         public:
             Application( void );
+            Application( int, char** );
             ~Application(void );
 
             int run( void ); 
@@ -59,6 +60,9 @@ namespace App
 
 
             Model::Mesh* mesh_;
+
+            int     argc_;
+            char**  argv_;
     };
 
 } //App namespace.

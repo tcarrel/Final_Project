@@ -1,14 +1,21 @@
-
+/**
+ *
+ * \file sg_setup.h
+ * \author Thomas R. Carrel
+ *
+ * \brief Declares the SG_Setup object that is used to initialize the
+ * Scene_Graph.
+ */
 
 #include<cassert>
 
 #include<glm/glm.hpp>
 #include<glm/gtc/matrix_transform.hpp>
 
-
 #ifndef  _SG_SETUP_H_
 # define _SG_SETUP_H_
 
+#include "../constants.h"
 
 namespace App
 {
@@ -21,9 +28,14 @@ namespace Model
 
     class Scene_Graph;
 
-    /** Class to be filled in and submitted to Ctor of the scene graph for
-     * it's initial setup.  This can be dynamically allocated and deleted
-     * after setup to eliminate the struct's memory footprint.
+    /**  Required to call the Scene_Graph ctor. Because the Scene_Graph object
+     * requires a very large amount of data in order for its constructor to
+     * work correctly and--for very good reason--has no setter functions for
+     * many of its fields, this class provides a better way of correctly
+     * constructing the Scene_Graph than calling a ctor with twenty-one
+     * arguments.  It is no longer needed after the Scene_Graph is created
+     * and, therefore, can be created dynamically, filled, and then deleted
+     * after the creation of Scene_Graph.
      */
     class SG_Setup{
         public:

@@ -1,4 +1,10 @@
-
+/**
+ *
+ * \file exit.h
+ * \author Thomas R. Carrel
+ *
+ * \brief The command to quit the game.
+ */
 
 
 

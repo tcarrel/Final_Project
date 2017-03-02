@@ -19,6 +19,7 @@
 #include<climits>
 
 
+#include<glm/ext.hpp>
 
 //helper functions
 
@@ -210,7 +211,10 @@ void Shader::set_uniform( const char* name, const glm::vec2& v )
 */
 void Shader::set_uniform( const char* name, const glm::mat4& m )
 {
+
+//    fprintf( stderr, "Set Uniformm: %s\n", glm::to_string( m ).c_str() );
     GLint loc = get_uniform_location(name);
+//    fprintf( stderr, "Uniform loc: %s, %i\n\n", name, loc );
     glUniformMatrix4fv( loc, 1, GL_FALSE, &m[0][0] );
 }
 
@@ -220,7 +224,7 @@ void Shader::set_uniform( const char* name, const glm::mat4& m )
 /**  Sends a 3x3 matrix to the GPU.
  * \param name The name of the uniform.
  * \param m The mat3 to be sent.
-*/
+ */
 void Shader::set_uniform( const char* name, const glm::mat3& m )
 {
     GLint loc = get_uniform_location(name);
@@ -233,7 +237,7 @@ void Shader::set_uniform( const char* name, const glm::mat3& m )
 /**  Sends a single floating point value to the GPU.
  * \param name The name of the uniform.
  * \param f The value to be sent.
-*/
+ */
 void Shader::set_uniform( const char* name, float f )
 {
     GLint loc = get_uniform_location(name);
@@ -247,7 +251,7 @@ void Shader::set_uniform( const char* name, float f )
 /**  Sends a single integer to the GPU.
  * \param name The name of the uniform.
  * \param i The integer to be sent.
-*/
+ */
 void Shader::set_uniform( const char* name, int i )
 {
     GLint loc = get_uniform_location(name);
@@ -261,7 +265,7 @@ void Shader::set_uniform( const char* name, int i )
 /**  Sends a single unsigned integer to the GPU.
  * \param name The name of the uniform.
  * \param u The value to be sent.
-*/
+ */
 void Shader::set_uniform( const char* name, GLuint u )
 {
     GLint loc = get_uniform_location(name);
@@ -275,7 +279,7 @@ void Shader::set_uniform( const char* name, GLuint u )
 /**  Sends a single boolean to the GPU.
  * \param name The name of the uniform.
  * \param b The value to be sent.
-*/
+ */
 void Shader::set_uniform( const char* name, bool b )
 {
     GLint loc = get_uniform_location(name);
@@ -343,7 +347,7 @@ void Shader::print_active_uniforms( void )
                     results[2],
                     name,
                     get_type_string( results[1] )
-                    );
+                  );
 
             delete[] name;
         }
@@ -358,7 +362,7 @@ void Shader::print_active_uniforms( void )
 
 
 /**  Prints out all the attributes in the current program.
- */
+*/
 void Shader::print_active_attribs( void )
 {
 #ifdef __APPLE__
@@ -409,7 +413,7 @@ void Shader::print_active_attribs( void )
                 results[2],
                 name,
                 get_type_string( results[1] )
-                );
+              );
     }
 #endif
 }
