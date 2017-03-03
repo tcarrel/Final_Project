@@ -9,8 +9,13 @@
 # define _OBJ_H_
 
 # include<iostream>
+using std::string;
+
 # include<vector>
 using std::vector;
+
+# include<map>
+using std::map;
 
 # include<glm/glm.hpp>
 
@@ -23,23 +28,36 @@ namespace Model
 
     namespace OBJ
     {
+
+        class OBJ_Exception;
+
         /** This class takes a wavefront .obj file and loads it into a
          * Vertex_Array object.
          */
         class OBJ_File
         {
             public:
-                OBJ_File( std::string, Vertex_Array* );
+                OBJ_File( string, Vertex_Array* );
 
             private:
-                vector<glm::vec3> vertices_;
-                vector<glm::vec3> normals_;
+                void parse( void ) throw( OBJ_Exception );
 
-                vector<std::string> material_files_;
-                
+                map<string, vector<glm::vec3>> vertices_;
+                map<string, vector<glm::vec3>> normals_;
 
+                vector<string> groups_;
+                vector<string> material_files_;
+
+                struct Vert
+                {
+                    float x;
+                    float y;
+                    float z;
+                };
         };
+
     } // OBJ namespace.
+
 } // Modle namespace.
 
 

@@ -140,6 +140,10 @@ $(MODEL_ERROR_DIR): $(ERROR_DIR)
 		$(OBJ_ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
+.OBJ_except.o: $(OBJ_PATH)/OBJ_except.cpp $(OBJ_PATH)/OBJ_except.h \
+		$(OBJ_ERROR_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
 $(OBJ_ERROR_DIR): $(ERROR_DIR) $(MODEL_ERROR_DIR)
 	mkdir -p $@
 
