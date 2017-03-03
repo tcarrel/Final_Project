@@ -29,7 +29,8 @@ namespace Input
             virtual ~Command( void ) {}
             /** Execute the command.
              */
-            virtual void execute( void ) = 0;
+            virtual void execute( void* )   = 0;
+            virtual void execute( void )    = 0;
     };
 } //Input namespace.
 

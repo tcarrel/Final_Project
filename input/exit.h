@@ -24,8 +24,11 @@ namespace Input
     class Exit_Command : public Command
     {
         public:
-            virtual void execute()
-            { exit( 0 ); }
+            void execute( void* )
+            { execute(); }
+
+            void execute( void )
+            { exit(0); }
     };
 
 }

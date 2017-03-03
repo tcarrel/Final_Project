@@ -28,6 +28,11 @@ namespace Input
 
             /** Redraws the window after it has been minimized.
              */
+            void execute( void* )
+            {
+                execute();
+            }
+
             void execute( void )
             {
                 w_->redraw();
