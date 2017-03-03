@@ -24,87 +24,67 @@ SHADER_DEF = shaders.cpp
 SHADER_OBJ = .shaders.o
 SHADER_PROCESSOR = glsl_to_c
 
-APP_DIR = app/
-MODEL_DIR = model/
-CONS_DIR = input/
-DOC_DIR = .doxy/
+APP_DIR = app
+MODEL_DIR = model
+INPUT_DIR = input
+OBJ_DIR = obj_loader
+OBJ_PATH = $(MODEL_DIR)/$(OBJ_DIR)
+DOC_DIR = .doxy
+
+ERROR_DIR = ./Errors
+APP_ERROR_DIR = $(ERROR_DIR)/$(APP_DIR)
+MODEL_ERROR_DIR =  $(ERROR_DIR)/$(MODEL_DIR)
+OBJ_ERROR_DIR = $(MODEL_ERROR_DIR)/$(OBJ_DIR)
+INPUT_ERROR_DIR = $(ERROR_DIR)/$(INPUT_DIR)
+
+DOXY_OUTPUT_DIR = $(ERROR_DIR)/Doxygen
 
 OBJ_FILES = .entry_point.o .app.o .window.o .GLSL_except.o .shader_program.o \
 			.model.o .mesh.o .vertex_array.o .input_handler.o .SG_except.o \
-			.scene_graph.o .sg_setup.o .helper_functions.o $(SHADER_OBJ) 
+			.scene_graph.o .sg_setup.o .helper_functions.o .obj.o $(SHADER_OBJ) 
 GCCERREXT = gccerr
-ERROR_DIR = ./Errors
+
 COPYOUTPUT = 2>&1 | tee $(ERROR_DIR)/$<.$(GCCERREXT)
+COPYDOXYOUTPUT = 2>&1 | tee $(DOXY_OUTPUT_DIR)/$<.doxy.out
+
 
 jFML_LIB = -lsfml-graphics
 SDL2_LIB := $(shell sdl2-config --libs)
 GLUT_LIB = -lGL -lGLU -lGLEW -lglut
 ALL_LIBS = $(SDL2_LIB) $(GLUT_LIB)
 
+# link
 $(MAIN): $(OBJ_FILES) $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) $(OBJ_FILES) $(ALL_LIBS) -o $(MAIN) \
 		2>&1 | tee $(ERROR_DIR)/$(MAIN).$(GCCERREXT)
 
-.entry_point.o: $(APP_DIR)entry_point.cpp $(APP_DIR)app.h constants.h \
-		$(SHADER_HEADER) $(ERROR_DIR)
+
+
+# compile App namespace.
+.entry_point.o: $(APP_DIR)/entry_point.cpp $(APP_DIR)/app.h constants.h \
+		$(SHADER_HEADER) $(APP_ERROR_DIR)
 	$(TIME) $(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
-.app.o: $(APP_DIR)app.cpp $(APP_DIR)app.h constants.h $(APP_DIR)window.h \
-		shader_externs.h $(SHADER_HEADER) $(MODEL_DIR)scene_graph.h \
-		$(MODEL_DIR)model.h $(ERROR_DIR)
+.app.o: $(APP_DIR)/app.cpp $(APP_DIR)/app.h constants.h $(APP_DIR)/window.h \
+		shader_externs.h $(SHADER_HEADER) $(MODEL_DIR)/scene_graph.h \
+		$(MODEL_DIR)/model.h $(APP_ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
-.window.o: $(APP_DIR)window.cpp $(APP_DIR)window.h constants.h $(ERROR_DIR)
+.window.o: $(APP_DIR)/window.cpp $(APP_DIR)/window.h constants.h \
+		$(APP_ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
-.GLSL_except.o: GLSL_except.cpp GLSL_except.h
-	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+$(APP_ERROR_DIR): $(ERROR_DIR)
+	mkdir -p $@
 
+
+# compile the global namespace
 .shader_program.o: shader_program.cpp shader_program.h constants.h \
 		shader_externs.h GLSL_except.h $(SHADER_HEADER) $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
-
-.model.o: $(MODEL_DIR)model.cpp $(MODEL_DIR)mesh.h \
-		$(MODEL_DIR)model.h constants.h shader_program.h \
-		$(MODEL_DIR)vertex.h $(ERROR_DIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
-
-.mesh.o: $(MODEL_DIR)mesh.cpp $(MODEL_DIR)mesh.h \
-		$(MODEL_DIR)vertex.h helper_functions.h colors.h \
-		$(ERROR_DIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
-
-.scene_graph.o: $(MODEL_DIR)scene_graph.cpp $(MODEL_DIR)scene_graph.h \
-		$(MODEL_DIR)sg_setup.h $(MODEL_DIR)SG_except.h \
-		$(MODEL_DIR)model.h $(APP_DIR)window.h $(ERROR_DIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
-
-.sg_setup.o: $(MODEL_DIR)sg_setup.cpp $(MODEL_DIR)sg_setup.h \
-		$(MODEL_DIR)scene_graph.h $(APP_DIR)window.h $(ERROR_DIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
-
-.SG_except.o: $(MODEL_DIR)SG_except.cpp $(MODEL_DIR)SG_except.h $(ERROR_DIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
-
-.vertex_array.o: $(MODEL_DIR)vertex_array.cpp $(MODEL_DIR)vertex_array.h \
-		$(MODEL_DIR)vertex.h $(ERROR_DIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
-
-.input_handler.o: $(CONS_DIR)input_handler.cpp $(CONS_DIR)input_handler.h \
-		$(CONS_DIR)command.h $(CONS_DIR)exit.h $(CONS_DIR)window_show.h \
-		$(APP_DIR)window.h $(ERROR_DIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
-
-.helper_functions.o: helper_functions.cpp helper_functions.h
-	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
-
-
-
 $(SHADER_OBJ): $(SHADER_DEF) $(SHADER_HEADER)
 	$(CXX) $(CXXFLAGS) -c $(SHADER_DEF) -o $@
-
-shader_externs.h: $(SHADER_DEF)
 
 $(SHADER_HEADER): $(SHADER_DEF)
 
@@ -112,25 +92,102 @@ $(SHADER_DEF): $(SHADERS) $(ERROR_DIR) $(SHADER_PROCESSOR)
 	$(SHADER_PROCESSOR) $(SHADER_HEADER) \
 			2>&1 | tee $(ERROR_DIR)/$(SHADER_PROCESSOR).$(GCCERREXT)
 
+.helper_functions.o: helper_functions.cpp helper_functions.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
+shader_externs.h: $(SHADER_DEF)
+
 $(ERROR_DIR):
-	mkdir $@
-	mkdir $@/$(MODEL_DIR)
-	mkdir $@/$(APP_DIR)
-	mkdir $@/$(CONS_DIR)
+	mkdir -p $@
 
-#$(SHADER_PROCESSOR): shader_to_structs/glsl_to_c.cpp
-#	$(CXX) $(CXXFLAGS) $< -o $@
 
+
+# compile Model namespace
+.model.o: $(MODEL_DIR)/model.cpp $(MODEL_DIR)/mesh.h \
+		$(MODEL_DIR)/model.h constants.h shader_program.h \
+		$(MODEL_DIR)/vertex.h $(MODEL_ERROR_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
+.mesh.o: $(MODEL_DIR)/mesh.cpp $(MODEL_DIR)/mesh.h \
+		$(MODEL_DIR)/vertex.h helper_functions.h colors.h \
+		$(MODEL_ERROR_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
+.scene_graph.o: $(MODEL_DIR)/scene_graph.cpp $(MODEL_DIR)/scene_graph.h \
+		$(MODEL_DIR)/sg_setup.h $(MODEL_DIR)/SG_except.h \
+		$(MODEL_DIR)/model.h $(APP_DIR)/window.h $(MODEL_ERROR_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
+.sg_setup.o: $(MODEL_DIR)/sg_setup.cpp $(MODEL_DIR)/sg_setup.h \
+		$(MODEL_DIR)/scene_graph.h $(APP_DIR)/window.h $(MODEL_ERROR_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
+.SG_except.o: $(MODEL_DIR)/SG_except.cpp $(MODEL_DIR)/SG_except.h \
+		$(MODEL_ERROR_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
+.vertex_array.o: $(MODEL_DIR)/vertex_array.cpp $(MODEL_DIR)/vertex_array.h \
+		$(MODEL_DIR)/vertex.h $(MODEL_ERROR_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
+$(MODEL_ERROR_DIR): $(ERROR_DIR)
+	mkdir -p $@
+
+
+
+# compile Model::OBJ namespace
+.obj.o: $(OBJ_PATH)/obj.cpp $(OBJ_PATH)/obj.h colors.h helper_functions.h \
+		$(OBJ_ERROR_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
+$(OBJ_ERROR_DIR): $(ERROR_DIR) $(MODEL_ERROR_DIR)
+	mkdir -p $@
+
+
+
+
+
+# compile Input namespace
+.input_handler.o: $(INPUT_DIR)/input_handler.cpp $(INPUT_DIR)/input_handler.h \
+		$(INPUT_DIR)/command.h $(INPUT_DIR)/exit.h $(INPUT_DIR)/window_show.h \
+		$(APP_DIR)/window.h $(INPUT_ERROR_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
+$(INPUT_ERROR_DIR): $(ERROR_DIR)
+	mkdir -p $@
+
+
+
+
+
+# fulfill additional dependencies
+.GLSL_except.o: GLSL_except.cpp GLSL_except.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
+
+
+
+# clean
 clean:
 	rm -f .*.o $(MAIN) $(SHADER_HEADER) $(SHADER_DEF) a.out
 	rm -rf $(ERROR_DIR)
 	rm -rf $(DOC_DIR)
 
-doc: Doxyfile $(DOC_DIR) *.cpp *.h $(MAIN)
-	doxygen
+
+
+# compile documentation.
+doc: Doxyfile $(DOC_DIR) *.cpp *.h $(MAIN) $(DOXY_OUTPUT_DIR)
+	doxygen $(COPYDOXYOUTPUT)
 
 $(DOC_DIR):
-	mkdir .doxy
+	mkdir -p $@
+
+$(DOXY_OUTPUT_DIR): $(ERROR_DIR)
+	mkdir -p $@
+
+
+
+
 
 all: Main doc
 
