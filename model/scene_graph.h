@@ -55,7 +55,6 @@ namespace Model
              * provide a different name for the draw function.
              */
             inline void render( void ) { this->draw(); }
-
             void draw( void );
 
             //void update( );
@@ -70,15 +69,14 @@ namespace Model
             /** Ctor. 
             */
             Scene_Graph( SG_Setup* );
-            static Scene_Graph* __instance__; ///< Scene_Graph is a singleton,
-                                              ///< but, it should be avoided to
-                                              ///< treat it as a global
-                                              ///< variable.
+            static Scene_Graph*
+                __instance__; ///<  Scene_Graph is a singleton, but using it as
+                              ///< a global variable should be avoided.
 
-            GLuint model_qty_; ///< Size of the model array.
+            GLuint      model_qty_; ///< Size of the model array.
 
 
-            Mesh** models_;
+            Mesh**      models_;
             /*
             Model**     models_;     ///< The children of the root node of the
                                      ///< scene graph.
@@ -87,9 +85,9 @@ namespace Model
             glm::mat4   view_;       ///< The view matrix for the world.
             glm::mat4   frustum_;    ///< The projection matrix for the world.
 
-            glm::mat4 vp_;
+            glm::mat4   vp_;
 
-            GLfloat aspect_;  ///< Screen aspect ratio.
+            GLfloat     aspect_;  ///< Screen aspect ratio.
 
             GLboolean   dirty_;
 

@@ -39,7 +39,7 @@ namespace Model
             throw(
                     Scene_Graph_Exception(
                         "Scene_Graph::instance was called before the "
-                        "a Scene_Graph object was instanciated.\n" )
+                        "a Scene_Graph object was instanciated." )
                  );
         }
 
@@ -68,7 +68,7 @@ namespace Model
                     throw(
                             Scene_Graph_Exception(
                                 "Scene_Graph::ctor(args) called with NULL argument"
-                                " before a Scene_Graph class was instanciated.\n"
+                                " before a Scene_Graph class was instanciated."
                                 )
                          );
                 }
@@ -79,6 +79,7 @@ namespace Model
                 __instance__ = new Scene_Graph( args );
             }
 
+            assert( __instance__ != NULL );
             return __instance__;
         }
 

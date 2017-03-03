@@ -8,9 +8,6 @@
 #include "window.h"
 
 
-//#define REMOTE_WINDOW
-
-
 namespace App
 {
 
@@ -99,8 +96,10 @@ namespace App
                 SDL_WINDOW_OPENGL |
 #ifndef REMOTE_WINDOW
                 SDL_WINDOW_FULLSCREEN |
-#endif
                 SDL_WINDOW_BORDERLESS |
+# else
+                SDL_WINDOW_RESIZABLE |
+#endif
                 SDL_WINDOW_ALLOW_HIGHDPI |
                 0;
             window_ = NULL;
@@ -163,6 +162,10 @@ namespace App
             is_good_ = false;
             return;
         }
+
+#ifdef REMOTE_WINDOW
+//        SDL_SetWindowBordered( window_ 
+#endif
 
         flags_ = SDL_GetWindowFlags( window_ );
 

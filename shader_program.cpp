@@ -601,7 +601,7 @@ bool Shader::compile( void ) throw( GLSL_Program_Exception )
 
     if( program_ == 0 )
     {
-        throw GLSL_Program_Exception( "Unable to create shader program.\n" );
+        throw GLSL_Program_Exception( "Unable to create shader program." );
     }
 
 
