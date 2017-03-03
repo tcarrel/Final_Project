@@ -12,6 +12,8 @@
 
 #include<GL/glew.h>
 
+# include<cassert>
+
 # include<string>
 using std::string;
 
