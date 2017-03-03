@@ -74,7 +74,6 @@ namespace App
 
             mesh_ = new Model::Mesh( window_, GL_TRIANGLES );
 
-
             fprintf( stderr, "Mesh addr: %lx\n", (unsigned long int) mesh_ );
 
             shader_ = new Shader;
@@ -131,7 +130,10 @@ namespace App
      */
     int Application::run( void )
     {
+        assert( world_ != NULL );
         world_->render();
+
+        assert( window_ != NULL );
         window_->swap();
 
         while( 1 )

@@ -21,6 +21,10 @@
 #include "../shader_program.h"
 
 
+
+
+#define REMOTE_WINDOW
+
 namespace App
 {
 
