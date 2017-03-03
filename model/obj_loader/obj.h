@@ -5,8 +5,8 @@
  */
 
 
-#ifndef  _OBJ_H_
-# define _OBJ_H_
+#ifndef  _OBJ_LOADER_H_
+# define _OBJ_LOADER_H_
 
 # include<iostream>
 using std::string;

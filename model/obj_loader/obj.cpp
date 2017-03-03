@@ -7,6 +7,7 @@
 
 
 #include "obj.h"
+#include "OBJ_except.h"
 #include "../vertex_array.h"
 #include "../vertex.h"
 #include "../../colors.h"
