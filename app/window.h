@@ -23,7 +23,7 @@
 
 
 
-#define REMOTE_WINDOW
+//#define REMOTE_WINDOW
 
 namespace App
 {
