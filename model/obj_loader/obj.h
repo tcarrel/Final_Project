@@ -43,16 +43,36 @@ namespace Model
                 OBJ_File( const string& );
                 ~OBJ_File( void );
 
-                inline void open( const char* f ) { file_.open( f ); }
-                inline void open( const string& s ) { open( s.c_str() ); }
+                inline void open( const char* f )
+                { filename_ = new string( f ); file_.open( f ); }
 
-                inline bool good() { return file_.good(); }
-                inline bool is_open() { return file_.is_open(); }
-                inline bool fail() { return file_.fail(); }
+                inline void open( const string& s )
+                { open( s.c_str() ); }
+
+                inline bool good()
+                { return file_.good(); }
+                inline bool is_open()
+                { return file_.is_open(); }
+                inline bool fail()
+                { return file_.fail(); }
+                inline bool eof()
+                { return file_.eof(); }
 
                 void parse( void ) throw( OBJ_Exception );
 
+                inline void parse( const string& s )
+                { open(s); parse(); }
+                inline void parse( const char* s )
+                { open(s); parse(); }
+
             private:
+
+                void vertex();
+                void tex_coord();
+                void normal();
+                void v( string& );
+                void g();
+                void f();
 
                 inline char peek( void ) { return file_.peek(); }
 
@@ -61,20 +81,26 @@ namespace Model
 
                 Vertex_Array* va_;
 
-                map<string, vector<glm::vec3>> vertices_;
-                map<string, vector<glm::vec3>> normals_;
+                vector<glm::vec3> vertices_;
+                vector<glm::vec2> textures_;
+                vector<glm::vec3> normals_;
 
-                vector<string*> groups_;
-                vector<string*> material_files_;
+//                map<string, vector<glm::vec3>> vertices_;
+//                map<string, vector<glm::vec3>> normals_;
 
-//                static vector<string*>
+//                vector<string*> groups_;
+//                vector<string*> material_files_;
 
-                    struct Vert
-                    {
-                        float x;
-                        float y;
-                        float z;
-                    };
+                string* filename_;
+
+                //                static vector<string*>
+
+                struct Vert
+                {
+                    float x;
+                    float y;
+                    float z;
+                };
         };
 
     } // OBJ namespace.

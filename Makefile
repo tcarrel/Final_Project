@@ -51,7 +51,8 @@ DOXY_OUTPUT_DIR = $(ERROR_DIR)/Doxygen
 
 OBJ_FILES = .entry_point.o .app.o .window.o .GLSL_except.o .shader_program.o \
 			.model.o .mesh.o .vertex_array.o .input_handler.o .SG_except.o \
-			.scene_graph.o .sg_setup.o .helper_functions.o .obj.o $(SHADER_OBJ) 
+			.scene_graph.o .sg_setup.o .helper_functions.o .obj.o \
+            .OBJ_except.o $(SHADER_OBJ) 
 GCCERREXT = gccerr
 
 COPYOUTPUT = 2>&1 | tee $(ERROR_DIR)/$<.$(GCCERREXT)

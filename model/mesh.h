@@ -18,13 +18,10 @@
 #ifndef  _MESH_H_
 # define _MESH_H_
 
-
-
-
 #include "vertex_array.h"
 #include "SG_except.h"
 
-
+#include "../constants.h"
 
 class Shader;
 namespace App
