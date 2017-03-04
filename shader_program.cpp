@@ -14,6 +14,7 @@
 
 #include "shader_program.h"
 #include "shader_externs.h"
+#include "helper_functions.h"
 
 #include<sstream>
 #include<climits>
@@ -22,18 +23,6 @@
 #include<glm/ext.hpp>
 
 //helper functions
-
-
-/**  Converts and integer to a string.
- * \param i The integer.
- */
-string numtoa( GLuint i )
-{
-    std::stringstream S;
-    S << i;
-    return S.str();
-}
-
 
 
 

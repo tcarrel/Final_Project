@@ -80,6 +80,7 @@ CXXFLAGS = $(SDL2_CFLAGS) -time -Wall -g -std=c++11 -D TIMED -D DEBUG \
 #                                                                             #
 #                                                                             #
 #                                                                             #
+###############################################################################
 
 # link
 $(MAIN): $(OBJ_FILES) $(ERROR_DIR)
@@ -108,7 +109,8 @@ $(APP_ERROR_DIR): $(ERROR_DIR)
 
 # compile the global namespace
 .shader_program.o: shader_program.cpp shader_program.h constants.h \
-		shader_externs.h GLSL_except.h $(SHADER_HEADER) $(ERROR_DIR)
+		shader_externs.h GLSL_except.h helper_functions.h \
+		$(SHADER_HEADER) $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 $(SHADER_OBJ): $(SHADER_DEF) $(SHADER_HEADER)
@@ -120,7 +122,7 @@ $(SHADER_DEF): $(SHADERS) $(ERROR_DIR) $(SHADER_PROCESSOR)
 	$(SHADER_PROCESSOR) $(SHADER_HEADER) \
 			2>&1 | tee $(ERROR_DIR)/$(SHADER_PROCESSOR).$(GCCERREXT)
 
-.helper_functions.o: helper_functions.cpp helper_functions.h
+.helper_functions.o: helper_functions.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 shader_externs.h: $(SHADER_DEF)
@@ -197,6 +199,8 @@ $(INPUT_ERROR_DIR): $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 constants.h: colors.h
+
+helper_functions.h: helper_functions.cpp
 
 
 

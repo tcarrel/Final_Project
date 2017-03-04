@@ -5,8 +5,9 @@
  * \brief Defines some useful helper functions.
  */
 
-#include "helper_functions.h"
-
+#include<string>
+#include<sstream>
+#include<glm/glm.hpp>
 
 
 /**
@@ -45,3 +46,17 @@ glm::vec4 to_vec_color( int32_t color )
         rgba[2] / 255.0f,
         rgba[3] / 255.0f );
 }
+
+
+
+
+/**  Converts and integer to a string.
+ * \param i The integer.
+ */
+std::string numtoa( uint32_t i )
+{
+    std::stringstream S;
+    S << i;
+    return S.str();
+}
+

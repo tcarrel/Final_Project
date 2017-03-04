@@ -25,7 +25,7 @@
 
 #include "shaders.h"
 
-
+#include "helper_functions.h"
 
 #ifndef  __SHADER_PROGRAM_H__
 # define __SHADER_PROGRAM_H__
