@@ -18,11 +18,13 @@
 ###############################################################################
 
 CXX = g++
+CXX_VERS := $(shell g++ -dumpversion)
+OS_VERS := $(shell g++ -dumpmachine)
+
+AUTHOR := Thomas R. Carrel
 
 SDL2_CFLAGS := $(shell sdl2-config --cflags)
 
-CXXFLAGS = $(SDL2_CFLAGS) -time -Wall -g -std=c++11 -D TIMED -D DEBUG \
-		   -D GLEW_STATIC -O0
 MAIN = gg
 
 SHADERS = simple.v.glsl simple.f.glsl
@@ -59,6 +61,17 @@ jFML_LIB = -lsfml-graphics
 SDL2_LIB := $(shell sdl2-config --libs)
 GLUT_LIB = -lGL -lGLU -lGLEW -lglut
 ALL_LIBS = $(SDL2_LIB) $(GLUT_LIB)
+
+COMPILER_ID = -D COMPILER_ID_STRING="$(CXX_VERS)"
+OS_ID = -D OS_ID_STRING="$(OS_VERS)"
+AUTHOR_ID = -D AUTHOR_ID_STRING="$(AUTHOR)"
+
+INFO = $(COMPILER_ID) $(OS_ID) $(AUTHOR_ID)
+
+
+CXXFLAGS = $(SDL2_CFLAGS) -time -Wall -g -std=c++11 -D TIMED -D DEBUG \
+		   -D GLEW_STATIC -O0 $(INFO)
+
 
 
 ###############################################################################
@@ -111,6 +124,7 @@ $(SHADER_DEF): $(SHADERS) $(ERROR_DIR) $(SHADER_PROCESSOR)
 shader_externs.h: $(SHADER_DEF)
 
 $(ERROR_DIR):
+	echo $(INFO)
 	mkdir -p $@
 
 

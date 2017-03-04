@@ -25,6 +25,24 @@ using std::string;
         SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER | \
         SDL_INIT_TIMER )
 
+#define q(x) #x
+#define xxx( x ) q( x )
+//#define xxx( x ) qq( x )
+
+#ifdef COMPILER_ID_STRING
+const string COMPILER           =   xxx(COMPILER_ID_STRING);
+#endif
+
+#ifdef OS_ID_STRING
+const string OPERATING_SYSTEM   =   xxx(OS_ID_STRING);
+#endif
+
+#ifdef AUTHOR_ID_STRING
+const string AUTHOR             =   xxx(AUTHOR_ID_STRING);
+#endif
+
+#undef xxx
+#undef q
 
 const string    TITLE   =   "Senior Project"; ///< The name of the game.
                                               ///< Mainly used by the windowing
