@@ -35,7 +35,7 @@ namespace Model
     class Mesh;
     class Model;
     class SG_Setup;
-    class Scene_Graph_Exception;
+//    class Scene_Graph_Exception;
 
     /**
      * The scene graph.  Renders the world, and acts as the camera view.
@@ -98,7 +98,6 @@ namespace Model
     };
 
 } //Model namespace.
-
 
 
 #endif

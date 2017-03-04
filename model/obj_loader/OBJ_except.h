@@ -9,8 +9,8 @@
 #include<string>
 #include<stdexcept>
 
-#ifndef  _SCENE_GRAPH_EXCEPT_H_
-# define _SCENE_GRAPH_EXCEPT_H_
+#ifndef  _OBJ_LOADER_EXCEPT_H_
+# define _OBJ_LOADER_EXCEPT_H_
 
 
 namespace Model
