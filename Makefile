@@ -1,4 +1,5 @@
 #
+#
 #   Thomas Russel Carrel
 #
 #   Makefile
@@ -65,8 +66,9 @@ ALL_LIBS = $(SDL2_LIB) $(GLUT_LIB)
 COMPILER_ID = -D COMPILER_ID_STRING="$(CXX_VERS)"
 OS_ID = -D OS_ID_STRING="$(OS_VERS)"
 AUTHOR_ID = -D AUTHOR_ID_STRING="$(AUTHOR)"
+DATE = -D COMPILE_TIME="$(shell date)"
 
-INFO = $(COMPILER_ID) $(OS_ID) $(AUTHOR_ID)
+INFO = $(COMPILER_ID) $(OS_ID) $(AUTHOR_ID) $(DATE)
 
 
 CXXFLAGS = $(SDL2_CFLAGS) -time -Wall -g -std=c++11 -D TIMED -D DEBUG \
@@ -136,8 +138,7 @@ $(ERROR_DIR):
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .mesh.o: $(MODEL_DIR)/mesh.cpp $(MODEL_DIR)/mesh.h \
-		$(MODEL_DIR)/vertex.h helper_functions.h colors.h \
-		$(MODEL_ERROR_DIR)
+		$(MODEL_DIR)/vertex.h helper_functions.h $(MODEL_ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .scene_graph.o: $(MODEL_DIR)/scene_graph.cpp $(MODEL_DIR)/scene_graph.h \
@@ -163,7 +164,7 @@ $(MODEL_ERROR_DIR): $(ERROR_DIR)
 
 
 # compile Model::OBJ namespace
-.obj.o: $(OBJ_PATH)/obj.cpp $(OBJ_PATH)/obj.h colors.h helper_functions.h \
+.obj.o: $(OBJ_PATH)/obj.cpp $(OBJ_PATH)/obj.h helper_functions.h \
 		$(OBJ_ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
@@ -194,6 +195,8 @@ $(INPUT_ERROR_DIR): $(ERROR_DIR)
 # fulfill additional dependencies
 .GLSL_except.o: GLSL_except.cpp GLSL_except.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
+constants.h: colors.h
 
 
 

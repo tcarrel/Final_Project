@@ -38,7 +38,13 @@ namespace Color
         AERO_BLUE               = 0xC9FFE500,
         AFRICAN_VIOLET          = 0xB284BE00,
         AIR_FORCE_BLUE_RAF      = 0x5D8AA800,
+        AF_BLUE_RAF             = AIR_FORCE_BLUE_RAF,
+        AIR_FORCE_BLUE_ROYAL_AIR_FORCE
+                                = AF_BLUE_RAF,
         AIR_FORCE_BLUE_USAF     = 0x00308F00,
+        AF_BLUE_USAF            = AIR_FORCE_BLUE_USAF,
+        AIR_FORCE_BLUE_UNITED_STATES_AIR_FORCE
+                                = AF_BLUE_USAF,
         AIR_SUPERIORITY_BLUE    = 0x72A0C100,
         ALABAMA_CRIMSON         = 0xAF002A00,
         ALABASTER               = 0xF2F0E600,
