@@ -7,6 +7,9 @@
  */
 
 
+#ifdef IH_DEBUG
+# include<cstdio>
+#endif
 
 #include "input_handler.h"
 
@@ -32,65 +35,92 @@ namespace Input
             SDL_InitSubSystem( SDL_INIT_GAMECONTROLLER );
         }
 
-        com_[WINDOW_SHOW_COMMAND] = new Window_Redraw( w );
-        com_[EXIT_COMMAND] = new Exit_Command;
+        for( unsigned i = 0; i < NUM_EVENT_SOURCES; i++ )
+        {
+            com_[i] = Null_Command::instance();
+#ifdef IH_DEBUG
+            fprintf( stderr, "com_[%i] = %li [null]\n", i, (long) com_[i] );
+#endif
+        }
+
+        com_[ WINDOW_SHOW_COMMAND ] = new Window_Redraw( w );
+        com_[ EXIT_COMMAND ] = new Exit_Command;
+
     }
 
 
 
     Input_Handler::~Input_Handler( void )
     {
-        for( int i = 0; i < ALL_COMMANDS; i++ )
+        for( int i = 0; i < NUM_EVENT_SOURCES; i++ )
         {
-            delete com_[i];
+            if( com_[i] != Null_Command::instance() )
+            {
+                delete com_[i];
+            }
+            else
+            {
+                com_[i] = NULL;
+            }
         }
+        Null_Command::deinstance();
     }
 
 
 
     /** Process all commands until the event queue is empty.
-     */
+    */
     void Input_Handler::process( void )
     {
         while( SDL_PollEvent( &q_ ) != 0 )
         {
-            switch( q_.type )
-            {
-                case SDL_QUIT:
-                    com_[EXIT_COMMAND]->execute();
-                    break;
-                case SDL_WINDOWEVENT:
-                    switch( q_.window.event )
-                    {
-                        case SDL_WINDOWEVENT_RESTORED:
-                            //Fallthrough.
-                        case SDL_WINDOWEVENT_FOCUS_GAINED:
-                            //Fallthrough.
-                        case SDL_WINDOWEVENT_SHOWN:
-                            //Fallthrough.
-                        case SDL_WINDOWEVENT_EXPOSED:
-                            com_[WINDOW_SHOW_COMMAND]->execute();
-                            break;
-                        default:
-                            ;
-                    }
-                    break;
-                case SDL_KEYUP:
-                    switch( q_.key.keysym.sym )
-                    {
-                        case SDLK_F12:
-                            com_[EXIT_COMMAND]->execute();
-                            break;
-                        default:
-                            ;
-                    }
-                    break;
-                case SDL_KEYDOWN:
+            unsigned i = get_index();
+#ifdef IH_DEBUG
+            fprintf( stderr, "EXIT %i\nWINDOW %i\nNULL %i\nALL %i\n", EXIT_COMMAND, WINDOW_SHOW_COMMAND, NULL_COMMAND, ALL_COMMANDS );
+            fprintf( stderr, "Index %i/%i\n", i, NUM_EVENT_SOURCES );
+            fflush( stderr );
+#endif
 
-                    break;
-                default:
-                    ;
-            }
+            com_[i]->execute();
+        }
+    }
+
+
+
+    unsigned Input_Handler::get_index(  )
+    {
+        switch( q_.type )
+        {
+            case SDL_QUIT:
+                return EXIT_COMMAND;
+            case SDL_WINDOWEVENT:
+                switch( q_.window.event )
+                {
+                    case SDL_WINDOWEVENT_RESTORED:
+                        //Fallthrough.
+                    case SDL_WINDOWEVENT_FOCUS_GAINED:
+                        //Fallthrough.
+                    case SDL_WINDOWEVENT_SHOWN:
+                        //Fallthrough.
+                    case SDL_WINDOWEVENT_EXPOSED:
+                        return WINDOW_SHOW_COMMAND;
+                    default:
+                        return ALL_COMMANDS;
+                }
+                break;
+            case SDL_KEYUP:
+                switch( q_.key.keysym.sym )
+                {
+                    case SDLK_F12:
+                        return EXIT_COMMAND;
+                    default:
+                        return ALL_COMMANDS;
+                }
+                break;
+            case SDL_KEYDOWN:
+                return ALL_COMMANDS;
+            default:
+                return ALL_COMMANDS;
         }
     }
 

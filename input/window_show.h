@@ -10,6 +10,8 @@
 #include "command.h"
 #include "../app/window.h"
 
+#include "command_enum.h"
+
 namespace Input
 {
     /** Redraw window.
@@ -40,6 +42,8 @@ namespace Input
 
         private:
             App::Window* w_;
+
+            static const Commands_Enum TYPE = WINDOW_SHOW_COMMAND;
     };
 
 } // Input namespace.

@@ -9,5 +9,10 @@
 
 
 #include "command.h"
+#include "command_enum.h"
+
+///////////////////////////////////////////////////////////////////////////////
+
+#include "null.h"
 #include "window_show.h"
 #include "exit.h"

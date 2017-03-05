@@ -23,15 +23,10 @@
 #ifndef  _INPUT_HANDLER_H_
 # define _INPUT_HANDLER_H_
 
+# define NUM_EVENT_SOURCES (15)
+
 namespace Input
 {
-    /** An enumeration representing all possible commands.
-     */
-    enum Commands_Enum{
-        WINDOW_SHOW_COMMAND, ///< Window given focus.
-        EXIT_COMMAND, ///< Exit 
-        ALL_COMMANDS  ///< Qty
-    };
 
     /**A wrapper around the SDL Event Queue.
      */
@@ -44,9 +39,14 @@ namespace Input
             void process( void );
 
         private:
+            unsigned get_index( void );
+
+
             SDL_Event q_;
 
-            Command* com_[ALL_COMMANDS];
+            Command* com_[NUM_EVENT_SOURCES];
+            
+//            Command* exit_;
     };
 } //Input namespace.
 
