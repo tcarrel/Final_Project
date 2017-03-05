@@ -8,11 +8,14 @@
 #include "app.h"
 #include "window.h"
 
+#include "../colors.h"
+
 #include "../model/scene_graph.h"
 #include "../model/sg_setup.h"
 #include "../model/mesh.h"
 #include "../model/model.h"
 
+#include "../helper_functions.h"
 
 
 /*
@@ -34,7 +37,7 @@ namespace App
      *   Creates the window object for the game and initializes it.
      */
     Application::Application( int argc, char* argv[] ) :
-        window_( new Window( 0.0f, 0.0f, 0.0f ) ),
+        window_( new Window( to_vec_color( Color::random_color() ) ) ),
         input_( window_ ),
         world_( NULL ),
         mesh_( NULL ),

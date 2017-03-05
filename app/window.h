@@ -20,6 +20,7 @@
 #include "../constants.h"
 #include "../shader_program.h"
 
+#include<glm/glm.hpp>
 
 
 
@@ -57,6 +58,8 @@ namespace App
             //        const       SDL_VideoInfo* info_;
 
             Window( void );
+            Window( glm::vec3 );
+            Window( glm::vec4 );
             Window( float, float, float );
 
             void init_gl( void );

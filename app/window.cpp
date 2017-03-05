@@ -30,7 +30,21 @@ namespace App
     {}
 
 
+    /** Create window using the first three elements in a vec4 to fill the
+     * colors.
+     * \param c Clear color.
+     */
+    Window::Window( glm::vec4 c ) :
+        Window( c.x, c.y, c.z )
+    {}
+    
 
+    /** Create window using a vec3 for the clear color.
+     * \param c Clear color.
+     */
+    Window::Window( glm::vec3 c ) :
+        Window( c.x, c.y, c.z )
+    {}
 
     /** Create default window.  Also sets the clear color for OpenGL.  The
      * alpha value if fixed to 100%.

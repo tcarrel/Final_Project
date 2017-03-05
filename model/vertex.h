@@ -22,7 +22,7 @@ namespace Model
     struct Vertex
     {
         glm::vec3 pos; ///< The coordinate of the vertex.
-        glm::vec2 uv;  ///< Texture coordinates.
+//        glm::vec2 uv;  ///< Texture coordinates.
         glm::vec4 color; ///< Vertex color, temporary. Later, normals.
 
         /* To be re-included later.
@@ -36,12 +36,14 @@ namespace Model
          * \param u The uv-texture coordinates.
          * \param c The rgba-color of the vertex.
          */
+        /*
         Vertex(
                 const glm::vec3& p,
                 const glm::vec2& u,
                 const glm::vec4& c
                 ) 
             : pos(p), uv(u), color(c) {}
+            */
 
 
 
