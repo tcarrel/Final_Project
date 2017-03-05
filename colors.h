@@ -30,7 +30,7 @@ namespace Color
     /**  An enum of many color names.  Their value is their RGBA 32-bit integer
      * equivalent.
      */
-    enum Colors
+    enum Colors : uint32_t
     {
         ABSOLUTE_ZERO           = 0x0048BA00,
         ACID_GREEN              = 0xB0BF1A00,
@@ -1443,5 +1443,18 @@ namespace Color
 
 } //Color namespace.
 
+#endif
+
+
+#ifdef COLOR_ARRAY
+# ifndef  ___COLOR___ARRAY___
+#  define ___COLOR___ARRAY___
+
+namespace Color
+{
+    extern uint32_t random_color( void );
+}
+
+# endif
 #endif
 
