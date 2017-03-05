@@ -52,7 +52,7 @@ DOXY_OUTPUT_DIR = $(ERROR_DIR)/Doxygen
 OBJ_FILES = .entry_point.o .app.o .window.o .GLSL_except.o .shader_program.o \
 			.model.o .mesh.o .vertex_array.o .input_handler.o .SG_except.o \
 			.scene_graph.o .sg_setup.o .helper_functions.o .obj.o \
-            .OBJ_except.o $(SHADER_OBJ) 
+            .OBJ_except.o .colors.o .random.o .null_command.o $(SHADER_OBJ) 
 GCCERREXT = gccerr
 
 COPYOUTPUT = 2>&1 | tee $(ERROR_DIR)/$<.$(GCCERREXT)
@@ -68,8 +68,9 @@ COMPILER_ID = -D COMPILER_ID_STRING="$(CXX_VERS)"
 OS_ID = -D OS_ID_STRING="$(OS_VERS)"
 AUTHOR_ID = -D AUTHOR_ID_STRING="$(AUTHOR)"
 DATE = -D COMPILE_TIME="$(shell date)"
+COLOR = -D COLOR_ARRAY
 
-INFO = $(COMPILER_ID) $(OS_ID) $(AUTHOR_ID) $(DATE)
+INFO = $(COMPILER_ID) $(OS_ID) $(AUTHOR_ID) $(DATE) $(COLOR)
 
 
 CXXFLAGS = $(SDL2_CFLAGS) -time -Wall -g -std=c++11 -D TIMED -D DEBUG \
@@ -124,6 +125,12 @@ $(SHADER_DEF): $(SHADERS) $(ERROR_DIR) $(SHADER_PROCESSOR)
 			2>&1 | tee $(ERROR_DIR)/$(SHADER_PROCESSOR).$(GCCERREXT)
 
 .helper_functions.o: helper_functions.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
+.colors.o: colors.cpp colors.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
+.random.o: random.cpp random.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 shader_externs.h: $(SHADER_DEF)
@@ -184,9 +191,20 @@ $(OBJ_ERROR_DIR): $(ERROR_DIR) $(MODEL_ERROR_DIR)
 
 # compile Input namespace
 .input_handler.o: $(INPUT_DIR)/input_handler.cpp $(INPUT_DIR)/input_handler.h \
-		$(INPUT_DIR)/command.h $(INPUT_DIR)/exit.h $(INPUT_DIR)/window_show.h \
-		$(APP_DIR)/window.h $(INPUT_ERROR_DIR)
+		$(INPUT_DIR)/all_commands.h $(INPUT_ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
+.null_command.o: $(INPUT_DIR)/null.cpp $(INPUT_DIR)/null.h \
+		$(INPUT_DIR)/command.h $(INPUT_DIR)/command_enum.h \
+		$(INPUT_ERROR_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
+$(INPUT_DIR)/all_commands.h: $(INPUT_DIR)/command.h $(INPUT_DIR)/exit.h \
+		$(INPUT_DIR)/null.h $(INPUT_DIR)/command_enum.h \
+		$(INPUT_DIR)/window_show.h
+
+$(INPUT_DIR)/window_show.h: $(INPUT_DIR)/command.h $(INPUT_DIR)/command_enum.h \
+		$(APP_DIR)/window.h
 
 $(INPUT_ERROR_DIR): $(ERROR_DIR)
 	mkdir -p $@
