@@ -8,8 +8,10 @@
 
 #include<ctime>
 #include<string>
+#include<cctype>
 
 #include<cstdio>
+
 
 #include<SOIL/SOIL.h>
 
@@ -36,13 +38,25 @@ namespace Input
                 time( &raw_time );
                 time_info = localtime( &raw_time );
                 std::string filename = string( asctime( time_info ) );
-                filename = "Screenshots/Screenshot " + filename;
+                filename = "Screenshots/Screenshot " + filename + ".bmp";
 
-                for( unsigned i = 0; i < filename.length(); i++ )
+                for( auto i = filename.begin(); i != filename.end(); i++ )
                 {
-                    if( filename[i] == ' ' )
+                    if( *i < 31 )
                     {
-                        filename[i] = '_';
+                        filename.erase( i );
+                        continue;
+                    }
+
+                    if( isspace( *i ) )
+                    {
+                        *i = '_';
+                        continue;
+                    }
+
+                    if( *i == ':' )
+                    {
+                        *i = '-';
                     }
                 }
 
