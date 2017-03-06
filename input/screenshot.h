@@ -1,4 +1,11 @@
-
+/**
+ *
+ * \file screenshot.h
+ * \author Thomas R. Carrel
+ *
+ * \brief A Command class for taking screenshots.
+ *
+ */
 
 
 #include "command.h"
@@ -21,15 +28,29 @@
 namespace Input
 {
 
+
+    /** For taking screenshots.
+     */
     class Screenshot_Command : public Command
     {
         public:
+            /** Ctor
+             * \param w The current window.  Used to determine the necessary
+             * image dimensions.
+             */
             Screenshot_Command( App::Window* w ) :
                 w_( w->w() ), h_( w->h() ) {}
 
+            /** Nothing is needed to be passed into this command, so it just
+             * calls the version of the same function that takes no arguments.
+             */
             void execute( void* )
             { execute(); }
 
+            /** Saves a screenshot in bmp format in the Screenshots sub
+             * directory.  The filename is the word 'Screenshot' followed by
+             * the current date and time.
+             */
             void execute( void )
             {
                 time_t raw_time;
@@ -77,10 +98,12 @@ namespace Input
             }
 
         private:
+            /** For debugging.
+             */
             static const Commands_Enum TYPE = SCREENSHOT_COMMAND;
 
-            unsigned w_;
-            unsigned h_;
+            unsigned w_; ///< Window width.
+            unsigned h_; ///< Window height.
     };
 
 } //Input namespace.

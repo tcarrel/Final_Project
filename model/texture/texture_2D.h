@@ -1,4 +1,11 @@
-
+/**
+ * 
+ * \file texture_2D.h
+ * \author Thomas R. Carrel
+ *
+ * \brief Declares the Texture_2D class.
+ *
+ */
 
 
 #include<GL/glew.h>

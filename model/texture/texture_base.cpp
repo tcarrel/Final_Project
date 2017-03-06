@@ -1,4 +1,11 @@
-
+/**
+ *
+ * \file texture_base.cpp
+ * \author Thomas R. Carrel
+ *
+ * \brief Defines the base class (Texture_base) for the loading of textures.
+ *
+ */
 
 
 #include<cstdio>

@@ -1,4 +1,10 @@
-
+/**
+ *
+ * \file texture_2D.cpp
+ * \author Thomas R. Carrel
+ *
+ * \brief Defines the Texture_2D class.
+ */
 
 
 #include "texture_base.h"

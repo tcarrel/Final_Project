@@ -1,9 +1,9 @@
 /**
  *
- * \file texture.h
+ * \file texture_base.h
  * \author Thomas R. Carrel
  *
- * \brief An object for loading textures.
+ * \brief The base class for loading textures.
  */
 
 #include<GL/glew.h>
@@ -47,6 +47,8 @@ namespace Model
 
             protected:
 
+                /**  The 'name' of the texture on the gpu.
+                 */
                 GLuint  handle_;
         };
 

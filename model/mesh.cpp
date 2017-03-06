@@ -138,8 +138,6 @@ namespace Model
 
     /** Load vertex data from .obj file.
      * \param filename The name of the .obj file to load.
-     * \todo this cannot be implented until the recursive descent parser for
-     * loading .obj's has been writen.
      *
      * \param w A reference to the window.  Needed for swapping out
      * framebuffers.
