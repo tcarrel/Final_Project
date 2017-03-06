@@ -37,7 +37,7 @@ namespace App
      *   Creates the window object for the game and initializes it.
      */
     Application::Application( int argc, char* argv[] ) :
-        window_( new Window( to_vec_color( Color::random_color() ) ) ),
+        window_( new Window( to_vec_color( Color::BATTLESHIP_GREY ) ) ),
         input_( window_ ),
         world_( NULL ),
         mesh_( NULL ),

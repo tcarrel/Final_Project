@@ -129,7 +129,7 @@ namespace Model
                );
 
 
-        qty_ = vertices_.size();;
+        qty_ = vertices_.size();
 
         window_ = w;
 
@@ -157,13 +157,19 @@ namespace Model
         if( !obj_ )
         {
             obj_ = new OBJ::OBJ_File( filename );
-//            obj_->trace("OBJ_TRACE");
         }
+        
+        //obj_->trace("OBJ_TRACE");
+
         obj_->parse();
         obj_->fill( vertices_, true );
 
+
+        qty_ = vertices_.size();
+
         window_ = w;
 
+        fprintf( stderr, "Num verts: %i\n", qty_ );
         for( unsigned i = 0; i < ((10 < vertices_.size()) ? 10 : vertices_.size()); i++ )
         {
             fprintf( stderr,
@@ -173,7 +179,7 @@ namespace Model
                    );
         }
 
-        //       obj_->stop_trace();
+        //obj_->stop_trace();
 
         init_gpu_buffers();
     }

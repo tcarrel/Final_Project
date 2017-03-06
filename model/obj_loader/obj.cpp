@@ -117,6 +117,9 @@ namespace Model
                    case 's':
                        s();
                        break;
+                   case 'u':
+                       u();
+                       break;
                    case ' ':
                    case '\t':
                    case '\n':
@@ -127,17 +130,17 @@ namespace Model
                        break;
                    default:
                        /*
-                       fprintf(
-                               stderr,
-                               "Character <%c>.\nFile <%s>.\n",
-                               peek(),
-                               filename_->c_str()
-                              );
-                       fflush( stderr );
-                       throw(
-                               OBJ_Exception( "Unexpected character." )
-                            );
-                            */
+                          fprintf(
+                          stderr,
+                          "Character <%c>.\nFile <%s>.\n",
+                          peek(),
+                          filename_->c_str()
+                          );
+                          fflush( stderr );
+                          throw(
+                          OBJ_Exception( "Unexpected character." )
+                          );
+                          */
                        ;
                }
                parse();
@@ -177,6 +180,10 @@ namespace Model
 
             if( s == "vp" )
             {
+                if( tracing_ )
+                {
+                    trace_ << "### Paramaterized ###" << endl;
+                }
                 comment();
             }
 
@@ -195,11 +202,11 @@ namespace Model
         */
         void OBJ_File::g()
         {
-            comment();
             if( tracing_ )
             {
-                trace_ << "Comment" << endl;
+                trace_ << "### g ###" << endl;
             }
+            comment();
         }
 
 
@@ -223,7 +230,17 @@ namespace Model
                 faces_.push_back( index );
 
                 file_ >> val[0];
-                file_.ignore();
+                if( peek() != ' ' )
+                {
+                    file_.ignore();
+                }
+                else
+                {
+                    index->v = val[0];
+                    index = NULL;
+                    continue;
+                }
+
                 if( isdigit( peek() ) )
                 {
                     file_ >> val[1];
@@ -281,7 +298,7 @@ namespace Model
 
         /** Parses an 'm' line.
         */
-        void OBJ_File::m()
+        void OBJ_File::m( void )
         {
             if( tracing_ )
             {
@@ -292,7 +309,7 @@ namespace Model
 
         /** Parses an 'o' line.
         */
-        void OBJ_File::o()
+        void OBJ_File::o( void )
         {
             if( !obj_name_ )
             {
@@ -308,11 +325,21 @@ namespace Model
             }
         }
 
-        void OBJ_File::s()
+        void OBJ_File::s( void )
         {
             if( tracing_ )
             {
                 trace_ << "### s ###" << endl;
+            }
+            comment();
+        }
+
+
+        void OBJ_File::u( void )
+        {
+            if( tracing_ )
+            {
+                trace_ << "### u ###" << endl;
             }
             comment();
         }
@@ -348,7 +375,7 @@ namespace Model
         void OBJ_File::normal( void )
         {
             float x, y, z;
-  //          string dummy;
+            //          string dummy;
             file_ >> x;
             file_ >> y;
             file_ >> z;
@@ -363,8 +390,8 @@ namespace Model
             }
 
             normals_.push_back( v );
-//            getline( file_, dummy ); /// << may cause problems later.
- //           file_.ignore();
+            //            getline( file_, dummy ); /// << may cause problems later.
+            //           file_.ignore();
         }
 
 
@@ -374,7 +401,7 @@ namespace Model
         void OBJ_File::tex_coord( void )
         {
             float u, v;
-   //         string dummy;
+            //         string dummy;
             file_ >> u;
             file_ >> v;
 
@@ -389,8 +416,8 @@ namespace Model
 
 
             textures_.push_back( norm );
-     //       getline( file_, dummy );
-    //        file_.ignore();
+            //       getline( file_, dummy );
+            //        file_.ignore();
         }
 
 
@@ -400,12 +427,12 @@ namespace Model
         void OBJ_File::comment( void )
         {
             /*
-            char x;
-            file_ >> x;
-            while( x != '\n' )
-            {
-                file_ >> x;
-            }
+               char x;
+               file_ >> x;
+               while( x != '\n' )
+               {
+               file_ >> x;
+               }
             //file_.ignore();
             */
             string x;

@@ -272,7 +272,7 @@ namespace App
         }
 
         glPolygonMode( GL_FRONT, GL_FILL );
-        //glEnable( GL_CULL_FACE );
+        glEnable( GL_CULL_FACE );
         glEnable( GL_DEPTH_TEST );
         glCullFace( GL_BACK );
 
