@@ -129,6 +129,7 @@ namespace App
         SDL_Init( SDLSYSTEMS );
         if( window_->good() )
         {
+            fprintf( stderr, "Initializing window.\n" );
             window_->init();
         }
     }

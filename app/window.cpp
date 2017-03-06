@@ -149,8 +149,13 @@ namespace App
 
         window_ = SDL_CreateWindow(
                 title_.c_str(),
+#ifndef REMOTE_WINDOW
                 (pos_x_ > 0) ? pos_x_ : SDL_WINDOWPOS_UNDEFINED,
                 (pos_y_ > 0) ? pos_y_ : SDL_WINDOWPOS_UNDEFINED,
+#else
+                SDL_WINDOWPOS_CENTERED,
+                SDL_WINDOWPOS_CENTERED,
+#endif
                 mode_.w,
                 mode_.h,
                 flags_
@@ -173,6 +178,11 @@ namespace App
 
         if( !window_ )
         {
+            fprintf(
+                    stderr, "%sCould not create SDL window.\n%s\n",
+                    error_text,
+                    SDL_GetError()
+                    );
             is_good_ = false;
             return;
         }
