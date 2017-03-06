@@ -47,11 +47,13 @@ namespace Model
 
 
 
-        Vertex(
-                const glm::vec3& p,
-                const glm::vec4& c
-                ) 
-            : pos(p), color(c) {}
+        Vertex( const glm::vec3& p, const glm::vec4& c ) :
+            pos(p), color(c)
+        {}
+
+        Vertex( const glm::vec3& p, const glm::vec3& c ) :
+            pos(p), color( glm::vec4( c.x, c.y, c.z, 1.0f ) )
+        {}
 
 
         /** Ctor, inits vertex with three floating point numbers.
@@ -82,6 +84,19 @@ namespace Model
         Vertex( void ) :
             Vertex( 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f )
         {}
+
+        Vertex( const Vertex& b )
+        {
+            this->pos   =   b.pos;
+            this->color =   b.color;
+        }
+
+        Vertex& operator=( const Vertex& rhs )
+        {
+            this->pos   =   rhs.pos;
+            this->color =   rhs.color;
+            return *this;
+        }
     };
 
 } //Model namespace.

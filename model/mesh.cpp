@@ -14,6 +14,8 @@
 #include "../helper_functions.h"
 #include "../colors.h"
 
+#include "obj_loader/obj.h"
+
 #include<stdio.h>
 #include<glm/ext.hpp>
 
@@ -21,8 +23,8 @@
 namespace Model
 {
 
-    GLuint Mesh::curr_vao_ = UINT_MAX;
-
+    GLuint          Mesh::curr_vao_ = UINT_MAX;
+    OBJ::OBJ_File*  Mesh::obj_      = NULL;
 
 
     /**
@@ -113,10 +115,10 @@ namespace Model
         vertices_.add( Vertex( glm::vec3( 1.0f,-1.0f, 1.0 ), to_vec_color(   Color::random_color() | 0xff ) ) );
 
         /*
-        vertices_.add( Vertex( glm::vec3( -0.5f, -0.5f, 0.0f ) ) );
-        vertices_.add( Vertex( glm::vec3(  0.0f,  0.5f, 0.0f ) ) );
-        vertices_.add( Vertex( glm::vec3(  0.5f, -0.5f, 0.0f ) ) );
-        */
+           vertices_.add( Vertex( glm::vec3( -0.5f, -0.5f, 0.0f ) ) );
+           vertices_.add( Vertex( glm::vec3(  0.0f,  0.5f, 0.0f ) ) );
+           vertices_.add( Vertex( glm::vec3(  0.5f, -0.5f, 0.0f ) ) );
+           */
 
         vertices_.done();
 
@@ -149,10 +151,31 @@ namespace Model
      * \param m The rendering mode for this mesh.
      */
 
-    Mesh::Mesh( App::Window* w, GLchar* filename, GLenum m = GL_TRIANGLES ) 
+    Mesh::Mesh( const GLchar* filename, App::Window* w, GLenum m = GL_TRIANGLES ) 
         : mode_( m )
     {
-        /// Call the .obj loader, etc.
+        if( !obj_ )
+        {
+            obj_ = new OBJ::OBJ_File( filename );
+//            obj_->trace("OBJ_TRACE");
+        }
+        obj_->parse();
+        obj_->fill( vertices_, true );
+
+        window_ = w;
+
+        for( unsigned i = 0; i < ((10 < vertices_.size()) ? 10 : vertices_.size()); i++ )
+        {
+            fprintf( stderr,
+                    "Position\t[%s]\nColor\t\t[%s]\n\n",
+                    glm::to_string( vertices_[i].pos ).c_str(),
+                    glm::to_string( vertices_[i].color ).c_str()
+                   );
+        }
+
+        //       obj_->stop_trace();
+
+        init_gpu_buffers();
     }
 
 
@@ -195,47 +218,39 @@ namespace Model
      */
     void Mesh::draw( Shader* prog, glm::mat4* vp )
         throw( Scene_Graph_Exception )
-    {
-        Shader* sh = NULL;
-
-        if( prog )
         {
-            prog->use_program();
-            sh = prog;
+            Shader* sh = NULL;
+
+            if( prog )
+            {
+                prog->use_program();
+                sh = prog;
+            }
+            else if( shader_ )
+            {
+                shader_->use_program();
+                sh = shader_;
+            }
+            else
+            {
+                throw( Scene_Graph_Exception(
+                            "No shader program provided to mesh object.\n" ) );
+            }
+
+
+            if( curr_vao_ != vao_ )
+            {
+                glBindVertexArray( vao_ );
+                curr_vao_ = vao_;
+            }
+
+            if( vp )
+            {
+                sh->set_uniform( "vp", *vp );
+            }
+
+            glDrawArrays( mode_, 0, qty_ );
         }
-        else if( shader_ )
-        {
-            shader_->use_program();
-            sh = shader_;
-        }
-        else
-        {
-            throw( Scene_Graph_Exception(
-                        "No shader program provided to mesh object.\n" ) );
-        }
-
-
-        if( curr_vao_ != vao_ )
-        {
-            glBindVertexArray( vao_ );
-            curr_vao_ = vao_;
-        }
-
-        if( vp )
-        {
-            sh->set_uniform( "vp", *vp );
-        }
-
-        glDrawArrays( mode_, 0, qty_ );
-    }
-
-
-
-
-    //void Mesh::
-
-
-
 
 
     /**  Set the default shader program to be used when rendering this mesh.

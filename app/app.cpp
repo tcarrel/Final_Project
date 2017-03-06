@@ -75,7 +75,8 @@ namespace App
 
             delete sg;
 
-            mesh_ = new Model::Mesh( window_, GL_TRIANGLES );
+            mesh_ = new Model::Mesh( "resource/torus.obj", window_, GL_TRIANGLES );
+            //mesh_ = new Model::Mesh( window_, GL_TRIANGLES );
 
             fprintf( stderr, "Mesh addr: %lx\n", (unsigned long int) mesh_ );
 

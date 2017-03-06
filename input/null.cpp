@@ -1,3 +1,12 @@
+/**
+ *
+ * \file null.cpp
+ * \author Thomas R. Carrel
+ *
+ * \brief Defines the Input Handler's Null Command.
+ *
+ */
+
 
 #include<cstdlib>
 

@@ -38,8 +38,6 @@ namespace Model
             Vertex_Array( int );
             ~Vertex_Array( void );
 
-//            void add( ... );
-
             void add( Vertex );
 
             void done( void );
@@ -49,6 +47,8 @@ namespace Model
              */
             GLuint size() { return size_; }
 
+
+            void pre_size( unsigned );
 
             /** Element access.
              * \param i The index to be access.

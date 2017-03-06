@@ -1,4 +1,12 @@
-
+/**
+ *
+ * \file colors.cpp
+ * \author Thomas R. Carrel
+ *
+ * \brief If it is desired/needed to be able to generate random colors and/or
+ * to access them from an array, this file defines the necessary functions.
+ *
+ */
 
 #include<cstdint>
 #include<cstdlib>

@@ -43,47 +43,101 @@ namespace Model
                 OBJ_File( const string& );
                 ~OBJ_File( void );
 
+                /**  Opens an .obj file.
+                 * \param f The filename.
+                 */
                 inline void open( const char* f )
-                { filename_ = new string( f ); file_.open( f ); }
-
+                {
+                    filename_ = new string( f );
+                    file_.open( f );
+                }
+                /**  Opens an .obj file.
+                 * \param s The filename.
+                 */
                 inline void open( const string& s )
-                { open( s.c_str() ); }
+                {
+                    open( s.c_str() );
+                }
 
-                inline bool good()
-                { return file_.good(); }
-                inline bool is_open()
+                /**  Condition of the input file stream.
+                 */
+                inline bool good( void )
+                {
+                    return file_.good();
+                }
+
+                /**  Checks whether or not a file is opened.
+                 */
+                inline bool is_open( void )
                 { return file_.is_open(); }
-                inline bool fail()
-                { return file_.fail(); }
-                inline bool eof()
+
+                /**  Checks if eof has been read.
+                 */
+                inline bool eof( void )
                 { return file_.eof(); }
 
+                /**  Initiates parsing of an .obj file.
+                 */
                 void parse( void ) throw( OBJ_Exception );
 
+                /**  Initiates parsing of an .obj file.
+                 * \param s The name of the .obj file to be read.
+                 */
                 inline void parse( const string& s )
                 { open(s); parse(); }
+
+                /**  Initiates parsing of an .obj file.
+                 * \param s The name of the .obj file to be read.
+                 */
                 inline void parse( const char* s )
                 { open(s); parse(); }
 
+                void fill( Vertex_Array&, bool );
+
+                /** Resets the OBJ loader to its initial state.*
+                 */
+                void reset( void );
+                void close( void );
+
+
+                void trace( const string& );
+                void stop_trace( void );
+
             private:
+
+                struct Index_Set
+                {
+                    int v = 0;
+                    int t = 0;
+                    int n = 0;
+                };
 
                 void vertex();
                 void tex_coord();
                 void normal();
-                void v( string& );
+                void v();
                 void g();
                 void f();
+                void m();
+                void o();
+                void s();
+                void comment();
 
+                /**  Returns the next character to be read from the file
+                 * without popping it from the queue.
+                 */
                 inline char peek( void ) { return file_.peek(); }
 
-                std::ifstream file_;
-                bool opened_;
+                std::ifstream file_; ///< Input file stream.
 
-                Vertex_Array* va_;
+                std::ofstream trace_;
+                bool          tracing_;
 
                 vector<glm::vec3> vertices_;
                 vector<glm::vec2> textures_;
                 vector<glm::vec3> normals_;
+
+                vector<Index_Set*> faces_;
 
 //                map<string, vector<glm::vec3>> vertices_;
 //                map<string, vector<glm::vec3>> normals_;
@@ -91,16 +145,9 @@ namespace Model
 //                vector<string*> groups_;
 //                vector<string*> material_files_;
 
-                string* filename_;
-
-                //                static vector<string*>
-
-                struct Vert
-                {
-                    float x;
-                    float y;
-                    float z;
-                };
+                string* filename_; ///< The name of the file being read, mostly
+                                   ///< for debugging purposes.
+                string* obj_name_; ///< The name of the object.
         };
 
     } // OBJ namespace.

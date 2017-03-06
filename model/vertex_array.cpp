@@ -10,6 +10,7 @@
 
 #include "vertex_array.h"
 
+#include<glm/ext.hpp>
 
 namespace Model
 {
@@ -42,32 +43,13 @@ namespace Model
     }
 
 
-
-    /*
-    void Vertex_Array::add( int n, ... )
-    {
-        va_list vl;
-        va_start( vl, n );
-
-        for( int i = 0; i < n; i++ )
-        {
-            add( va_arg( vl, Vertex ) );
-        }
-
-        va_end( vl );
-    }
-    */
-
     /** Fill vertices in the array.  Will grow the array, if necessary.
      * \param v The vertex to be added.
      */
     void Vertex_Array::add( Vertex v )
     {
-        if( size_ >= max_size_ )
-            grow();
-
-        data_[ size_ ] = v;
-        ++size_;
+        grow();
+        data_[ size_++ ] = v;
     }
 
 
@@ -79,6 +61,11 @@ namespace Model
      */
     void Vertex_Array::grow( void )
     {
+        if( size_ < max_size_ )
+        {
+            return;
+        }
+
         Vertex* temp = data_;
 
         if( max_size_ < 1024 )
@@ -89,6 +76,8 @@ namespace Model
         {
             max_size_ += 256;
         }
+
+        data_ = new Vertex[ max_size_ ];
 
         for( unsigned i; i < size_; i++ )
         {
@@ -123,6 +112,15 @@ namespace Model
         delete [] temp;
 
         max_size_ = size_;
+    }
+
+
+    void Vertex_Array::pre_size( unsigned s )
+    {
+        max_size_ = s;
+
+        delete data_;
+        data_ = new Vertex[max_size_];
     }
 
 } //Model namespace.

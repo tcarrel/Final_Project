@@ -1,5 +1,5 @@
 /**
- * \file helper_functions.h
+ * \file helper_functions.cpp
  * \author Thomas R. Carrel
  * 
  * \brief Defines some useful helper functions.

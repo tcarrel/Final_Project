@@ -16,6 +16,8 @@
 #ifndef  _RANDOM_H_
 # define _RANDOM_H_
 
+/** Encapsulates random number generation.
+ */
 class Random
 {
     public:

@@ -11,6 +11,12 @@ uniform mat4 vp =
         0.0, 0.0, 1.0, 0.0,
         0.0, 0.0, 0.0, 1.0 );
 
+const mat4 scale =
+  mat4( 0.5, 0.0, 0.0, 0.0,
+        0.0, 0.5, 0.0, 0.0,
+        0.0, 0.0, 0.5, 0.0,
+        0.0, 0.0, 0.0, 1.0 );
+
 out vec4 Color;
 
 void main()
@@ -18,6 +24,6 @@ void main()
   Color = vert_color;
 
 // Cast to vec4 and add w-coordinate.
-  gl_Position = vp * vec4(vert_position, 1.0);
+  gl_Position = vp * scale * vec4(vert_position, 1.0);
 }
 

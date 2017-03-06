@@ -16,12 +16,19 @@
 
 #include<iostream>
 using std::istream;
+using std::endl;
+#include<sstream>
+using std::stringstream;
+
 
 #include<cstdio>
 #include<cstdlib>
+#include<cctype>
+
+
+#include<glm/ext.hpp>
 
 // Local helper functions.
-
 
 
 
@@ -36,15 +43,26 @@ namespace Model
 
         /** Generic ctor.
          */
-        OBJ_File::OBJ_File( void ) : opened_( false )
-        {}
+        OBJ_File::OBJ_File( void ) :
+            filename_(NULL),
+            obj_name_(NULL)
+        {
+            tracing_ = false;
+        }
 
         /** OBJ Loader ctor.
          * \param f The name (and, optionally, the path) of the wavefront .obj
          * file to be parsed.
          */
-        OBJ_File::OBJ_File( const string& f ) 
+        OBJ_File::OBJ_File( const string& f ) :
+            filename_(NULL),
+            obj_name_(NULL)
         {
+            tracing_ = false;
+            if( is_open() )
+            {
+                close();
+            }
             open( f );
         }
 
@@ -52,11 +70,7 @@ namespace Model
          */
         OBJ_File::~OBJ_File( void )
         {
-            if( file_.is_open() )
-            {
-                file_.close();
-            }
-            //Additional work to be done here.
+            reset();
         }
 
 
@@ -72,51 +86,62 @@ namespace Model
                     );
            }
 
-           string start;
-
            if( !eof() )
            {
-               return;
-           }
 
-           file_ >> start;
-
-           switch( start[0] )
-           {
-               case '#': //comment
-                   getline( file_, start );
+               while( isspace( peek() ) )
+               {
                    file_.ignore();
-                   break;
-               case 'v':
-                   if( start.length() == 1 )
-                   {
-                       vertex();
-                   }
-                   else
-                   {
-                       v( start );
-                   }
-                   break;
-               case 'g':
+               }
 
-                   break;
-               case 'f':
-
-                   break;
-               case 'm':
-               default:
-                   fprintf(
-                           stderr,
-                           "Character <%c>.\nFile <%s>.\n",
-                           start[0],
-                           filename_->c_str()
-                          );
-                   fflush( stderr );
-                   throw(
-                           OBJ_Exception( "Unexpected character." )
-                        );
+               switch( peek() )
+               {
+                   case '#': //comment
+                       comment();
+                       break;
+                   case 'v':
+                       v();
+                       break;
+                   case 'g':
+                       g();
+                       break;
+                   case 'f':
+                       f();
+                       break;
+                   case 'm':
+                       m();
+                       break;
+                   case 'o':
+                       o();
+                       break;
+                   case 's':
+                       s();
+                       break;
+                   case ' ':
+                   case '\t':
+                   case '\n':
+                   case '\f':
+                   case '\v':
+                   case '\r':
+                       file_.ignore();
+                       break;
+                   default:
+                       /*
+                       fprintf(
+                               stderr,
+                               "Character <%c>.\nFile <%s>.\n",
+                               peek(),
+                               filename_->c_str()
+                              );
+                       fflush( stderr );
+                       throw(
+                               OBJ_Exception( "Unexpected character." )
+                            );
+                            */
+                       ;
+               }
+               parse();
            }
-           parse();
         }
 
 
@@ -125,40 +150,172 @@ namespace Model
 
 
         /**  Determines what to parse for lines beginning with 'v'.
-         * \param s A string containing the first 'word' of the current line.
-         */
-        void OBJ_File::v( string& s )
+        */
+        void OBJ_File::v( void )
         {
-            string dummy;
+            string s;
 
-            switch( s[2] )
+            file_ >> s;
+
+            if( s == "v" )
             {
-                case 't': //Texture coordinate.
-                    tex_coord();
-                    break;
-                case 'n':
-                    normal();
-                    break;
-                case 'p':
-                    getline( file_, dummy );
-                    break;
-                default:
-                    fprintf( stderr,
-                            ".obj parsing error.\n"
-                            "Discarding current line.\n"
-                            "Model, file <%s>, may not render correctly.\n",
-                            filename_->c_str()
-                           );
-                    getline( file_, dummy );
-                    file_.ignore();
+                vertex();
+                return;
             }
 
-            return;
+            if( s == "vt" )
+            {
+                tex_coord();
+                return;
+            }
+
+            if( s == "vn" )
+            {
+                normal();
+                return;
+            }
+
+            if( s == "vp" )
+            {
+                comment();
+            }
+
+
+            fprintf( stderr,
+                    ".obj parsing error.\n"
+                    "Discarding current line.\n"
+                    "Model, file <%s>, may not render correctly.\n",
+                    filename_->c_str()
+                   );
+            comment();
         }
 
 
+        /** Parses a 'g' line.
+        */
+        void OBJ_File::g()
+        {
+            comment();
+            if( tracing_ )
+            {
+                trace_ << "Comment" << endl;
+            }
+        }
 
 
+        /** Parses an 'f' line.
+        */
+        void OBJ_File::f()
+        {
+            string v;
+            file_ >> v;
+
+            if( tracing_ )
+            {
+                trace_ << "$$$ Read Face: ";
+            }
+
+            for( int j = 0; j < 3; j++ )
+            {
+                int val[3];
+                Index_Set*  index   = new Index_Set;
+
+                faces_.push_back( index );
+
+                file_ >> val[0];
+                file_.ignore();
+                if( isdigit( peek() ) )
+                {
+                    file_ >> val[1];
+                }
+                else
+                {
+                    val[1] = 0;
+                }
+                file_.ignore();
+                file_ >> val[2];            
+
+                for( int i = 0; i < 3; i++ )
+                {
+                    if( val[i] > 0 )
+                    {
+                        --val[i]; // Indicies in .obj file start at 1.
+                    }
+                    else if( val[i] < 0 )
+                    {
+                        switch( i )
+                        {
+                            case 0:
+                                val[i] += vertices_.size();
+                                break;
+                            case 1:
+                                val[i] += textures_.size();
+                                break;
+                            case 2:
+                                val[i] += normals_.size();
+                            default:
+                                ;
+                        }
+                    }
+                    //Do nothing if ind[i] == 0.
+                }
+
+                index->v = val[0];
+                index->t = val[1];
+                index->n = val[2];
+
+                if( tracing_ )
+                {
+                    trace_ << val[0] << "/" << val[1] << "/" << val[2] << " ";
+                }
+
+                //Index set has already been pushed onto the vector.
+                index = NULL;
+            }
+
+            if( tracing_ )
+            {
+                trace_ << endl;
+            }
+        }
+
+        /** Parses an 'm' line.
+        */
+        void OBJ_File::m()
+        {
+            if( tracing_ )
+            {
+                trace_ << "### m ###" << endl;
+            }
+            comment();
+        }
+
+        /** Parses an 'o' line.
+        */
+        void OBJ_File::o()
+        {
+            if( !obj_name_ )
+            {
+                obj_name_ = new string;
+            }
+
+            file_ >> *obj_name_;
+            file_ >> *obj_name_;
+
+            if( tracing_ )
+            {
+                trace_ << "Object Name:  " << *obj_name_ << endl;
+            }
+        }
+
+        void OBJ_File::s()
+        {
+            if( tracing_ )
+            {
+                trace_ << "### s ###" << endl;
+            }
+            comment();
+        }
 
 
         /** Parses a single vertex coordinate, discards the w-coordinate
@@ -167,41 +324,206 @@ namespace Model
         void OBJ_File::vertex( void )
         {
             float x, y, z;
-            string dummy;
             file_ >> x;
             file_ >> y;
             file_ >> z;
 
-            vertices_.push_back( glm::vec3( x, y, z ) );
-            getline( file_, dummy );
-            file_.ignore();
+            glm::vec3 v( x, y, z );
+            if( tracing_ )
+            {
+                trace_
+                    << "Read vertex: ("
+                    << x << ") (" << y << ") (" << z << ")\n"
+                    << glm::to_string( v ) << endl;
+            }
+
+            vertices_.push_back( v );
         }
 
 
 
 
         /** Parses a normal coordinate.
-         */
+        */
         void OBJ_File::normal( void )
         {
+            float x, y, z;
+  //          string dummy;
+            file_ >> x;
+            file_ >> y;
+            file_ >> z;
+
+            glm::vec3 v = glm::normalize( glm::vec3( x, y, z ) );
+            if( tracing_ )
+            {
+                trace_
+                    << "Read normal: ("
+                    << x << ") (" << y << ") (" << z << ")\n"
+                    << glm::to_string( v ) << endl;
+            }
+
+            normals_.push_back( v );
+//            getline( file_, dummy ); /// << may cause problems later.
+ //           file_.ignore();
         }
 
 
 
         /** Parses a texture coordinate.
-         */
+        */
         void OBJ_File::tex_coord( void )
         {
-            float s, v;
-            string dummy;
-            file_ >> s;
+            float u, v;
+   //         string dummy;
+            file_ >> u;
             file_ >> v;
 
-            textures_.push_back( glm::vec2( s, v ) );
-            getline( file_, dummy );
-            file_.ignore();
+            glm::vec2 norm(u, v);
+            if( tracing_ )
+            {
+                trace_
+                    << "Read texture: ("
+                    << u << ") (" << v << ")\n"
+                    << glm::to_string( norm ) << endl;
+            }
+
+
+            textures_.push_back( norm );
+     //       getline( file_, dummy );
+    //        file_.ignore();
         }
 
+
+        /** Discards the entire current line, which has been determined to be
+         * a comment.
+         */
+        void OBJ_File::comment( void )
+        {
+            /*
+            char x;
+            file_ >> x;
+            while( x != '\n' )
+            {
+                file_ >> x;
+            }
+            //file_.ignore();
+            */
+            string x;
+            getline( file_, x );
+        }
+
+
+
+
+
+
+        void OBJ_File::fill( Vertex_Array& va, bool c )
+        {
+            if( tracing_ )
+            {
+                trace_
+                    << " &&&&&&&&&&&&&\n"
+                    << "&&& LOADING &&&\n"
+                    << " &&&&&&&&&&&&&\n" 
+                    << "&&& # faces &&&\n"
+                    << faces_.size() << "\n"
+                    << " &&&&&&&&&&&&" << endl;
+            }
+
+            va.pre_size( faces_.size() );
+
+            for( unsigned i = 0; i < faces_.size(); i++ )
+            {
+                Index_Set* is = faces_[i];
+                glm::vec3 vert;
+                glm::vec4 color;
+                if( !c )
+                {
+                    vert = vertices_[is->v];
+                    color = glm::vec4(
+                            normals_[is->n].x,
+                            normals_[is->n].y,
+                            normals_[is->n].z,
+                            1.0f
+                            );
+                }
+                else
+                {
+                    vert = vertices_[is->v];
+                    color= to_vec_color( Color::random_color() | 0xFF );
+                }
+
+                if( tracing_ )
+                {
+                    trace_
+                        << i << "\tpos  : " << glm::to_string( vert ) << "\n"
+                        << i << "\tcolor: " << glm::to_string( color ) << endl;
+                }
+
+                va.add( Vertex( vert, color ) );
+                is = NULL;
+            }
+            va.done();
+        }
+
+
+
+
+
+
+
+
+
+        void OBJ_File::reset( void )
+        {
+            close();
+            stop_trace();
+
+            if( obj_name_ )
+            {
+                delete obj_name_;
+            }
+
+            for( unsigned i = 0; i < faces_.size(); i++ )
+            {
+                if( faces_[i] )
+                {
+                    delete faces_[i];
+                }
+            }
+
+            vertices_.resize(0);
+            textures_.resize(0);
+            normals_.resize(0);
+        }
+
+
+
+
+        void OBJ_File::trace( const string& name )
+        {
+            trace_.open( name.c_str() );
+            tracing_ = true;
+        }
+
+        void OBJ_File::stop_trace( void )
+        {
+            if( trace_.is_open() )
+            {
+                trace_.close();
+            }
+            tracing_ = false;
+        }
+
+        void OBJ_File::close( void )
+        {
+            if( filename_ )
+            {
+                delete filename_;
+                filename_ = NULL;
+                file_.close();
+            }
+        }
 
 
     } //OBJ namespace.

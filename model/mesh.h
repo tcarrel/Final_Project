@@ -34,6 +34,10 @@ namespace App
 
 namespace Model
 {
+    namespace OBJ
+    {
+        class OBJ_File;
+    }
 
     /**
      * Manages mesh data and calls draw functions.
@@ -43,7 +47,7 @@ namespace Model
         public:
 
             Mesh( App::Window*, GLenum );
-            Mesh( App::Window*, GLchar*, GLenum );
+            Mesh( const GLchar*, App::Window*, GLenum );
             ~Mesh( void );
 
             void set_shader( Shader* );
@@ -75,7 +79,7 @@ namespace Model
             ///< different shader program can be passed in with
             ///< the draw call.
 
-            App::Window* window_; ///< A pointer to the window.
+            App::Window*            window_; ///< A pointer to the window.
 
             /** \todo Additional fields for texture info.
              * Some texture info may need to be passed with each draw call.
@@ -84,7 +88,9 @@ namespace Model
 
             //        static const 
             //static GLuint cull_state_;
-            static GLuint curr_vao_;
+            static GLuint           curr_vao_;
+
+            static OBJ::OBJ_File*   obj_;
     };
 
 } //Model namespace.
