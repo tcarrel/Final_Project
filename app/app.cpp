@@ -46,7 +46,7 @@ namespace App
      *   \param argv argv taken from the command line.
      */
     Application::Application( int argc, char** argv ) :
-        window_( new Window( to_vec_color( Color::BATTLESHIP_GREY ) ) ),
+        window_( new Window( to_vec_color( Color::DARK_GUNMETAL ) ) ),
         input_( window_ ),
         world_( NULL ),
         mesh_( NULL ),
