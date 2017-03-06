@@ -18,12 +18,6 @@
 #include "../helper_functions.h"
 
 
-/*
-   extern SHADER_TYPE_NAME SIMPLE_v;
-   extern SHADER_TYPE_NAME SIMPLE_f;
-   */
-
-//#include "../shader_externs.h"
 
 namespace App
 {
