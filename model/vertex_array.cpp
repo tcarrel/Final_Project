@@ -115,6 +115,12 @@ namespace Model
     }
 
 
+
+    /**  Sets the size of the array.  This provides faster loading if the
+     * number of needed verticies is known ahead of time.  Which, in the case
+     * of this program, it is.  Any data already in the array is deleted.
+     * \param s The number vertices expected to be loaded.
+     */
     void Vertex_Array::pre_size( unsigned s )
     {
         max_size_ = s;

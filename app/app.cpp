@@ -28,15 +28,24 @@
 namespace App
 {
 
+    /**  Generic Ctor.
+     *   Creates the window object for the game and initializes it.
+     */
     Application::Application( void ) :
         Application( (int) 1, (char**) NULL )
     {}
 
 
     /**  Ctor.
-     *   Creates the window object for the game and initializes it.
+     *   Creates the window object for the game and initializes it, this
+     *   version of the ctor allows command line arguments to be passed in from
+     *   main.  At this point this does nothing different compared to the
+     *   Generic ctor as there are no command line options that any part of
+     *   the program needs to be aware of, yet.
+     *   \param argc argc taken from the command line.
+     *   \param argv argv taken from the command line.
      */
-    Application::Application( int argc, char* argv[] ) :
+    Application::Application( int argc, char** argv ) :
         window_( new Window( to_vec_color( Color::BATTLESHIP_GREY ) ) ),
         input_( window_ ),
         world_( NULL ),

@@ -18,10 +18,12 @@
 #ifndef  _MESH_H_
 # define _MESH_H_
 
-#include "vertex_array.h"
-#include "SG_except.h"
+# include "vertex_array.h"
+# include "SG_except.h"
 
-#include "../constants.h"
+# include "../constants.h"
+
+//# define DEBUG_MESH
 
 class Shader;
 namespace App

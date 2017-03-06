@@ -31,7 +31,7 @@ namespace Model
         */
 
 
-        /** Ctor, inits vertex with a vec3 as input.
+        /* Ctor, inits vertex with a vec3 as input.
          * \param p The coordinates of the vertex.
          * \param u The uv-texture coordinates.
          * \param c The rgba-color of the vertex.
@@ -47,10 +47,19 @@ namespace Model
 
 
 
+        /** Temporary ctor for during development.
+         * \param p The vertex position.
+         * \param c The vertex color.
+         */
         Vertex( const glm::vec3& p, const glm::vec4& c ) :
             pos(p), color(c)
         {}
 
+        /** Ctor.
+         * \param p The vertex position.
+         * \param c The vertex color, this will later be change to the vertex
+         * normal.
+         */
         Vertex( const glm::vec3& p, const glm::vec3& c ) :
             pos(p), color( glm::vec4( c.x, c.y, c.z, 1.0f ) )
         {}
@@ -85,12 +94,20 @@ namespace Model
             Vertex( 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f )
         {}
 
+
+        /** Copy constructor.
+         * \param b The Vertex to be copied.
+         */
         Vertex( const Vertex& b )
         {
             this->pos   =   b.pos;
             this->color =   b.color;
         }
 
+
+        /** Assignment operator.
+         * \param rhs The Vertex to be assigned from.
+         */
         Vertex& operator=( const Vertex& rhs )
         {
             this->pos   =   rhs.pos;

@@ -92,14 +92,10 @@ namespace Model
                 inline void parse( const char* s )
                 { open(s); parse(); }
 
-                void fill( Vertex_Array&, bool );
 
-                /** Resets the OBJ loader to its initial state.*
-                 */
+                void fill( Vertex_Array&, bool );
                 void reset( void );
                 void close( void );
-
-
                 void trace( const string& );
                 void stop_trace( void );
 

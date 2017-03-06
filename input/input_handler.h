@@ -23,6 +23,9 @@
 #ifndef  _INPUT_HANDLER_H_
 # define _INPUT_HANDLER_H_
 
+/** Inted to make the Input_Handler simpler, but this doesn't particularly work
+ * very well with the SDL2 event handler.
+ */
 # define NUM_EVENT_SOURCES (15)
 
 namespace Input

@@ -27,9 +27,14 @@ namespace Input
             /** Dtor
              */
             virtual ~Command( void ) {}
-            /** Execute the command.
+
+            /** Execute the command.  A void pointer can be passed in so this
+             * command can be used on various actors.
              */
             virtual void execute( void* )   = 0;
+
+            /** Execute the command.
+             */
             virtual void execute( void )    = 0;
     };
 } //Input namespace.

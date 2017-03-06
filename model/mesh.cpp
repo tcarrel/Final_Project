@@ -39,7 +39,7 @@ namespace Model
         vbo_( 0 ),
         vao_( 0 )
     {
-#ifdef DEBUG
+#ifdef DEBUG_MESH
         fprintf(
                 stderr,
                 "Vertex Size\t:\t%li\n",
@@ -114,19 +114,15 @@ namespace Model
         vertices_.add( Vertex( glm::vec3( -1.0f, 1.0f, 1.0f ), to_vec_color( Color::random_color() | 0xff ) ) );
         vertices_.add( Vertex( glm::vec3( 1.0f,-1.0f, 1.0 ), to_vec_color(   Color::random_color() | 0xff ) ) );
 
-        /*
-           vertices_.add( Vertex( glm::vec3( -0.5f, -0.5f, 0.0f ) ) );
-           vertices_.add( Vertex( glm::vec3(  0.0f,  0.5f, 0.0f ) ) );
-           vertices_.add( Vertex( glm::vec3(  0.5f, -0.5f, 0.0f ) ) );
-           */
-
         vertices_.done();
 
+#ifdef DEBUG_MESH
         fprintf( stderr,
                 "Position\t[%s]\nColor\t\t[%s]\n\n",
                 glm::to_string( vertices_[0].pos ).c_str(),
                 glm::to_string( vertices_[0].color ).c_str()
                );
+#endif
 
 
         qty_ = vertices_.size();
@@ -159,7 +155,9 @@ namespace Model
             obj_ = new OBJ::OBJ_File( filename );
         }
         
-        //obj_->trace("OBJ_TRACE");
+#ifdef DEBUG_MESH
+        obj_->trace("Debug/obj_loader.trace");
+#endif
 
         obj_->parse();
         obj_->fill( vertices_, true );
@@ -169,6 +167,7 @@ namespace Model
 
         window_ = w;
 
+#ifdef DEBUG_MESH
         fprintf( stderr, "Num verts: %i\n", qty_ );
         for( unsigned i = 0; i < ((10 < vertices_.size()) ? 10 : vertices_.size()); i++ )
         {
@@ -178,8 +177,8 @@ namespace Model
                     glm::to_string( vertices_[i].color ).c_str()
                    );
         }
-
-        //obj_->stop_trace();
+        obj_->stop_trace();
+#endif
 
         init_gpu_buffers();
     }

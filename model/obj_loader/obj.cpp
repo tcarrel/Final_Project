@@ -444,6 +444,12 @@ namespace Model
 
 
 
+
+        /** Inserts all of the verticies into the provided Vertex_Array.
+         * \param va The Vertex_Array.
+         * \param c Decides whether or not randomized vertex colors should be
+         * used.
+         */
         void OBJ_File::fill( Vertex_Array& va, bool c )
         {
             if( tracing_ )
@@ -497,10 +503,9 @@ namespace Model
 
 
 
-
-
-
-
+        /**  Resets the obj loader to its initial state.  All read data will be
+         * deleted.
+         */
         void OBJ_File::reset( void )
         {
             close();
@@ -527,12 +532,17 @@ namespace Model
 
 
 
+        /**  Outputs a trace of the obj parsing into a text file for debugging.
+         * \param name The name of the file to be output to.
+         */
         void OBJ_File::trace( const string& name )
         {
             trace_.open( name.c_str() );
             tracing_ = true;
         }
 
+        /**  Stops debug tracing if it's being used.
+         */
         void OBJ_File::stop_trace( void )
         {
             if( trace_.is_open() )
@@ -542,6 +552,9 @@ namespace Model
             tracing_ = false;
         }
 
+
+        /** Closes the obj file being read.
+         */
         void OBJ_File::close( void )
         {
             if( filename_ )

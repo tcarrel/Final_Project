@@ -27,28 +27,45 @@ using std::string;
         SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER | \
         SDL_INIT_TIMER )
 
+/** Undef'ed at the end of this file.  It is only used to add quotes around
+ * some precompiler definitions supplied from the command line at compile time.
+ */
 #define q(x) #x
-# define xxx( x ) q( x )
-//#define xxx( x ) qq( x )
+/** Undef'ed at the end of this file.  It is only used to add quotes around
+ * some precompiler definitions supplied from the command line at compile time.
+ */
+#define xxx( x ) q( x )
 
 #  ifdef COMPILER_ID_STRING
+/** Forces the name of the compiler to be included in the executable image.
+ */
 const string COMPILER           =   xxx(COMPILER_ID_STRING);
 #  endif
 
 #  ifdef OS_ID_STRING
+/** Forces the name of the operating system this was compiled under to be
+ * included in the executable image.
+ */
 const string OPERATING_SYSTEM   =   xxx(OS_ID_STRING);
 #  endif
 
 #  ifdef AUTHOR_ID_STRING
+/** Forces the name of the author to be included in the executable image.
+ */
 const string AUTHOR             =   xxx(AUTHOR_ID_STRING);
 #  endif
 
 #  ifdef COMPILE_TIME
+/** Forces the compile date to be included in the executable image.
+ */
 const string COMPILE_TIME_AND_DATE = xxx(COMPILE_TIME);
 #  endif
 
-# undef xxx
+#undef xxx
 #undef q
+
+
+
 
 const string    TITLE   =   "Senior Project"; ///< The name of the game.
                                               ///< Mainly used by the windowing
