@@ -40,7 +40,7 @@ shaders.cpp
 gg
 a.out
 shader_externs.h
-resource/*.png
-resource/*.jpg
 resource/*.blend
-resource/FA-22_Raptor.*
+resource/FA-22_Raptor*
+resource/Glass*
+resource/Pilot*
