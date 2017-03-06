@@ -56,7 +56,7 @@ OBJ_FILES = .entry_point.o .app.o .window.o .GLSL_except.o .shader_program.o \
 			.model.o .mesh.o .vertex_array.o .input_handler.o .SG_except.o \
 			.scene_graph.o .sg_setup.o .helper_functions.o .obj.o \
             .OBJ_except.o .colors.o .random.o .null_command.o $(SHADER_OBJ) \
-			.texture.o
+			.texture_2D.o .texture_base.o
 GCCERREXT = gccerr
 
 COPYOUTPUT = 2>&1 | tee $(ERROR_DIR)/$<.$(GCCERREXT)
@@ -204,7 +204,12 @@ $(OBJ_ERROR_DIR): $(ERROR_DIR) $(MODEL_ERROR_DIR)
 
 
 # compile Model::Image namespace
-.texture.o: $(TEX_PATH)/texture.cpp $(TEX_PATH)/texture.h $(TEX_ERROR_DIR)
+.texture_base.o: $(TEX_PATH)/texture_base.cpp $(TEX_PATH)/texture_base.h \
+		$(TEX_ERROR_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
+.texture_2D.o: $(TEX_PATH)/texture_2D.cpp $(TEX_PATH)/texture_2D.h \
+		$(TEX_PATH)/texture_base.h $(TEX_ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 $(TEX_ERROR_DIR): $(MODEL_ERROR_DIR) $(ERROR_DIR)

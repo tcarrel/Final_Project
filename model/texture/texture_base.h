@@ -15,9 +15,10 @@
 
 #include<SOIL/SOIL.h>
 
+#include<string>
 
-#ifndef  _TEXTURE_H_
-# define _TEXTURE_H_
+#ifndef  _TEXTURE_BASE_H_
+# define _TEXTURE_BASE_H_
 
 
 namespace Model
@@ -25,29 +26,28 @@ namespace Model
 
     namespace Texture
     {
-        enum Use{
-            AS_TEXTURE, 
-            AS_BUMP_MAP,
-            AS_NORMAL_MAP,
-            AS_CUBE_MAP,
-            AS_SPECULARITY_MAP
-        };
-        /**  For loading texture and sending them to the gpu.
+
+        /**  Base class for loading textures.
         */
         class Texture_base
         {
             public:
-                virtual ~Texture_base( void )
 
+                Texture_base();
+                virtual ~Texture_base( void ) {}
+
+                /** Return the location of the texture on the GPU.
+                 */
                 GLuint operator()( void )
                 { 
                     return handle_;
                 }
 
-            private:
+                void error_check( unsigned char*, std::string& );
+
+            protected:
 
                 GLuint  handle_;
-                Use     use_;
         };
 
     } //Texture namespace.
