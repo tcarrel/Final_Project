@@ -13,7 +13,7 @@
 
 
 #include "shader_program.h"
-#include "shader_externs.h"
+//#include "shader_externs.h"
 #include "helper_functions.h"
 
 #include<sstream>

@@ -103,8 +103,8 @@ $(MAIN): $(OBJ_FILES) $(ERROR_DIR)
 	$(TIME) $(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .app.o: $(APP_DIR)/app.cpp $(APP_DIR)/app.h constants.h $(APP_DIR)/window.h \
-		shader_externs.h $(SHADER_HEADER) $(MODEL_DIR)/scene_graph.h \
-		$(MODEL_DIR)/model.h $(APP_ERROR_DIR)
+		$(SHADER_HEADER) $(MODEL_DIR)/scene_graph.h $(MODEL_DIR)/model.h \
+		$(APP_ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .window.o: $(APP_DIR)/window.cpp $(APP_DIR)/window.h constants.h \
@@ -120,18 +120,8 @@ $(APP_ERROR_DIR): $(ERROR_DIR)
 
 # compile the global namespace
 .shader_program.o: shader_program.cpp shader_program.h constants.h \
-		shader_externs.h GLSL_except.h helper_functions.h \
-		$(SHADER_HEADER) $(ERROR_DIR)
+		GLSL_except.h helper_functions.h $(SHADER_HEADER) $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
-
-$(SHADER_OBJ): $(SHADER_DEF) $(SHADER_HEADER)
-	$(CXX) $(CXXFLAGS) -c $(SHADER_DEF) -o $@
-
-$(SHADER_HEADER): $(SHADER_DEF)
-
-$(SHADER_DEF): $(SHADERS) $(ERROR_DIR) $(SHADER_PROCESSOR)
-	$(SHADER_PROCESSOR) $(SHADER_HEADER) \
-			2>&1 | tee $(ERROR_DIR)/$(SHADER_PROCESSOR).$(GCCERREXT)
 
 .helper_functions.o: helper_functions.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
@@ -141,8 +131,6 @@ $(SHADER_DEF): $(SHADERS) $(ERROR_DIR) $(SHADER_PROCESSOR)
 
 .random.o: random.cpp random.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
-
-shader_externs.h: $(SHADER_DEF)
 
 $(ERROR_DIR):
 	mkdir -p $@
@@ -247,6 +235,15 @@ $(INPUT_ERROR_DIR): $(ERROR_DIR)
 # fulfill additional dependencies
 .GLSL_except.o: GLSL_except.cpp GLSL_except.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
+$(SHADER_OBJ): $(SHADER_DEF) $(SHADER_HEADER)
+	$(CXX) $(CXXFLAGS) -c $(SHADER_DEF) -o $@
+
+$(SHADER_HEADER): $(SHADER_DEF)
+
+$(SHADER_DEF): $(SHADERS) $(ERROR_DIR) $(SHADER_PROCESSOR)
+	$(SHADER_PROCESSOR) $(SHADER_HEADER) \
+			2>&1 | tee $(ERROR_DIR)/$(SHADER_PROCESSOR).$(GCCERREXT)
 
 constants.h: colors.h
 

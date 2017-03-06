@@ -23,7 +23,7 @@
    extern SHADER_TYPE_NAME SIMPLE_f;
    */
 
-#include "../shader_externs.h"
+//#include "../shader_externs.h"
 
 namespace App
 {
