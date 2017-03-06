@@ -26,8 +26,7 @@ primarily C with some C++.
 * [OpenGL 4.5](https://www.opengl.org/about/), Open Graphics Library, for rendering.
 * [SDL2](https://www.libsdl.org/index.php), Simple Direct Media Layer 2, for
 operating system agnostic windowing system and controls.
-* [SFML](https://www.sfml-dev.org/), Simple and Fast Multimedia Library, for
-2D image file manipulation.
+* [SOIL](http://www.lonesock.net/soil.html) Simple OpenGL Image Library.
 * [GLEW](http://glew.sourceforge.net/), OpenGL Extension Wrangler.
 * [GLM](http://glm.g-truc.net/0.9.4/) OpenGL Mathematics, library.
 * git and [github](https://github.com/) Version control and backup.
