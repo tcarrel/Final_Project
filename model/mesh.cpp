@@ -160,7 +160,7 @@ namespace Model
 #endif
 
         obj_->parse();
-        obj_->fill( vertices_, true );
+        obj_->fill( vertices_, false );
 
 
         qty_ = vertices_.size();

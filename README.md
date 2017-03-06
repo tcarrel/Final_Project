@@ -53,8 +53,14 @@ came from the book "OpenGL 4 Shading Language Cookbook" 2nd Ed. by
 Here are some screenshots of some Wavefront .obj file that have been rendered
 using the program thus far.
 
+###A cube with randomly colored verticies.
 ![A Cube](/.Images/cube.png)
 
+###A torus with randomly colored vertices.
 ![A Torus](/.Images/torus.png)
 
+###Two intersecting toruses with randomly colored vertices.
 ![Two linked toruses.](/.Images/toruses.png)
+
+###A torus with vertices colored according to their normal vector.
+![Normal Colored Torus](/.Images/torus_normals.png)

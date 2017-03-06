@@ -38,7 +38,9 @@ APP_DIR = app
 MODEL_DIR = model
 INPUT_DIR = input
 OBJ_DIR = obj_loader
+TEX_DIR = texture
 OBJ_PATH = $(MODEL_DIR)/$(OBJ_DIR)
+TEX_PATH = $(MODEL_DIR)/$(TEX_DIR)
 DOC_DIR = .doxy
 
 ERROR_DIR = ./Errors
@@ -46,23 +48,25 @@ APP_ERROR_DIR = $(ERROR_DIR)/$(APP_DIR)
 MODEL_ERROR_DIR =  $(ERROR_DIR)/$(MODEL_DIR)
 OBJ_ERROR_DIR = $(MODEL_ERROR_DIR)/$(OBJ_DIR)
 INPUT_ERROR_DIR = $(ERROR_DIR)/$(INPUT_DIR)
+TEX_ERROR_DIR = $(MODEL_ERROR_DIR)/$(TEX_DIR)
 
 DOXY_OUTPUT_DIR = $(ERROR_DIR)/Doxygen
 
 OBJ_FILES = .entry_point.o .app.o .window.o .GLSL_except.o .shader_program.o \
 			.model.o .mesh.o .vertex_array.o .input_handler.o .SG_except.o \
 			.scene_graph.o .sg_setup.o .helper_functions.o .obj.o \
-            .OBJ_except.o .colors.o .random.o .null_command.o $(SHADER_OBJ) 
+            .OBJ_except.o .colors.o .random.o .null_command.o $(SHADER_OBJ) \
+			.texture.o
 GCCERREXT = gccerr
 
 COPYOUTPUT = 2>&1 | tee $(ERROR_DIR)/$<.$(GCCERREXT)
 COPYDOXYOUTPUT = 2>&1 | tee $(DOXY_OUTPUT_DIR)/$<.doxy.out
 
 
-jFML_LIB = -lsfml-graphics
+SOIL_LIB = -lSOIL
 SDL2_LIB := $(shell sdl2-config --libs)
 GLUT_LIB = -lGL -lGLU -lGLEW -lglut
-ALL_LIBS = $(SDL2_LIB) $(GLUT_LIB)
+ALL_LIBS = $(SOIL_LIB) $(SDL2_LIB) $(GLUT_LIB)
 
 COMPILER_ID = -D COMPILER_ID_STRING="$(CXX_VERS)"
 OS_ID = -D OS_ID_STRING="$(OS_VERS)"
@@ -80,7 +84,7 @@ CXXFLAGS = $(SDL2_CFLAGS) -time -Wall -g -std=c++11 -D TIMED -D DEBUG \
 
 ###############################################################################
 #                                                                             #
-#                                                                             #
+#  The adjacency list.                                                        #
 #                                                                             #
 ###############################################################################
 
@@ -88,6 +92,8 @@ CXXFLAGS = $(SDL2_CFLAGS) -time -Wall -g -std=c++11 -D TIMED -D DEBUG \
 $(MAIN): $(OBJ_FILES) $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) $(OBJ_FILES) $(ALL_LIBS) -o $(MAIN) \
 		2>&1 | tee $(ERROR_DIR)/$(MAIN).$(GCCERREXT)
+
+
 
 
 
@@ -107,6 +113,9 @@ $(MAIN): $(OBJ_FILES) $(ERROR_DIR)
 
 $(APP_ERROR_DIR): $(ERROR_DIR)
 	mkdir -p $@
+
+
+
 
 
 # compile the global namespace
@@ -136,8 +145,9 @@ $(SHADER_DEF): $(SHADERS) $(ERROR_DIR) $(SHADER_PROCESSOR)
 shader_externs.h: $(SHADER_DEF)
 
 $(ERROR_DIR):
-	echo $(INFO)
 	mkdir -p $@
+
+
 
 
 
@@ -173,6 +183,9 @@ $(MODEL_ERROR_DIR): $(ERROR_DIR)
 
 
 
+
+
+
 # compile Model::OBJ namespace
 .obj.o: $(OBJ_PATH)/obj.cpp $(OBJ_PATH)/obj.h helper_functions.h \
 		$(OBJ_ERROR_DIR)
@@ -183,6 +196,18 @@ $(MODEL_ERROR_DIR): $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 $(OBJ_ERROR_DIR): $(ERROR_DIR) $(MODEL_ERROR_DIR)
+	mkdir -p $@
+
+
+
+
+
+
+# compile Model::Image namespace
+.texture.o: $(TEX_PATH)/texture.cpp $(TEX_PATH)/texture.h $(TEX_ERROR_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
+$(TEX_ERROR_DIR): $(MODEL_ERROR_DIR) $(ERROR_DIR)
 	mkdir -p $@
 
 
@@ -213,6 +238,7 @@ $(INPUT_ERROR_DIR): $(ERROR_DIR)
 
 
 
+
 # fulfill additional dependencies
 .GLSL_except.o: GLSL_except.cpp GLSL_except.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
@@ -224,11 +250,16 @@ helper_functions.h: helper_functions.cpp
 
 
 
+
+
 # clean
 clean:
 	rm -f .*.o $(MAIN) $(SHADER_HEADER) $(SHADER_DEF) a.out
 	rm -rf $(ERROR_DIR)
 	rm -rf $(DOC_DIR)
+
+
+
 
 
 
