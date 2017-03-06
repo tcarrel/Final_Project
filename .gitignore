@@ -1,7 +1,7 @@
 # Object files
 *.o
 *.ko
-*.obj
+#*.obj
 *.elf
 
 # Precompiled Headers
@@ -40,4 +40,7 @@ shaders.cpp
 gg
 a.out
 shader_externs.h
-resource/
+resource/*.png
+resource/*.jpg
+resource/*.blend
+resource/FA-22_Raptor.*
