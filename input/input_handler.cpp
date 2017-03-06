@@ -44,6 +44,7 @@ namespace Input
         }
 
         com_[ WINDOW_SHOW_COMMAND ] = new Window_Redraw( w );
+        com_[ SCREENSHOT_COMMAND ] = new Screenshot_Command( w );
         com_[ EXIT_COMMAND ] = new Exit_Command;
 
     }
@@ -76,7 +77,17 @@ namespace Input
         {
             unsigned i = get_index();
 #ifdef IH_DEBUG
-            fprintf( stderr, "EXIT %i\nWINDOW %i\nNULL %i\nALL %i\n", EXIT_COMMAND, WINDOW_SHOW_COMMAND, NULL_COMMAND, ALL_COMMANDS );
+            fprintf( stderr,
+                    "EXIT %i\n"
+                    "WINDOW %i\n"
+                    "NULL %i\n"
+                    "SCREENSHOT %i\n"
+                    "ALL %i\n",
+                    EXIT_COMMAND,
+                    WINDOW_SHOW_COMMAND,
+                    NULL_COMMAND,
+                    SCREENSHOT_COMMAND,
+                    ALL_COMMANDS );
             fprintf( stderr, "Index %i/%i\n", i, NUM_EVENT_SOURCES );
             fflush( stderr );
 #endif
@@ -113,6 +124,9 @@ namespace Input
                 {
                     case SDLK_F12:
                         return EXIT_COMMAND;
+                    case SDLK_F8:
+                    //case SDLK_PRINTSCREEN:
+                        return SCREENSHOT_COMMAND;
                     default:
                         return ALL_COMMANDS;
                 }

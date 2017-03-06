@@ -19,6 +19,7 @@ namespace Input
     enum Commands_Enum{
         WINDOW_SHOW_COMMAND, ///< Window given focus.
         EXIT_COMMAND, ///< Exit 
+        SCREENSHOT_COMMAND, ///< Screenshot
         NULL_COMMAND, ///< Null Object
         ALL_COMMANDS   ///< Qty
     };

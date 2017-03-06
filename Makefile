@@ -226,7 +226,7 @@ $(TEX_ERROR_DIR): $(MODEL_ERROR_DIR) $(ERROR_DIR)
 
 $(INPUT_DIR)/all_commands.h: $(INPUT_DIR)/command.h $(INPUT_DIR)/exit.h \
 		$(INPUT_DIR)/null.h $(INPUT_DIR)/command_enum.h \
-		$(INPUT_DIR)/window_show.h
+		$(INPUT_DIR)/window_show.h $(INPUT_DIR)/screenshot.h
 
 $(INPUT_DIR)/window_show.h: $(INPUT_DIR)/command.h $(INPUT_DIR)/command_enum.h \
 		$(APP_DIR)/window.h

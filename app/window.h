@@ -43,6 +43,14 @@ namespace App
 
             float   aspect( void );
 
+            /** Get the screen width.
+             */
+            inline int  w( void ) { return mode_.w; }
+            /** Get the screen height.
+             */
+            inline int  h( void ) { return mode_.h; }
+
+
             void    swap( void );
             void    redraw( void );
 

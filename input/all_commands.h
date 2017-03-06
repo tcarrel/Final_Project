@@ -16,3 +16,4 @@
 #include "null.h"
 #include "window_show.h"
 #include "exit.h"
+#include "screenshot.h"
