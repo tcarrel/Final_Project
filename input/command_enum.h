@@ -2,6 +2,9 @@
  *
  * \file command_enum.h
  * \author Thomas R. Carrel
+ *
+ * \brief Adds an enumerated type to destinguish commands.
+ *
  */
 
 

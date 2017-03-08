@@ -71,14 +71,14 @@ namespace App
             sg->eye_position( 2.0f, 1.75f, -2.0f );
             sg->target( 0.0f, 0.0f, 0.0f );
             sg->up_dir( 0.0f, 1.0f, 0.0f );
-            sg->perspective( 45.0f, 1.0f, 5.0f );
+            sg->perspective( 45.0f, 1.0f, 5.0f, window_->aspect() );
             sg->window( window_ );
 
             world_ = Model::Scene_Graph::ctor( sg );
 
             delete sg;
 
-            mesh_ = new Model::Mesh( "resource/torus.obj", window_, GL_TRIANGLES );
+            mesh_ = new Model::Mesh( "resource/cube.obj"/*, window_*/, GL_TRIANGLES );
             //mesh_ = new Model::Mesh( window_, GL_TRIANGLES );
 
             fprintf( stderr, "Mesh addr: %lx\n", (unsigned long int) mesh_ );
@@ -140,9 +140,6 @@ namespace App
     {
         assert( world_ != NULL );
         world_->render();
-
-        assert( window_ != NULL );
-        window_->swap();
 
         while( 1 )
         {

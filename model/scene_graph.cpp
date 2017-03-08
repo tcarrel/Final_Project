@@ -14,6 +14,8 @@
 #include "model.h"
 #include "mesh.h"
 
+#include "../app/window.h"
+
 
 //#define SCENE_GRAPH_DEBUG
 
@@ -242,6 +244,8 @@ namespace Model
                 models_[i]->draw( NULL, NULL );
             }
         }
+
+        window_->swap();
     }
 
 

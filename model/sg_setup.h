@@ -16,11 +16,8 @@
 # define _SG_SETUP_H_
 
 #include "../constants.h"
+#include "../app/window.h"
 
-namespace App
-{
-    class Window;
-}
 
 namespace Model
 {
@@ -46,7 +43,27 @@ namespace Model
             void eye_position(  GLfloat,    GLfloat,    GLfloat );
             void target(        GLfloat,    GLfloat,    GLfloat );
             void up_dir(        GLfloat,    GLfloat,    GLfloat );
-            void perspective(   GLfloat,    GLfloat,    GLfloat );
+            void perspective(   GLfloat,    GLfloat,    GLfloat,    GLfloat );
+
+            /**  Helper function for the scene graph setup struct.
+             * This sets the scene graph up for the perspective projection.
+             * If orthographic is already set, this will overwrite those settings.
+             * \param fov The Field Of Veiw angle.
+             * \param p1 The distance to the near plane or far plane, the function
+             * sets the smaller of p1 or p2 as the near plane.
+             * \param p2 The distance to the near plane or far plane, the function
+             * sets the greater of p1 or p2 as the far plane..
+             * \param w A pointer to the window.
+             */
+            inline void perspective(
+                    GLfloat fov,
+                    GLfloat p1,
+                    GLfloat p2,
+                    App::Window* w )
+            {
+                this->perspective( fov, p1, p2, w->aspect() );
+            }
+
             void orthographic(
                     GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat );
             void window(        App::Window* );
@@ -91,6 +108,8 @@ namespace Model
 
             GLfloat     near; ///< Perspective, near plane.
             GLfloat     far; ///< Perspective, far plane.
+
+            App::Window*    win;
     };
 
 

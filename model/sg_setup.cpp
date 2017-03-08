@@ -10,7 +10,6 @@
 
 #include "scene_graph.h"
 #include "sg_setup.h"
-#include "../app/window.h"
 
 
 
@@ -30,13 +29,14 @@ namespace Model
         look_at_up_y( 1.0f ),
         look_at_up_z( 0.0f ),
         pers_angle( 35.0f ),
-        pers_aspect( 16.0f / 9.0f ),
+        pers_aspect( -1.0f ),
         ortho_left( -1.0f ),
         ortho_right( 1.0f ),
         ortho_bottom( -1.0f ),
         ortho_top ( 1.0f ),
         near( 0.0f ),
-        far( 1.0f )
+        far( 1.0f ),
+        win( NULL )
     {}
 
 
@@ -124,11 +124,13 @@ namespace Model
      * sets the smaller of p1 or p2 as the near plane.
      * \param p2 The distance to the near plane or far plane, the function
      * sets the greater of p1 or p2 as the far plane..
+     * \param ar The aspect ratio.
      */
     void SG_Setup::perspective(
             GLfloat fov,
             GLfloat p1,
-            GLfloat p2 )
+            GLfloat p2,
+            GLfloat ar )
     {
         assert( p1 != p2 );
 
@@ -137,6 +139,7 @@ namespace Model
         this->near              =   (p1 < p2) ? p1 : p2;
         this->far               =   (p1 < p2) ? p2 : p1;
     }
+
 
 
 
@@ -183,7 +186,11 @@ namespace Model
      */
     void SG_Setup::window( App::Window* w )
     {
-        pers_aspect = w->aspect();
+         win = w;
+         if( pers_aspect < 0 )
+         {
+             pers_aspect = w->aspect();
+         }
     }
 
 } //Model namespace.

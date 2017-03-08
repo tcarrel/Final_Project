@@ -14,7 +14,6 @@
 #include<SDL2/SDL_opengl.h>
 
 #include<GL/glu.h>
-#include<GL/freeglut.h>
 
 #include "../constants.h"
 #include "../shader_program.h"

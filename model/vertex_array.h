@@ -14,7 +14,6 @@
 #include<SDL2/SDL_opengl.h>
 
 #include<GL/gl.h>
-#include<GL/freeglut.h>
 
 #include<glm/glm.hpp>
 

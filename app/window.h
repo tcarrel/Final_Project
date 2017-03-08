@@ -13,7 +13,6 @@
 #include<SDL2/SDL_opengl.h>
 
 #include<GL/glu.h>
-#include<GL/freeglut.h>
 
 #include<stdio.h>
 
@@ -23,7 +22,9 @@
 #include<glm/glm.hpp>
 
 
-
+//  Unfortunately, SDL2 windows using an OpenGL context don't work correctly
+// over a remote xserver, so putting this in was meaningless, but I'm leaving
+// it here in case it gets fixed in a future update.
 //#define REMOTE_WINDOW
 
 namespace App

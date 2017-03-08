@@ -15,8 +15,6 @@
 #include<SDL2/SDL_opengl.h>
 
 #include<GL/glu.h>
-#include<GL/freeglut.h>
-
 
 #include<cassert>
 
@@ -26,8 +24,14 @@
 #include "SG_except.h"
 #include "../constants.h"
 
+
 #ifndef  _SCENE_GRAPH_H_
 # define _SCENE_GRAPH_H
+
+namespace App
+{
+    class Window;
+} // App namespace
 
 namespace Model
 {
@@ -91,6 +95,7 @@ namespace Model
 
             GLboolean   dirty_;
 
+            App::Window* window_;
 
             /** Generic ctor is disabled.
              */

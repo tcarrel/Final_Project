@@ -11,7 +11,6 @@
 #include<SDL2/SDL_opengl.h>
 
 #include<GL/gl.h>
-#include<GL/freeglut.h>
 
 #include<glm/glm.hpp>
 
@@ -48,8 +47,8 @@ namespace Model
     {
         public:
 
-            Mesh( App::Window*, GLenum );
-            Mesh( const GLchar*, App::Window*, GLenum );
+            Mesh(  GLenum );
+            Mesh( const GLchar*,  GLenum );
             ~Mesh( void );
 
             void set_shader( Shader* );
@@ -81,7 +80,7 @@ namespace Model
             ///< different shader program can be passed in with
             ///< the draw call.
 
-            App::Window*            window_; ///< A pointer to the window.
+//            App::Window*            window_; ///< A pointer to the window.
 
             /** \todo Additional fields for texture info.
              * Some texture info may need to be passed with each draw call.

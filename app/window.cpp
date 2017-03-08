@@ -211,8 +211,9 @@ namespace App
         {
             fprintf(
                     stderr,
-                    "%s\tCould not create OpenGL context.\tSDL Error.\n",
-                    error_text
+                    "%s\tCould not create OpenGL context.\tSDL Error:\n%s\n",
+                    error_text,
+                    SDL_GetError()
                    );
             is_good_ = false;
         }
@@ -283,7 +284,7 @@ namespace App
 
         glPolygonMode( GL_FRONT, GL_FILL );
         glEnable( GL_CULL_FACE );
-        glEnable( GL_DEPTH_TEST );
+        //glEnable( GL_DEPTH_TEST );
         glCullFace( GL_BACK );
 
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );

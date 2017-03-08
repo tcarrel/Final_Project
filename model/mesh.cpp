@@ -7,7 +7,6 @@
 
 
 #include "mesh.h"
-//#include "vertex_array.h"
 
 #include "../shader_program.h"
 #include "../app/window.h"
@@ -29,10 +28,9 @@ namespace Model
 
     /**
      * Ctor.
-     * \param w A reference to the window.  Needed for swaping buffers.
      * \param m The rendering mode to be used for this mesh.
      */
-    Mesh::Mesh( App::Window* w, GLenum m = GL_TRIANGLES ) :
+    Mesh::Mesh( GLenum m = GL_TRIANGLES ) :
         dirty_( true ),
         verts_sent_to_gpu_( false ),
         mode_( m ),
@@ -127,8 +125,6 @@ namespace Model
 
         qty_ = vertices_.size();
 
-        window_ = w;
-
         init_gpu_buffers();
     }
 
@@ -139,13 +135,11 @@ namespace Model
     /** Load vertex data from .obj file.
      * \param filename The name of the .obj file to load.
      *
-     * \param w A reference to the window.  Needed for swapping out
-     * framebuffers.
      * \param filename Name of the file to load.
      * \param m The rendering mode for this mesh.
      */
 
-    Mesh::Mesh( const GLchar* filename, App::Window* w, GLenum m = GL_TRIANGLES ) 
+    Mesh::Mesh( const GLchar* filename, GLenum m = GL_TRIANGLES ) 
         : mode_( m )
     {
         if( !obj_ )
@@ -162,8 +156,6 @@ namespace Model
 
 
         qty_ = vertices_.size();
-
-        window_ = w;
 
 #ifdef DEBUG_MESH
         fprintf( stderr, "Num verts: %i\n", qty_ );
@@ -200,7 +192,7 @@ namespace Model
          * sooner.
          */
         shader_ = NULL;
-        window_ = NULL;
+//        window_ = NULL;
 
         glDeleteVertexArrays( 1, &vao_ );
         glDeleteBuffers( 1, &vbo_ );
