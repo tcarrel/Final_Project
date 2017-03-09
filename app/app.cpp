@@ -78,7 +78,7 @@ namespace App
 
             delete sg;
 
-            mesh_ = new Model::Mesh( "resource/cube.obj"/*, window_*/, GL_TRIANGLES );
+            mesh_ = new Model::Mesh( "resource/utah_teapot.obj", GL_TRIANGLES );
             //mesh_ = new Model::Mesh( window_, GL_TRIANGLES );
 
             fprintf( stderr, "Mesh addr: %lx\n", (unsigned long int) mesh_ );

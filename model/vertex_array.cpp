@@ -18,7 +18,7 @@ namespace Model
      * Selects an arbitrary initial size.
      */
     Vertex_Array::Vertex_Array( void ) :
-        Vertex_Array( 36 )
+        Vertex_Array( 35000 )
     {}
 
     /** Ctor.

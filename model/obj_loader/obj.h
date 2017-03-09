@@ -145,6 +145,8 @@ namespace Model
                 string* filename_; ///< The name of the file being read, mostly
                                    ///< for debugging purposes.
                 string* obj_name_; ///< The name of the object.
+
+                unsigned line_; ///< The previous line number;
         };
 
     } // OBJ namespace.

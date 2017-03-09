@@ -19,6 +19,11 @@
 #include<glm/ext.hpp>
 
 
+/** <false> colors vertices using their normal vector, <true> assigns a random
+ * color to each vertex.
+ */
+#define COLOR_RANDOMLY true
+
 namespace Model
 {
 
@@ -152,7 +157,7 @@ namespace Model
 #endif
 
         obj_->parse();
-        obj_->fill( vertices_, false );
+        obj_->fill( vertices_, COLOR_RANDOMLY );
 
 
         qty_ = vertices_.size();

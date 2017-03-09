@@ -9,7 +9,6 @@
 #include<sstream>
 #include<glm/glm.hpp>
 
-
 /**
  *  Converts a hex integer to a vec4 color.
  *  \param color The hex value of the desired color, RGBA-format, 8-bits per

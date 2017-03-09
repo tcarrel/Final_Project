@@ -6,8 +6,6 @@
  *
  */
 
-#include<string>
-#include<glm/glm.hpp>
 
 extern glm::vec4    to_vec_color( uint32_t );
 extern std::string  numtoa( GLuint i );

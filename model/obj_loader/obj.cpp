@@ -48,6 +48,7 @@ namespace Model
             obj_name_(NULL)
         {
             tracing_ = false;
+            line_ = 0;
         }
 
         /** OBJ Loader ctor.
@@ -59,6 +60,7 @@ namespace Model
             obj_name_(NULL)
         {
             tracing_ = false;
+            line_ = 0;
             if( is_open() )
             {
                 close();
@@ -143,6 +145,7 @@ namespace Model
                           */
                        ;
                }
+               ++line_;
                parse();
            }
         }
@@ -527,6 +530,7 @@ namespace Model
             vertices_.resize(0);
             textures_.resize(0);
             normals_.resize(0);
+            line_ = 0;
         }
 
 

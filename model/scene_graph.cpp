@@ -99,6 +99,8 @@ namespace Model
     {
         assert( su != NULL );
 
+        window_ = su->win;
+
         pos_  = glm::vec4( su->model_x, su->model_y, su->model_z, 1.0f );
 
         view_   = glm::lookAt(
