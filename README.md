@@ -71,7 +71,7 @@ using the program thus far.
 ![Utah Teapot 2](/.Images/utah_teapot.1.jpg)
 
 ##Credits
-* [Pyarelal Knowies](http://goanna.cs.rmit.edu.au/~pknowles/models.html) - 
+* [Pyarelal Knowles](http://goanna.cs.rmit.edu.au/~pknowles/models.html) - 
 Watertight Utah Teapot Model
 * [Christopher Batty](https://cs.uwaterloo.ca/~c2batty/) - Watertight Stanford
 Bunny Model
