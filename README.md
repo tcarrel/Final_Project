@@ -41,12 +41,6 @@ listed above.
 * [Lua](https://www.lua.org/) A scripting language.
 * [Vulkan®](https://www.khronos.org/vulkan/)
 
-##Additional Credits
-* The basics of the code for handling errors in the shader compilation process
-came from the book "OpenGL 4 Shading Language Cookbook" 2nd Ed. by
-[David Wolff](https://github.com/daw42/glslcookbook).
-
-
 ##Screenshots
 
 Here are some screenshots of some Wavefront .obj file that have been rendered
@@ -75,4 +69,7 @@ using the program thus far.
 Watertight Utah Teapot Model
 * [Christopher Batty](https://cs.uwaterloo.ca/~c2batty/) - Watertight Stanford
 Bunny Model
+* The basics of the code for handling errors in the shader compilation process
+came from the book "OpenGL 4 Shading Language Cookbook" 2nd Ed. by
+[David Wolff](https://github.com/daw42/glslcookbook).
 
