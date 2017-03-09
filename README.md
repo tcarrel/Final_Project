@@ -63,3 +63,9 @@ using the program thus far.
 
 ###A torus with vertices colored according to their normal vector.
 ![Normal Colored Torus](/.Images/torus_normals.png)
+
+###The Utah Teapot with randomly colored vertices.
+![Utah Teapot 1](/.Images/utah_teapot.2.jpg)
+
+###The Utah Teapot with vertices colored according to their normal vector.
+![Utah Teapot 2](/.Images/utah_teapot.1.jpg)
