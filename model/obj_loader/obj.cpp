@@ -88,7 +88,7 @@ namespace Model
                     );
            }
 
-           if( !eof() )
+           while( !eof() )
            {
 
                while( isspace( peek() ) )
@@ -146,7 +146,7 @@ namespace Model
                        ;
                }
                ++line_;
-               parse();
+               //parse();
            }
         }
 
