@@ -80,18 +80,17 @@ namespace Model
             ///< different shader program can be passed in with
             ///< the draw call.
 
-//            App::Window*            window_; ///< A pointer to the window.
-
             /** \todo Additional fields for texture info.
              * Some texture info may need to be passed with each draw call.
              */
-
 
             //        static const 
             //static GLuint cull_state_;
             static GLuint           curr_vao_;
 
             static OBJ::OBJ_File*   obj_;
+
+            float   size_;
     };
 
 } //Model namespace.

@@ -38,7 +38,7 @@ namespace Input
             Input_Handler( App::Window* );
             ~Input_Handler( void );
 
-            void process( void );
+            bool process( void );
 
         private:
             unsigned get_index( void );

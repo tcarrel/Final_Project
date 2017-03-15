@@ -130,6 +130,8 @@ namespace Model
 
         qty_ = vertices_.size();
 
+        size_ = 2.0f;
+
         init_gpu_buffers();
     }
 
@@ -162,6 +164,8 @@ namespace Model
 
         qty_ = vertices_.size();
 
+        size_ = obj_->max_dim();
+
 #ifdef DEBUG_MESH
         fprintf( stderr, "Num verts: %i\n", qty_ );
         for( unsigned i = 0; i < ((10 < vertices_.size()) ? 10 : vertices_.size()); i++ )
@@ -176,6 +180,8 @@ namespace Model
 #endif
 
         init_gpu_buffers();
+
+        obj_->reset();
     }
 
 
@@ -197,12 +203,13 @@ namespace Model
          * sooner.
          */
         shader_ = NULL;
-//        window_ = NULL;
 
-        glDeleteVertexArrays( 1, &vao_ );
-        glDeleteBuffers( 1, &vbo_ );
+        fprintf( stderr, "***\n" );
 
-        vao_ = vbo_ = UINT_MAX;
+        //glDeleteVertexArrays( 1, &vao_ );
+        //glDeleteBuffers( 1, &vbo_ );
+
+        vao_ = vbo_ = 0;
     }
 
 
@@ -240,7 +247,7 @@ namespace Model
 
             if( curr_vao_ != vao_ )
             {
-                glBindVertexArray( vao_ );
+ //               glBindVertexArray( vao_ );
                 curr_vao_ = vao_;
             }
 
@@ -249,6 +256,10 @@ namespace Model
                 sh->set_uniform( "vp", *vp );
             }
 
+            sh->set_uniform(
+                    "sf",
+                    1.0f / size_
+                    );
             glDrawArrays( mode_, 0, qty_ );
         }
 

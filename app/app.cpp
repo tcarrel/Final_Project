@@ -62,9 +62,6 @@ namespace App
             glPointSize(40.0f);
 #endif
 
-
-
-
             Model::SG_Setup* sg = new Model::SG_Setup;
 
             sg->position( 0.0f, 0.0f, 0.0f );
@@ -77,14 +74,14 @@ namespace App
             world_ = Model::Scene_Graph::ctor( sg );
 
             delete sg;
+            sg = NULL;
 
-            mesh_ = new Model::Mesh( "resource/utah_teapot.obj", GL_TRIANGLES );
-            //mesh_ = new Model::Mesh( window_, GL_TRIANGLES );
+            mesh_ = new Model::Mesh( "resource/torus.obj", GL_TRIANGLES );
 
-            fprintf( stderr, "Mesh addr: %lx\n", (unsigned long int) mesh_ );
+//            fprintf( stderr, "Mesh addr: %lx\n", (unsigned long int) mesh_ );
 
             shader_ = new Shader;
-            shader_->add_code( &SIMPLE_v, VERTEX_SHADER );
+            shader_->add_code( &SIMPLE_v, VERTEX_SHADER   );
             shader_->add_code( &SIMPLE_f, FRAGMENT_SHADER );
 
             if( shader_->compile() == ERROR )
@@ -99,10 +96,8 @@ namespace App
             shader_->print();
             shader_->print_active_uniforms();
 
-
             world_->add_models( mesh_ );
             mesh_->set_shader( shader_ );
-
 
         }
         else
@@ -141,10 +136,8 @@ namespace App
         assert( world_ != NULL );
         world_->render();
 
-        while( 1 )
-        {
-            input_.process();
-        }
+        while( input_.process() )
+        {}
 
         return 0;
     }
@@ -158,18 +151,24 @@ namespace App
      */
     Application::~Application( void )
     {
-        SDL_Quit();
+        if( world_ )
+        {
+            delete world_;
+        }
 
         if( shader_ )
         {
+            fprintf( stderr, "////\n" );
             delete shader_;
         }
 
         if( window_ )
         {
+            fprintf( stderr, "!!!!!\n" );
             delete window_;
         }
 
+        SDL_Quit();
     }
 
 } //App namespace.

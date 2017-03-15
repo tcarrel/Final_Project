@@ -99,6 +99,9 @@ namespace Model
                 void trace( const string& );
                 void stop_trace( void );
 
+                glm::vec3 size( void );
+                float max_dim( void );
+
             private:
 
                 struct Index_Set
@@ -119,6 +122,8 @@ namespace Model
                 void s();
                 void u();
                 void comment();
+
+                void measure( float, float, float );
 
                 /**  Returns the next character to be read from the file
                  * without popping it from the queue.
@@ -147,6 +152,11 @@ namespace Model
                 string* obj_name_; ///< The name of the object.
 
                 unsigned line_; ///< The previous line number;
+
+                float  size_[3];
+                float* min_;
+                float* max_;
+
         };
 
     } // OBJ namespace.

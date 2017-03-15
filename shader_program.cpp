@@ -86,7 +86,7 @@ Shader::~Shader( void )
     }
 
     //Get shader qty.
-    GLint shader_qty;
+    GLint shader_qty = 0;;
     glGetProgramiv( program_, GL_ATTACHED_SHADERS, &shader_qty );
 
     //Get shader names

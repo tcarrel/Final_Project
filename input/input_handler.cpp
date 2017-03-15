@@ -64,14 +64,14 @@ namespace Input
                 com_[i] = NULL;
             }
         }
-        Null_Command::deinstance();
+        //Null_Command::deinstance();
     }
 
 
 
     /** Process all commands until the event queue is empty.
     */
-    void Input_Handler::process( void )
+    bool Input_Handler::process( void )
     {
         while( SDL_PollEvent( &q_ ) != 0 )
         {
@@ -91,9 +91,16 @@ namespace Input
             fprintf( stderr, "Index %i/%i\n", i, NUM_EVENT_SOURCES );
             fflush( stderr );
 #endif
+            /*
+               if( i == EXIT_COMMAND )
+               {
+               return false;
+               }
+               */
 
             com_[i]->execute();
         }
+        return true;
     }
 
 
@@ -125,7 +132,7 @@ namespace Input
                     case SDLK_F12:
                         return EXIT_COMMAND;
                     case SDLK_F8:
-                    //case SDLK_PRINTSCREEN:
+                        //case SDLK_PRINTSCREEN:
                         return SCREENSHOT_COMMAND;
                     default:
                         return ALL_COMMANDS;

@@ -23,6 +23,7 @@ namespace Input
     {
         if( !instance_ )
         {
+//            atexit( Null_Command::deinstance );
             instance_ = new Null_Command;
         }
         return instance_;
@@ -33,7 +34,6 @@ namespace Input
         if( instance_ )
         {
             delete instance_;
-            instance_ = NULL;
         }
     }
 

@@ -131,6 +131,8 @@ namespace App
 
         if( window_ )
             SDL_DestroyWindow( window_ );
+
+        fprintf( stderr, "(((\n" );
     }
 
 

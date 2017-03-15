@@ -47,6 +47,7 @@ namespace Model
             filename_(NULL),
             obj_name_(NULL)
         {
+            min_ = max_ = NULL;
             tracing_ = false;
             line_ = 0;
         }
@@ -59,6 +60,7 @@ namespace Model
             filename_(NULL),
             obj_name_(NULL)
         {
+            min_ = max_ = NULL;
             tracing_ = false;
             line_ = 0;
             if( is_open() )
@@ -146,8 +148,13 @@ namespace Model
                        ;
                }
                ++line_;
-               //parse();
            }
+           size_[0] = max_[0] - min_[0];
+           size_[1] = max_[1] - min_[1];
+           size_[2] = max_[2] - min_[2];
+
+           delete [] max_;
+           delete [] min_;
         }
 
 
@@ -368,6 +375,8 @@ namespace Model
             }
 
             vertices_.push_back( v );
+
+            measure( x, y, z );
         }
 
 
@@ -531,6 +540,16 @@ namespace Model
             textures_.resize(0);
             normals_.resize(0);
             line_ = 0;
+
+            if( max_ )
+            {
+                delete [] max_;
+            }
+
+            if( min_ )
+            {
+                delete [] min_;
+            }
         }
 
 
@@ -569,6 +588,82 @@ namespace Model
             }
         }
 
+
+
+        /** Records the min and max values along each axis.
+         * \param x X-axis value.
+         * \param y Y-axis value.
+         * \param z Z-axis value.
+         */
+        void OBJ_File::measure( float x, float y, float z )
+        {
+            if( !min_ )
+            {
+                min_ = new float[3];
+                min_[0] = 0.0;
+                min_[1] = 0.0;
+                min_[2] = 0.0;
+            }
+
+            if( !max_ )
+            {
+                max_ = new float[3];
+                max_[0] = 0.0;
+                max_[1] = 0.0;
+                max_[2] = 0.0;
+            }
+
+            if( x < min_[0] )
+            {
+                min_[0] = x;
+            }
+            if( x > max_[0] )
+            {
+                max_[0] = x;
+            }
+
+            if( y < min_[1] )
+            {
+                min_[1] = y;
+            }
+            if( y > max_[1] )
+            {
+                max_[1] = y;
+            }
+
+            if( z < min_[2] )
+            {
+                min_[2] = z;
+            }
+            if( z > max_[2] )
+            {
+                max_[2] = z;
+            }
+
+        }
+
+
+
+
+        /** Returns the size of the model.
+         */
+        glm::vec3 OBJ_File::size( void )
+        {
+            return glm::vec3( size_[0], size_[1], size_[2] );
+        }
+
+
+
+
+
+        /** Returns the largest dimension of the model.
+         */
+        float   OBJ_File::max_dim( void )
+        {
+            float val = size_[0];
+            val = (val < size_[1]) ? size_[1] : val;
+            return (val < size_[2]) ? size_[2] : val;
+        }
 
     } //OBJ namespace.
 
