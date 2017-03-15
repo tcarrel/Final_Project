@@ -155,6 +155,7 @@ namespace Model
 
            delete [] max_;
            delete [] min_;
+           max_ = min_ = NULL;
         }
 
 
