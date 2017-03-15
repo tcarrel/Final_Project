@@ -64,6 +64,9 @@ using the program thus far.
 ###The Utah Teapot with vertices colored according to their normal vector.
 ![Utah Teapot 2](/.Images/utah_teapot.1.jpg)
 
+##The Stanford Bunny with vertices colored according to their normal vector.
+![Stanford Bunny](/.Images/stanford_bunny.png)
+
 ##Credits
 * [Pyarelal Knowles](http://goanna.cs.rmit.edu.au/~pknowles/models.html) - 
 Watertight Utah Teapot Model
