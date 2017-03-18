@@ -46,26 +46,26 @@ listed above.
 Here are some screenshots of some Wavefront .obj file that have been rendered
 using the program thus far.
 
-###A cube with randomly colored verticies.
 ![A Cube](/.Images/cube.png)
+A cube with randomly colored verticies.
 
-###A torus with randomly colored vertices.
 ![A Torus](/.Images/torus.png)
+A torus with randomly colored vertices.
 
-###Two intersecting toruses with randomly colored vertices.
 ![Two linked toruses.](/.Images/toruses.png)
+Two intersecting toruses with randomly colored vertices.
 
-###A torus with vertices colored according to their normal vector.
 ![Normal Colored Torus](/.Images/torus_normals.png)
+A torus with vertices colored according to their normal vector.
 
-###The Utah Teapot with randomly colored vertices.
 ![Utah Teapot 1](/.Images/utah_teapot.2.jpg)
+The Utah Teapot with randomly colored vertices.
 
-###The Utah Teapot with vertices colored according to their normal vector.
 ![Utah Teapot 2](/.Images/utah_teapot.1.jpg)
+The Utah Teapot with vertices colored according to their normal vector.
 
-###The Stanford Bunny with vertices colored according to their normal vector.
 ![Stanford Bunny](/.Images/stanford_bunny.png)
+The Stanford Bunny with vertices colored according to their normal vector.
 
 ##Credits
 * [Pyarelal Knowles](http://goanna.cs.rmit.edu.au/~pknowles/models.html) - 
