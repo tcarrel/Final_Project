@@ -22,8 +22,8 @@ namespace App
     char error_text[]   = "\033[1;31;40mERROR!!\033[0m";
 
 
-    /** Create default window.  Sets a hard coded clear color for OpenGL, ideally,
-     * this ctor should not be used in the final game..
+    /** Create default window.  Sets a hard coded clear color for OpenGL,
+     * ideally, this ctor should not be used in the final game..
      */
     Window::Window(void) :
         Window(0.7f, 0.5f, 0.25f )

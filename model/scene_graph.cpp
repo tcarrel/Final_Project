@@ -69,8 +69,9 @@ namespace Model
                 {
                     throw(
                             Scene_Graph_Exception(
-                                "Scene_Graph::ctor(args) called with NULL argument"
-                                " before a Scene_Graph class was instanciated."
+                                "Scene_Graph::ctor(args) called with NULL "
+                                "argument before a Scene_Graph class was "
+                                "instanciated."
                                 )
                          );
                 }
@@ -180,6 +181,7 @@ namespace Model
         if( models_[0] )
         {
             delete models_[0];
+            models_[0] = NULL;
         }
         delete [] models_;
     }
@@ -197,6 +199,7 @@ namespace Model
 #endif
     void Scene_Graph::add_models( Mesh* m )
     {
+
         if( !m )
         {
             return;
@@ -239,12 +242,12 @@ namespace Model
         {
             if( dirty_ )
             {
-                models_[i]->draw( NULL, &vp_ );
+                models_[i]->draw( NULL, &vp_, dirty_ );
                 dirty_ = false;
             }
             else
             {
-                models_[i]->draw( NULL, NULL );
+                models_[i]->draw( NULL, NULL, dirty_ );
             }
         }
 

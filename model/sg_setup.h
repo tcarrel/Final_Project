@@ -47,12 +47,13 @@ namespace Model
 
             /**  Helper function for the scene graph setup struct.
              * This sets the scene graph up for the perspective projection.
-             * If orthographic is already set, this will overwrite those settings.
+             * If orthographic is already set, this will overwrite those
+             * settings.
              * \param fov The Field Of Veiw angle.
-             * \param p1 The distance to the near plane or far plane, the function
-             * sets the smaller of p1 or p2 as the near plane.
-             * \param p2 The distance to the near plane or far plane, the function
-             * sets the greater of p1 or p2 as the far plane..
+             * \param p1 The distance to the near plane or far plane, the
+             * function sets the smaller of p1 or p2 as the near plane.
+             * \param p2 The distance to the near plane or far plane, the
+             * function sets the greater of p1 or p2 as the far plane..
              * \param w A pointer to the window.
              */
             inline void perspective(

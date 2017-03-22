@@ -18,7 +18,7 @@ namespace Model
      * Selects an arbitrary initial size.
      */
     Vertex_Array::Vertex_Array( void ) :
-        Vertex_Array( 35000 )
+        Vertex_Array( 5000 )
     {}
 
     /** Ctor.
@@ -38,8 +38,7 @@ namespace Model
      */
     Vertex_Array::~Vertex_Array( void )
     {
-        delete [] data_;
-        data_ = NULL;
+        clear();
     }
 
 
@@ -127,6 +126,18 @@ namespace Model
 
         delete data_;
         data_ = new Vertex[max_size_];
+    }
+
+
+
+    /**  Clears all of the stored vertices.
+     * Should be used after the vertices have all be sent to the gpu's memory.
+     */
+    void Vertex_Array::clear( void )
+    {
+        delete [] data_;
+        size_ = max_size_ = 0;
+        data_ = NULL;
     }
 
 } //Model namespace.

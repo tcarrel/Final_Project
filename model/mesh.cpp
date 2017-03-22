@@ -19,171 +19,49 @@
 #include<glm/ext.hpp>
 
 
-/** <false> colors vertices using their normal vector, <true> assigns a random
- * color to each vertex.
+/** Set to false in order to color vertices using their normal vector,
+ * set to true to assign a random color to each vertex.
  */
-#define COLOR_RANDOMLY true
+#define COLOR_RANDOMLY false
 
 namespace Model
 {
 
-    GLuint          Mesh::curr_vao_ = UINT_MAX;
-    OBJ::OBJ_File*  Mesh::obj_      = NULL;
-
+    GLuint          Mesh::curr_vao_ = 0;
 
     /**
      * Ctor.
+     * \param name Each loaded mesh will be given a unique name that can be
+     * used later to identify them.
      * \param m The rendering mode to be used for this mesh.
      */
-    Mesh::Mesh( GLenum m = GL_TRIANGLES ) :
+    Mesh::Mesh( const std::string& name, GLenum m = GL_TRIANGLES ) :
         dirty_( true ),
+        vertices_( new Vertex_Array ),
         verts_sent_to_gpu_( false ),
+        qty_( 0 ),
         mode_( m ),
         vbo_( 0 ),
-        vao_( 0 )
+        vao_( 0 ),
+        size_( 1.0f ),
+        child_qty_( 0 ),
+        children_( NULL ),
+        name_( name )
+    {}
+
+
+
+
+    void Mesh::done( void )
     {
-#ifdef DEBUG_MESH
-        fprintf(
-                stderr,
-                "Vertex Size\t:\t%li\n",
-                sizeof(Vertex)
-               );
-#endif
-
-        /** Hard coded cube mesh
-         * Delete later.
-         * vertex coordinates borrowed from
-         * http://www.opengl-tutorial.org/beginners-tutorials/tutorial-4-a-colored-cube/
-         */
-
-
-        //1
-        vertices_.add( Vertex( glm::vec3( -1.0f,-1.0f,-1.0f ), to_vec_color( Color::random_color() | 0xff ) ) );
-        vertices_.add( Vertex( glm::vec3( -1.0f,-1.0f, 1.0f ), to_vec_color( Color::random_color() | 0xff ) ) );
-        vertices_.add( Vertex( glm::vec3( -1.0f, 1.0f, 1.0f ), to_vec_color( Color::random_color() | 0xff ) ) );
-
-        //2
-        vertices_.add( Vertex( glm::vec3( 1.0f, 1.0f,-1.0f ), to_vec_color(  Color::random_color() | 0xff) ) );
-        vertices_.add( Vertex( glm::vec3( -1.0f,-1.0f,-1.0f ), to_vec_color( Color::random_color() | 0xff ) ) );
-        vertices_.add( Vertex( glm::vec3( -1.0f, 1.0f,-1.0f ), to_vec_color( Color::random_color() | 0xff ) ) );
-
-        //3
-        vertices_.add( Vertex( glm::vec3( 1.0f,-1.0f, 1.0f ), to_vec_color(  Color::random_color() | 0xff ) ) );
-        vertices_.add( Vertex( glm::vec3( -1.0f,-1.0f,-1.0f ), to_vec_color( Color::random_color() | 0xff ) ) );
-        vertices_.add( Vertex( glm::vec3( 1.0f,-1.0f,-1.0f ), to_vec_color(  Color::random_color() | 0xff ) ) );
-
-        //4
-        vertices_.add( Vertex( glm::vec3( 1.0f, 1.0f,-1.0f ), to_vec_color(  Color::random_color() | 0xff ) ) );
-        vertices_.add( Vertex( glm::vec3( 1.0f,-1.0f,-1.0f ), to_vec_color(  Color::random_color() | 0xff ) ) );
-        vertices_.add( Vertex( glm::vec3( -1.0f,-1.0f,-1.0f ), to_vec_color( Color::random_color() | 0xff ) ) );
-
-        //5
-        vertices_.add( Vertex( glm::vec3( -1.0f,-1.0f,-1.0f ), to_vec_color( Color::random_color() | 0xff ) ) );
-        vertices_.add( Vertex( glm::vec3( -1.0f, 1.0f, 1.0f ), to_vec_color( Color::random_color() | 0xff ) ) );
-        vertices_.add( Vertex( glm::vec3( -1.0f, 1.0f,-1.0f ), to_vec_color( Color::random_color() | 0xff ) ) );
-
-        //6
-        vertices_.add( Vertex( glm::vec3( 1.0f,-1.0f, 1.0f ), to_vec_color(  Color::random_color() | 0xff ) ) );
-        vertices_.add( Vertex( glm::vec3( -1.0f,-1.0f, 1.0f ), to_vec_color( Color::random_color() | 0xff ) ) );
-        vertices_.add( Vertex( glm::vec3( -1.0f,-1.0f,-1.0f ), to_vec_color( Color::random_color() | 0xff ) ) );
-
-        //7
-        vertices_.add( Vertex( glm::vec3( -1.0f, 1.0f, 1.0f ), to_vec_color( Color::random_color() | 0xff ) ) );
-        vertices_.add( Vertex( glm::vec3( -1.0f,-1.0f, 1.0f ), to_vec_color( Color::random_color() | 0xff ) ) );
-        vertices_.add( Vertex( glm::vec3( 1.0f,-1.0f, 1.0f ), to_vec_color(  Color::random_color() | 0xff ) ) );
-
-        //8
-        vertices_.add( Vertex( glm::vec3( 1.0f, 1.0f, 1.0f ), to_vec_color( Color::random_color() | 0xff ) ) );
-        vertices_.add( Vertex( glm::vec3( 1.0f,-1.0f,-1.0f ), to_vec_color( Color::random_color() | 0xff ) ) );
-        vertices_.add( Vertex( glm::vec3( 1.0f, 1.0f,-1.0f ), to_vec_color( Color::random_color() | 0xff ) ) );
-
-        //9
-        vertices_.add( Vertex( glm::vec3( 1.0f,-1.0f,-1.0f ), to_vec_color( Color::random_color() | 0xff ) ) );
-        vertices_.add( Vertex( glm::vec3( 1.0f, 1.0f, 1.0f ), to_vec_color( Color::random_color() | 0xff ) ) );
-        vertices_.add( Vertex( glm::vec3( 1.0f,-1.0f, 1.0f ), to_vec_color( Color::random_color() | 0xff ) ) );
-
-        //10
-        vertices_.add( Vertex( glm::vec3( 1.0f, 1.0f, 1.0f ), to_vec_color(  Color::random_color() | 0xff ) ) );
-        vertices_.add( Vertex( glm::vec3( 1.0f, 1.0f,-1.0f ), to_vec_color(  Color::random_color() | 0xff ) ) );
-        vertices_.add( Vertex( glm::vec3( -1.0f, 1.0f,-1.0f ), to_vec_color( Color::random_color() | 0xff ) ) );
-
-        //11
-        vertices_.add( Vertex( glm::vec3( 1.0f, 1.0f, 1.0f ), to_vec_color(  Color::random_color() | 0xff ) ) );
-        vertices_.add( Vertex( glm::vec3( -1.0f, 1.0f,-1.0f ), to_vec_color( Color::random_color() | 0xff ) ) );
-        vertices_.add( Vertex( glm::vec3( -1.0f, 1.0f, 1.0f ), to_vec_color( Color::random_color() | 0xff ) ) );
-
-        //12
-        vertices_.add( Vertex( glm::vec3( 1.0f, 1.0f, 1.0f ), to_vec_color(  Color::random_color() | 0xff ) ) );
-        vertices_.add( Vertex( glm::vec3( -1.0f, 1.0f, 1.0f ), to_vec_color( Color::random_color() | 0xff ) ) );
-        vertices_.add( Vertex( glm::vec3( 1.0f,-1.0f, 1.0 ), to_vec_color(   Color::random_color() | 0xff ) ) );
-
-        vertices_.done();
-
-#ifdef DEBUG_MESH
-        fprintf( stderr,
-                "Position\t[%s]\nColor\t\t[%s]\n\n",
-                glm::to_string( vertices_[0].pos ).c_str(),
-                glm::to_string( vertices_[0].color ).c_str()
-               );
-#endif
-
-
-        qty_ = vertices_.size();
-
-        size_ = 2.0f;
-
-        init_gpu_buffers();
-    }
-
-
-
-
-
-    /** Load vertex data from .obj file.
-     * \param filename The name of the .obj file to load.
-     *
-     * \param filename Name of the file to load.
-     * \param m The rendering mode for this mesh.
-     */
-
-    Mesh::Mesh( const GLchar* filename, GLenum m = GL_TRIANGLES ) 
-        : mode_( m )
-    {
-        if( !obj_ )
-        {
-            obj_ = new OBJ::OBJ_File( filename );
-        }
-        
-#ifdef DEBUG_MESH
-        obj_->trace("Debug/obj_loader.trace");
-#endif
-
-        obj_->parse();
-        obj_->fill( vertices_, COLOR_RANDOMLY );
-
-
-        qty_ = vertices_.size();
-
-        size_ = obj_->max_dim();
-
-#ifdef DEBUG_MESH
-        fprintf( stderr, "Num verts: %i\n", qty_ );
-        for( unsigned i = 0; i < ((10 < vertices_.size()) ? 10 : vertices_.size()); i++ )
-        {
-            fprintf( stderr,
-                    "Position\t[%s]\nColor\t\t[%s]\n\n",
-                    glm::to_string( vertices_[i].pos ).c_str(),
-                    glm::to_string( vertices_[i].color ).c_str()
-                   );
-        }
-        obj_->stop_trace();
-#endif
-
+        qty_ = vertices_->size();
         init_gpu_buffers();
 
-        obj_->reset();
+        for( GLuint i = 0; i < child_qty_; i++ )
+        {
+            children_[i]->done();
+        }
     }
-
 
 
 
@@ -195,12 +73,12 @@ namespace Model
     Mesh::~Mesh( void )
     {
         /**
-         * We cannot delete shaders explicitly as there is no way to easily tell if
-         * they are be used in for rendering multiple meshes.  For the time being,
-         * we will rely on the OS to clean up after us after program exit.  As the
-         * program becomes more mature, we will store a list of all shader program
-         * created and create a SIGKILL handler to delete them on exit and no
-         * sooner.
+         * We cannot delete shaders explicitly as there is no way to easily
+         * tell if they are be used in for rendering multiple meshes.  For the
+         * time being, we will rely on the OS to clean up after us after
+         * program exit.  As the program becomes more mature, we will store a
+         * list of all shader program created and create a SIGKILL handler to
+         * delete them on exit and no sooner.
          */
         shader_ = NULL;
 
@@ -210,6 +88,19 @@ namespace Model
         //glDeleteBuffers( 1, &vbo_ );
 
         vao_ = vbo_ = 0;
+
+
+        if( child_qty_ > 0 )
+        {
+            for( GLuint i = 0; i < child_qty_; i++ )
+            {
+                delete children_[i];
+                children_[i] = NULL;
+            }
+            delete [] children_;
+            children_ = NULL;
+            child_qty_ = 0;
+        }
     }
 
 
@@ -217,14 +108,19 @@ namespace Model
 
 
 
-    /** For now, this will be responsible for sending all the draw calls to the gpu.
-     * Later, this will be responsible only for creating command packets and
-     * sending those to the command buffer.
+    /** For now, this will be responsible for sending all the draw calls to
+     * the gpu.  Later, this will be responsible only for creating command
+     * packets and sending those to the command buffer.
      * \param prog If using a shader other than the 
      * \param vp The view-projection matrix
      */
-    void Mesh::draw( Shader* prog, glm::mat4* vp )
-        throw( Scene_Graph_Exception )
+    void Mesh::draw(
+            Shader*     prog,
+            glm::mat4*  vp,
+            bool        draw = false
+            ) throw( Scene_Graph_Exception )
+    {
+        if( draw || dirty_ )
         {
             Shader* sh = NULL;
 
@@ -244,24 +140,25 @@ namespace Model
                             "No shader program provided to mesh object.\n" ) );
             }
 
-
-            if( curr_vao_ != vao_ )
-            {
- //               glBindVertexArray( vao_ );
-                curr_vao_ = vao_;
-            }
+            glBindVertexArray( vao_ );
 
             if( vp )
             {
                 sh->set_uniform( "vp", *vp );
             }
 
-            sh->set_uniform(
-                    "sf",
-                    1.0f / size_
-                    );
+            sh->set_uniform( "sf", size_ );
             glDrawArrays( mode_, 0, qty_ );
         }
+
+        if( child_qty_ > 0 )
+        {
+            for( GLuint i = 0; i < child_qty_; i++ )
+            {
+                children_[i]->draw( prog, vp, draw || dirty_ );
+            }
+        }
+    }
 
 
     /**  Set the default shader program to be used when rendering this mesh.
@@ -270,6 +167,10 @@ namespace Model
     void Mesh::set_shader( Shader* p )
     {
         shader_ = p;
+        for( GLuint i = 0; i < child_qty_; i++ )
+        {
+            children_[i]->set_shader(p);
+        }
     }
 
 
@@ -277,6 +178,8 @@ namespace Model
 
 
 
+    /**  Sets up gbu buffers and fills them with the appropriate data.
+    */
     void Mesh::init_gpu_buffers( void )
     {
 #ifdef DEBUG
@@ -284,9 +187,14 @@ namespace Model
                 stderr,
                 "Vertex Array:\n"
                 "size  =  %i\n",
-                vertices_.size()
+                vertices_->size()
                );
 #endif
+        if( verts_sent_to_gpu_ )
+        {
+            return;
+        }
+
         glGenVertexArrays( 1, &vao_ );
         glBindVertexArray( vao_ );
 
@@ -294,15 +202,132 @@ namespace Model
         glBindBuffer( GL_ARRAY_BUFFER, vbo_ );
         glBufferData(
                 GL_ARRAY_BUFFER,
-                sizeof(Vertex) * vertices_.size(),
-                vertices_.data_addr(),
+                sizeof(Vertex) * vertices_->size(),
+                vertices_->data_addr(),
                 GL_STATIC_DRAW
                 );
 
         glEnableVertexAttribArray( 0 );
-        glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) 0 );
+        glVertexAttribPointer(
+                0,
+                3,
+                GL_FLOAT,
+                GL_FALSE,
+                sizeof(Vertex),
+                (void*) 0
+                );
         glEnableVertexAttribArray( 1 );
-        glVertexAttribPointer( 1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) (3 * sizeof(GLfloat)) );
+        glVertexAttribPointer(
+                1,
+                4,
+                GL_FLOAT,
+                GL_FALSE,
+                sizeof(Vertex),
+                (void*) (3 * sizeof(GLfloat))
+                );
+
+        verts_sent_to_gpu_ = true;
+        /*
+           delete vertices_;
+           vertices_ = NULL;
+           */
+    }
+
+
+
+
+
+
+    /** Add a child mesh.
+     * \param child The mesh to be added.
+     */
+    void Mesh::add_child( Mesh* child )
+    {
+        GLuint old_qty = child_qty_++;
+        Mesh** temp = children_;
+        children_ = new Mesh*[child_qty_];
+
+        for( GLuint i = 0; i < old_qty; i++ )
+        {
+            children_[i] = temp[i];
+            temp[i] = NULL;
+        }
+        children_[old_qty] = child;
+
+        delete [] temp;
+    }
+
+
+
+
+
+
+
+    void Mesh::set_size( const GLfloat& size, const GLfloat& total )
+    {
+        size_ = size / total;
+
+        for( GLuint i = 0; i < child_qty_; i++ )
+        {
+            children_[i]->set_size( size, total );
+        }
+    }
+
+
+
+
+    void Mesh::print_info( void )
+    {
+        std::string spacing = "  ";
+        fprintf(
+                stdout,
+                "Mesh debug output\n"
+                "=================\n"
+                "%s%s:\n"
+                "  %sSize:\t\t%f\n"
+                "  %sVertices:\t\t%d\n",
+                spacing.c_str(),
+                name_.c_str(),
+                spacing.c_str(),
+                size_,
+                spacing.c_str(),
+                vertices_->size()
+               );
+
+        for( GLuint i = 0; i < child_qty_; i++ )
+        {
+            children_[i]->print_info( spacing + "  " );
+        }
+        fprintf(
+                stdout,
+                "=End of mesh output=\n"
+               );
+    }
+
+
+
+
+    void Mesh::print_info( std::string spacing )
+    {
+        fprintf(
+                stdout,
+                "%s=================\n"
+                "%s%s:\n"
+                "  %sSize:\t\t%f\n"
+                "  %sVertices:\t\t%d\n",
+                spacing.c_str(),
+                spacing.c_str(),
+                name_.c_str(),
+                spacing.c_str(),
+                size_,
+                spacing.c_str(),
+                vertices_->size()
+               );
+
+        for( GLuint i = 0; i < child_qty_; i++ )
+        {
+            children_[i]->print_info( spacing + "  " );
+        }
     }
 
 } //Model namespace.

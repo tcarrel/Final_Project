@@ -30,8 +30,9 @@
 namespace App
 {
 
-    /**  The class for the game window.  Even though the game displays fullscreen.
-    */
+    /**  The class for the game window.  Even though the game displays
+     * fullscreen.
+     */
     class Window
     {
         public:
@@ -76,8 +77,8 @@ namespace App
             const GLfloat   clear_color_[4]; ///< The clear color for OpenGL.
             bool            is_good_; ///< Window condition.
 
-            SDL_Window*     window_; ///< Address of the actual window, needed for
-            ///< drawing.
+            SDL_Window*     window_; ///<  Address of the actual window, needed
+                                     ///< for drawing.
             SDL_GLContext   gl_; ///< The OpenGL context for this window.
 
             string          title_; ///< The window title.

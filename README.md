@@ -67,10 +67,10 @@ The Utah Teapot with vertices colored according to their normal vector.
 ![Stanford Bunny](/.Images/stanford_bunny.png)
 The Stanford Bunny with vertices colored according to their normal vector.
 
-##Credits
-* [Pyarelal Knowles](http://goanna.cs.rmit.edu.au/~pknowles/models.html) - 
+##Works cited:
+* [Pyarelal Knowles](http://goanna.cs.rmit.edu.au/~pknowles/models.html): 
 Watertight Utah Teapot Model
-* [Christopher Batty](https://cs.uwaterloo.ca/~c2batty/) - Watertight Stanford
+* [Christopher Batty](https://cs.uwaterloo.ca/~c2batty/): Watertight Stanford
 Bunny Model
 * The basics of the code for handling errors in the shader compilation process
 came from the book "OpenGL 4 Shading Language Cookbook" 2nd Ed. by

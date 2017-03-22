@@ -50,7 +50,11 @@ namespace Model
 
             void set_program( Shader* );
 
+            void add( Mesh* );
+            void add( Model* );
+
         private:
+
             Mesh* mesh_;
 
             //

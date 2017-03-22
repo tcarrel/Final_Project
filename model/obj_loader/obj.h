@@ -20,19 +20,27 @@ using std::map;
 
 
 
+
 # include<glm/glm.hpp>
 
 
 #include "OBJ_except.h"
+#include "model_list.h"
+#include "../model.h"
+
+class Shader;
 
 namespace Model
 {
+    class Model;
     class Mesh;
     class Vertex_Array;
     class Vertex;
 
     namespace OBJ
     {
+        class Model_list;
+
         /** This class takes a wavefront .obj file and loads it into a
          * Vertex_Array object.
          */
@@ -40,31 +48,39 @@ namespace Model
         {
             public:
                 OBJ_File( void );
-                OBJ_File( const string& );
                 ~OBJ_File( void );
 
                 /**  Opens an .obj file.
                  * \param f The filename.
                  */
                 inline void open( const char* f )
-                {
-                    filename_ = new string( f );
-                    file_.open( f );
-                }
+                { filename_ = new string( f ); file_.open( f ); }
                 /**  Opens an .obj file.
                  * \param s The filename.
                  */
                 inline void open( const string& s )
-                {
-                    open( s.c_str() );
-                }
+                { open( s.c_str() ); }
+
+                void parse( void )
+                    throw(  OBJ_Exception );
+                void fill(  Vertex_Array&, bool );
+                void reset( void );
+                void close( void );
+                void trace( const string& );
+                void stop_trace( void );
+                glm::vec3 size(  void );
+                float max_dim(   void );
+
+
+                Mesh* load_file( const string&, Shader*, bool, GLfloat )
+                    throw(  OBJ_Exception );
+
+            private:
 
                 /**  Condition of the input file stream.
                  */
                 inline bool good( void )
-                {
-                    return file_.good();
-                }
+                { return file_.good(); }
 
                 /**  Checks whether or not a file is opened.
                  */
@@ -76,40 +92,21 @@ namespace Model
                 inline bool eof( void )
                 { return file_.eof(); }
 
-                /**  Initiates parsing of an .obj file.
-                 */
-                void parse( void ) throw( OBJ_Exception );
-
-                /**  Initiates parsing of an .obj file.
-                 * \param s The name of the .obj file to be read.
-                 */
-                inline void parse( const string& s )
-                { open(s); parse(); }
-
-                /**  Initiates parsing of an .obj file.
-                 * \param s The name of the .obj file to be read.
-                 */
-                inline void parse( const char* s )
-                { open(s); parse(); }
-
-
-                void fill( Vertex_Array&, bool );
-                void reset( void );
-                void close( void );
-                void trace( const string& );
-                void stop_trace( void );
-
-                glm::vec3 size( void );
-                float max_dim( void );
-
-            private:
-
                 struct Index_Set
                 {
                     int v = 0;
                     int t = 0;
                     int n = 0;
                 };
+
+                struct Range{
+                    string      name;
+                    unsigned    start;
+                    unsigned    end;
+                };
+
+                void add_mesh();
+//                void fill( GLuint, bool );
 
                 void vertex();
                 void tex_coord();
@@ -130,10 +127,10 @@ namespace Model
                  */
                 inline char peek( void ) { return file_.peek(); }
 
-                std::ifstream file_; ///< Input file stream.
+                std::ifstream   file_; ///< Input file stream.
 
-                std::ofstream trace_;
-                bool          tracing_;
+                std::ofstream   trace_;
+                bool            tracing_;
 
                 vector<glm::vec3> vertices_;
                 vector<glm::vec2> textures_;
@@ -141,28 +138,29 @@ namespace Model
 
                 vector<Index_Set*> faces_;
 
-//                map<string, vector<glm::vec3>> vertices_;
-//                map<string, vector<glm::vec3>> normals_;
-
-//                vector<string*> groups_;
-//                vector<string*> material_files_;
-
                 string* filename_; ///< The name of the file being read, mostly
                                    ///< for debugging purposes.
                 string* obj_name_; ///< The name of the object.
 
                 unsigned line_; ///< The previous line number;
 
-                float  size_[3];
-                float* min_;
-                float* max_;
+                GLfloat     size_[3]; 
+                GLfloat*    min_;
+                GLfloat*    max_;
 
+                Mesh*       top_mesh_;
+                GLuint      mesh_qty_;
+                Vertex_Array*
+                            cur_va_;
+
+                Model_list  m_list_;
+
+                bool        color_by_;
+                bool        already_loaded_;
         };
 
     } // OBJ namespace.
 
-} // Modle namespace.
-
-
+} // Model namespace.
 
 #endif

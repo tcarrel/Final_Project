@@ -15,6 +15,8 @@
 #include "../model/mesh.h"
 #include "../model/model.h"
 
+#include "../model/obj_loader/obj.h"
+
 #include "../helper_functions.h"
 
 
@@ -76,9 +78,8 @@ namespace App
             delete sg;
             sg = NULL;
 
-            mesh_ = new Model::Mesh( "resource/torus.obj", GL_TRIANGLES );
-
-//            fprintf( stderr, "Mesh addr: %lx\n", (unsigned long int) mesh_ );
+            Model::OBJ::OBJ_File loader;
+            loader.trace( "_obj_trace" );
 
             shader_ = new Shader;
             shader_->add_code( &SIMPLE_v, VERTEX_SHADER   );
@@ -93,11 +94,20 @@ namespace App
 
             }
 
+            mesh_ = loader.load_file( "resource/cube.obj", shader_, true, 1.0f );
+            /*
+            fprintf( stderr, "Mesh::\naddr:\t0x%Lx\nname:\t%s\n",
+                    (long long int) mesh_,
+                    mesh_->name().c_str() );
+                    */
+            mesh_->print_info();
+            loader.stop_trace();
+
             shader_->print();
             shader_->print_active_uniforms();
 
             world_->add_models( mesh_ );
-            mesh_->set_shader( shader_ );
+//            mesh_->set_shader( shader_ );
 
         }
         else
@@ -128,8 +138,8 @@ namespace App
 
 
     /**  Game main loop.
-     *     This contains the main loop of the game as well as performing the final
-     *   bit of initialization before the loop begins.
+     *     This contains the main loop of the game as well as performing the
+     *   final bit of initialization before the loop begins.
      */
     int Application::run( void )
     {
@@ -158,13 +168,11 @@ namespace App
 
         if( shader_ )
         {
-            fprintf( stderr, "////\n" );
             delete shader_;
         }
 
         if( window_ )
         {
-            fprintf( stderr, "!!!!!\n" );
             delete window_;
         }
 

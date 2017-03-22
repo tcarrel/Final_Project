@@ -17,7 +17,11 @@ namespace Model
          * \param msg The message related to the error.
          */
         OBJ_Exception::OBJ_Exception( const std::string& msg ) :
-            std::runtime_error( "\033[1;31;40mOBJ LOADER EXCEPTION!!\033[0m\n\t" + msg + "\n")
+            std::runtime_error(
+                    "\033[1;31;40mOBJ LOADER EXCEPTION!!\033[0m\n\t"
+                    + msg
+                    + "\n"
+                    )
         {}
 
     } //OBJ namespace.

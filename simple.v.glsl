@@ -16,6 +16,8 @@ uniform float sf = 1.0;
 
 out vec4 Color;
 
+const float sqt = sqrt(3.0)/2.0;
+
 void main()
 {
   mat4 scale =
@@ -24,9 +26,18 @@ void main()
         0.0, sf, 0.0, 0.0,
         0.0, 0.0, sf, 0.0,
         0.0, 0.0, 0.0, 1.0 );
+  /*
+     mat4 rot =
+     mat4(
+     0.0, 0.0, 1.0, 0.0,
+     1.0, 0.0, 0.0, 0.0,
+     0.0, 1.0, 0.0, 0.0,
+     0.0, 0.0, 0.0, 1.0
+     );
+   */
+// Color = normalize(rot * vert_color);
 
   Color = vert_color;
-
 // Cast to vec4 and add w-coordinate.
   gl_Position = vp * scale * vec4( vert_position, 1.0 );
 }

@@ -59,6 +59,8 @@ namespace Model
              */
             void* data_addr( void )
             { return (void*) data_; }
+
+            void clear( void );
             
         private:
 

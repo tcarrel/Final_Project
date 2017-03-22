@@ -11,6 +11,9 @@
 #include "mesh.h"
 
 
+
+
+
 namespace Model
 {
 
@@ -18,8 +21,7 @@ namespace Model
      * Ctor.
      */
     Model::Model( void ) : dirty_( true )
-    {
-    }
+    {}
 
 
 
@@ -90,6 +92,24 @@ namespace Model
 
 
 
+
+
+    /**
+     */
+    void Model::add( Mesh* m )
+    {
+    }
+
+
+
+
+
+
+
+
+
+
+
     /**  Set the shader for this model.
     */
     void Model::set_program( Shader* p )
@@ -98,3 +118,5 @@ namespace Model
     }
 
 } //Model namespace.
+
+

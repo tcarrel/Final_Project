@@ -11,8 +11,11 @@
 
 #include "../vertex_array.h"
 #include "../vertex.h"
+#include "../mesh.h"
+
 #include "../../colors.h"
 #include "../../helper_functions.h"
+#include "../../shader_program.h"
 
 #include<iostream>
 using std::istream;
@@ -24,6 +27,7 @@ using std::stringstream;
 #include<cstdio>
 #include<cstdlib>
 #include<cctype>
+#include<cfloat>
 
 
 #include<glm/ext.hpp>
@@ -44,30 +48,18 @@ namespace Model
         /** Generic ctor.
          */
         OBJ_File::OBJ_File( void ) :
+            tracing_(false),
             filename_(NULL),
-            obj_name_(NULL)
+            obj_name_(NULL),
+            line_(0),
+            min_(NULL),
+            max_(NULL),
+            top_mesh_(NULL),
+            mesh_qty_(0),
+            color_by_(true),
+            already_loaded_(false)
         {
-            min_ = max_ = NULL;
-            tracing_ = false;
-            line_ = 0;
-        }
-
-        /** OBJ Loader ctor.
-         * \param f The name (and, optionally, the path) of the wavefront .obj
-         * file to be parsed.
-         */
-        OBJ_File::OBJ_File( const string& f ) :
-            filename_(NULL),
-            obj_name_(NULL)
-        {
-            min_ = max_ = NULL;
-            tracing_ = false;
-            line_ = 0;
-            if( is_open() )
-            {
-                close();
-            }
-            open( f );
+            size_[0] = size_[1] = size_[2] = 0.0f;
         }
 
         /** Dtor
@@ -79,83 +71,86 @@ namespace Model
 
 
 
+
+        /**  Initiates parsing of an .obj file.
+        */
         void OBJ_File::parse( void ) throw( OBJ_Exception )
         {
-           if( !is_open() )
-           {
-               fprintf( stderr, "Filename: %s\n", filename_->c_str() );
-               fflush( stderr );
-               throw(
-                       OBJ_Exception( "Could not open .obj file." )
-                    );
-           }
+            if( !is_open() )
+            {
+                fprintf( stderr, "Filename: %s\n", filename_->c_str() );
+                fflush( stderr );
+                throw(
+                        OBJ_Exception( "Could not open .obj file." )
+                     );
+            }
 
-           while( !eof() )
-           {
+            while( !eof() )
+            {
+                ++line_;
 
-               while( isspace( peek() ) )
-               {
-                   file_.ignore();
-               }
+                while( isspace( peek() ) )
+                {
+                    file_.ignore();
+                }
 
-               switch( peek() )
-               {
-                   case '#': //comment
-                       comment();
-                       break;
-                   case 'v':
-                       v();
-                       break;
-                   case 'g':
-                       g();
-                       break;
-                   case 'f':
-                       f();
-                       break;
-                   case 'm':
-                       m();
-                       break;
-                   case 'o':
-                       o();
-                       break;
-                   case 's':
-                       s();
-                       break;
-                   case 'u':
-                       u();
-                       break;
-                   case ' ':
-                   case '\t':
-                   case '\n':
-                   case '\f':
-                   case '\v':
-                   case '\r':
-                       file_.ignore();
-                       break;
-                   default:
-                       /*
-                          fprintf(
-                          stderr,
-                          "Character <%c>.\nFile <%s>.\n",
-                          peek(),
-                          filename_->c_str()
-                          );
-                          fflush( stderr );
-                          throw(
-                          OBJ_Exception( "Unexpected character." )
-                          );
-                          */
-                       ;
-               }
-               ++line_;
-           }
-           size_[0] = max_[0] - min_[0];
-           size_[1] = max_[1] - min_[1];
-           size_[2] = max_[2] - min_[2];
+                switch( peek() )
+                {
+                    case '#': //comment
+                        comment();
+                        break;
+                    case 'v':
+                        v();
+                        break;
+                    case 'g':
+                        g();
+                        break;
+                    case 'f':
+                        f();
+                        break;
+                    case 'm':
+                        m();
+                        break;
+                    case 'o':
+                        o();
+                        break;
+                    case 's':
+                        s();
+                        break;
+                    case 'u':
+                        u();
+                        break;
+                    case ' ':
+                    case '\t':
+                    case '\n':
+                    case '\f':
+                    case '\v':
+                    case '\r':
+                        file_.ignore();
+                        break;
+                    default:
+                        /*
+                           fprintf(
+                           stderr,
+                           "Character <%c>.\nFile <%s>.\n",
+                           peek(),
+                           filename_->c_str()
+                           );
+                           fflush( stderr );
+                           throw(
+                           OBJ_Exception( "Unexpected character." )
+                           );
+                           */
+                        ;
+                }
+            }
+            size_[0] = max_[0] - min_[0];
+            size_[1] = max_[1] - min_[1];
+            size_[2] = max_[2] - min_[2];
 
-           delete [] max_;
-           delete [] min_;
-           max_ = min_ = NULL;
+            delete [] max_;
+            delete [] min_;
+            max_ = min_ = NULL;
         }
 
 
@@ -211,19 +206,19 @@ namespace Model
 
         /** Parses a 'g' line.
         */
-        void OBJ_File::g()
+        void OBJ_File::g( void )
         {
             if( tracing_ )
             {
                 trace_ << "### g ###" << endl;
             }
-            comment();
+            o();
         }
 
 
         /** Parses an 'f' line.
         */
-        void OBJ_File::f()
+        void OBJ_File::f( void )
         {
             string v;
             file_ >> v;
@@ -296,6 +291,34 @@ namespace Model
                 {
                     trace_ << val[0] << "/" << val[1] << "/" << val[2] << " ";
                 }
+                glm::vec3 vert;
+                glm::vec4 color;
+                if( !color_by_ )
+                {
+                    vert = vertices_[index->v];
+                    color = glm::vec4(
+                            normals_[index->n].x,
+                            normals_[index->n].y,
+                            normals_[index->n].z,
+                            1.0f
+                            );
+                }
+                else
+                {
+                    vert = vertices_[index->v];
+                    color= to_vec_color( Color::random_color() | 0xFF );
+                }
+
+                if( tracing_ )
+                {
+                    trace_
+                        << "\tpos  : " << glm::to_string( vert ) << "\n"
+                        << "\tcolor: " << glm::to_string( color ) << endl;
+                }
+
+                cur_va_->add( Vertex( vert, color ) );
+
+
 
                 //Index set has already been pushed onto the vector.
                 index = NULL;
@@ -329,6 +352,8 @@ namespace Model
 
             file_ >> *obj_name_;
             file_ >> *obj_name_;
+
+            add_mesh();
 
             if( tracing_ )
             {
@@ -403,8 +428,8 @@ namespace Model
             }
 
             normals_.push_back( v );
-            //            getline( file_, dummy ); /// << may cause problems later.
-            //           file_.ignore();
+            //getline( file_, dummy ); /// << may cause problems later.
+            //file_.ignore();
         }
 
 
@@ -429,8 +454,6 @@ namespace Model
 
 
             textures_.push_back( norm );
-            //       getline( file_, dummy );
-            //        file_.ignore();
         }
 
 
@@ -439,15 +462,6 @@ namespace Model
          */
         void OBJ_File::comment( void )
         {
-            /*
-               char x;
-               file_ >> x;
-               while( x != '\n' )
-               {
-               file_ >> x;
-               }
-            //file_.ignore();
-            */
             string x;
             getline( file_, x );
         }
@@ -551,6 +565,8 @@ namespace Model
             {
                 delete [] min_;
             }
+
+            return;
         }
 
 
@@ -566,7 +582,7 @@ namespace Model
         }
 
         /**  Stops debug tracing if it's being used.
-         */
+        */
         void OBJ_File::stop_trace( void )
         {
             if( trace_.is_open() )
@@ -578,7 +594,7 @@ namespace Model
 
 
         /** Closes the obj file being read.
-         */
+        */
         void OBJ_File::close( void )
         {
             if( filename_ )
@@ -601,17 +617,13 @@ namespace Model
             if( !min_ )
             {
                 min_ = new float[3];
-                min_[0] = 0.0;
-                min_[1] = 0.0;
-                min_[2] = 0.0;
+                min_[0] = min_[1] = min_[2] = FLT_MAX;
             }
 
             if( !max_ )
             {
                 max_ = new float[3];
-                max_[0] = 0.0;
-                max_[1] = 0.0;
-                max_[2] = 0.0;
+                max_[0] = max_[1] = max_[2] = FLT_MIN;
             }
 
             if( x < min_[0] )
@@ -647,7 +659,7 @@ namespace Model
 
 
         /** Returns the size of the model.
-         */
+        */
         glm::vec3 OBJ_File::size( void )
         {
             return glm::vec3( size_[0], size_[1], size_[2] );
@@ -658,12 +670,93 @@ namespace Model
 
 
         /** Returns the largest dimension of the model.
-         */
+        */
         float   OBJ_File::max_dim( void )
         {
             float val = size_[0];
             val = (val < size_[1]) ? size_[1] : val;
             return (val < size_[2]) ? size_[2] : val;
+        }
+
+
+
+
+
+
+
+
+        /** Add a mesh to the current load process.
+        */
+        void OBJ_File::add_mesh( void )
+        {
+            string name = *filename_ + "^^" + *obj_name_;
+
+            Mesh* mesh = m_list_.get_mesh(name);
+            bool already_loaded_ = mesh != NULL;
+
+            if( !already_loaded_ )
+            {
+                mesh = new Mesh( name, GL_TRIANGLES );
+            }
+
+            if( mesh_qty_ == 0 )
+            {
+                top_mesh_   = mesh;
+                cur_va_     = mesh->get_array();
+                mesh_qty_   = 1;
+                return;
+            }
+
+            top_mesh_->add_child( mesh );
+            if( !already_loaded_ )
+            {
+                cur_va_->done();
+            }
+            cur_va_     = mesh->get_array();
+            mesh_qty_++;
+            return;
+        }
+
+
+
+
+
+
+        /**  Load an .obj file.
+         * \param filename The path and file to be loaded.
+         * \param shader The shader to be used during the rendering of the
+         * mesh.
+         * \param co set to true to give a randomized color to each vertex,
+         * set to false to use the normal vertex for coloring. (This will not
+         * be needed later.)
+         * \return The loaded .obj file.
+         */
+        Mesh* OBJ_File::load_file(
+                const string& filename,
+                Shader* shader,
+                bool co,
+                GLfloat size
+                ) throw( OBJ_Exception )
+        {
+            if( filename == "" )
+            {
+                throw( OBJ_Exception( "Filename cannot be empty." ) );
+            }
+            if( !shader )
+            {
+                throw( OBJ_Exception( "Shader cannot be NULL." ) );
+            }
+            reset();
+
+            color_by_ = co;
+            open( filename );
+            parse();
+
+            top_mesh_->set_shader( shader );
+            top_mesh_->set_size( size, max_dim() );
+            top_mesh_->done();
+
+            return top_mesh_;
         }
 
     } //OBJ namespace.

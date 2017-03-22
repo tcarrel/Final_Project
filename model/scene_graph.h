@@ -39,7 +39,7 @@ namespace Model
     class Mesh;
     class Model;
     class SG_Setup;
-//    class Scene_Graph_Exception;
+
 
     /**
      * The scene graph.  Renders the world, and acts as the camera view.
@@ -53,7 +53,6 @@ namespace Model
             static Scene_Graph* ctor( SG_Setup* )
                 throw( Scene_Graph_Exception );
 
-            ~Scene_Graph( void );
 
             /**  Just calls the draw function.  This does nothing other than
              * provide a different name for the draw function.
@@ -62,17 +61,23 @@ namespace Model
             void draw( void );
 
             //void update( );
-            /*
-            void add_models( Model*, GLuint );
-            */
 
+//            void add_models( Model*, GLuint );
             void add_models( Mesh* );
-        private:
 
+            ~Scene_Graph( void );
+
+            //void add_models( Mesh* );
+        private:
+            
+            friend void delete_sg( void );
 
             /** Ctor. 
             */
             Scene_Graph( SG_Setup* );
+
+            /** Private dtor... this is an experiment.
+             */
             static Scene_Graph*
                 __instance__; ///<  Scene_Graph is a singleton, but using it as
                               ///< a global variable should be avoided.
@@ -81,10 +86,8 @@ namespace Model
 
 
             Mesh**      models_;
-            /*
-            Model**     models_;     ///< The children of the root node of the
+            //Model**     models_;     ///< The children of the root node of the
                                      ///< scene graph.
-            */
             glm::vec4   pos_;        ///< The world xform.
             glm::mat4   view_;       ///< The view matrix for the world.
             glm::mat4   frustum_;    ///< The projection matrix for the world.
