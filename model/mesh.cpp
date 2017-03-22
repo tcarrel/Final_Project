@@ -111,8 +111,9 @@ namespace Model
     /** For now, this will be responsible for sending all the draw calls to
      * the gpu.  Later, this will be responsible only for creating command
      * packets and sending those to the command buffer.
-     * \param prog If using a shader other than the 
-     * \param vp The view-projection matrix
+     * \param prog If using a shader other than the one already stored.
+     * \param vp The view-projection matrix.
+     * \param draw The dirty 'bit' passed in from the Scene_Graph.
      */
     void Mesh::draw(
             Shader*     prog,

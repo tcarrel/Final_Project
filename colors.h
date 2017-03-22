@@ -20,7 +20,7 @@ namespace Color
      * (Fully transparent (0) to Fully opaque (255) ) will give the desired
      * color.
      */
-    enum Opacity
+    enum Opacity : uint32_t
     {
         OPAQUE                  = 0x000000FF,
         HALF_CLEAR              = 0x0000007F,

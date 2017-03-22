@@ -726,9 +726,14 @@ namespace Model
          * \param filename The path and file to be loaded.
          * \param shader The shader to be used during the rendering of the
          * mesh.
-         * \param co set to true to give a randomized color to each vertex,
+         * \param co Set to true to give a randomized color to each vertex,
          * set to false to use the normal vertex for coloring. (This will not
          * be needed later.)
+         * \param size The 'actual' size of the object in centimeters, this
+         * allows objects to be modelled at different sizes and the scaled into
+         * the coordinate system of this world.  In other words, a traveling
+         * 1-unit in this coordinate system is the same as traveling 1-cm in
+         * the real world.
          * \return The loaded .obj file.
          */
         Mesh* OBJ_File::load_file(
