@@ -14,7 +14,7 @@ namespace App
     /**
      * Pre-formatted warning text.
      */
-    char warning_text[] = "\033[1;35;40mWARNING!!\033[0m";
+    char warning_text[] = "\033[0;31;40mWARNING!!\033[0m";
 
     /**
      * Pre-formatted error text.

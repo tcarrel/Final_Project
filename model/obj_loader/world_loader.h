@@ -1,4 +1,10 @@
-
+/**
+ *
+ *
+ * \file world_loader.h
+ * \author Thomas R. Carrel
+ *
+ */
 
 
 
@@ -35,10 +41,11 @@ namespace Model
                 bool operator()( const string& );
 
 
-                void get_errors( string*, int* );
+                void get_errors( string*, unsigned* );
             private:
 
-                void add_error_msg( string& );
+                void add_error_msg( unsigned, const string& );
+                string* error_num_to_msg( unsigned, const string& );
 
                 static Scene_Graph*         sg_;
                 static vector<string*>*     error_msgs_;
