@@ -10,14 +10,16 @@
 
 #include "../colors.h"
 
-#include "../model/scene_graph.h"
 #include "../model/sg_setup.h"
 #include "../model/mesh.h"
 #include "../model/model.h"
 
 #include "../model/obj_loader/obj.h"
+#include "../model/obj_loader/world_loader.h"
 
 #include "../helper_functions.h"
+
+#include "../model/scene_graph.h"
 
 
 
@@ -42,7 +44,7 @@ namespace App
      *   \param argv argv taken from the command line.
      */
     Application::Application( int argc, char** argv ) :
-        window_( new Window( to_vec_color( Color::DARK_GUNMETAL ) ) ),
+        window_( new Window( to_vec_color( Color::BRASS ) ) ),
         input_( window_ ),
         world_( NULL ),
         mesh_( NULL ),
@@ -74,12 +76,13 @@ namespace App
             sg->window( window_ );
 
             world_ = Model::Scene_Graph::ctor( sg );
+            Model::OBJ::World_Loader loader( world_ );
+
 
             delete sg;
             sg = NULL;
 
-            Model::OBJ::OBJ_File loader;
-            loader.trace( "_obj_trace" );
+        //    Model::OBJ::OBJ_File loader;
 
             shader_ = new Shader;
             shader_->add_code( &SIMPLE_v, VERTEX_SHADER   );
@@ -94,20 +97,18 @@ namespace App
 
             }
 
-            mesh_ = loader.load_file( "resource/cube.obj", shader_, true, 1.0f );
-            /*
-            fprintf( stderr, "Mesh::\naddr:\t0x%Lx\nname:\t%s\n",
-                    (long long int) mesh_,
-                    mesh_->name().c_str() );
-                    */
-            mesh_->print_info();
-            loader.stop_trace();
+         //   loader.trace( "_obj.trace" );
+  //          mesh_ = loader.load_file( "resource/F22.obj", shader_, false, 1.0f );
+          //  loader.stop_trace();
+
+ //           mesh_->print_info();
 
             shader_->print();
             shader_->print_active_uniforms();
 
-            world_->add_models( mesh_ );
-//            mesh_->set_shader( shader_ );
+            loader( "resource", "load_list", shader_, false );
+
+//            world_->add_models( mesh_ );
 
         }
         else

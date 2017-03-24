@@ -20,7 +20,10 @@ namespace Model
     /**
      * Ctor.
      */
-    Model::Model( void ) : dirty_( true )
+    Model::Model( void ) :
+        mesh_( NULL ),
+        dirty_( true ),
+        children_( NULL )
     {}
 
 
@@ -48,8 +51,8 @@ namespace Model
             //Update the local transformation matrix.
 
             for( 
-                    auto iter = children_.begin(); 
-                    iter != children_.end();
+                    auto iter = children_->begin(); 
+                    iter != children_->end();
                     iter++
                )
             {
@@ -63,30 +66,30 @@ namespace Model
 
 
     /**  Calls the mesh's draw command.
+     * \param vp The (v)iew (p)rojection matrix.
     */
-    bool Model::render( void )
+    void Model::render( const glm::mat4& vp ) throw(Render_Exception)
     {
         if( mesh_ )
         {
-//            mesh_->draw( NULL );
             // Draw the children.
-            for(
-                    auto iter = children_.begin();
-                    iter != children_.end();
-                    iter++
-               )
+            if( children_ )
             {
-                (*iter)->render();
+                for(
+                        auto iter = children_->begin();
+                        iter != children_->end();
+                        iter++
+                   )
+                {
+                    (*iter)->render(vp);
+                }
             }
-            return !ERROR;
+            mesh_->draw(vp);
+            return;
         }
 
-        fprintf(
-                stderr,
-                "Render Error:\tNo shader set.\n"
-               );
 
-        return ERROR;
+        throw( Render_Exception( "No mesh provided for model" ) );
     }
 
 
@@ -94,10 +97,23 @@ namespace Model
 
 
 
-    /**
+    /**  Adds the mesh for this model.  If a mesh is already set, it creates a
+     * new Model object ands the mesh to that model and sets it as a child
+     * model.
+     * \param m The Mesh to be added.
      */
     void Model::add( Mesh* m )
     {
+        if( !mesh_ )
+        {
+            mesh_ = m;
+            return;
+        }
+
+        Model* temp = new Model;
+        temp->add(m);
+        add( temp );
+        temp = NULL;
     }
 
 
@@ -106,15 +122,16 @@ namespace Model
 
 
 
-
-
-
-
-    /**  Set the shader for this model.
-    */
-    void Model::set_program( Shader* p )
+    /**  Adds a model as a child.
+     * \param m The Model to be added.
+     */
+    void Model::add( Model* m )
     {
-        program_ = p;
+        if( !children_ )
+        {
+            children_ = new std::forward_list<Model*>;
+        }
+        children_->push_front(m);
     }
 
 } //Model namespace.

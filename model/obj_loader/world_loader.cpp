@@ -1,5 +1,4 @@
-/**
- *
+/** *
  * \file world_loader.cpp
  * \author Thomas R. Carrel
  *
@@ -11,10 +10,14 @@
 
 
 
+
 #include "world_loader.h"
 
 #include "../scene_graph.h"
+#include "../mesh.h"
 
+#include "../../shader_program.h"
+#include "../../helper_functions.h"
 
 
 namespace Model
@@ -24,11 +27,11 @@ namespace Model
 
         /** A pointer/reference to the Scene_Graph.
          */
-        Scene_Graph* World_Loader::sg_               =   NULL;
+        Scene_Graph* World_Loader::sg_                          =  NULL;
         /** If error messages are generated, this vector is allocated and used
          * to store them.  It can then be freed after the messages are read.
          */
-        vector<string*>* World_Loader::error_msgs_   =   NULL;
+        std::vector<std::string*>* World_Loader::error_msgs_    =  NULL;
 
 
 
@@ -36,7 +39,7 @@ namespace Model
 
 
 
-        World_Loader::World_Loader( Scene_Graph* sg )
+        World_Loader::World_Loader( Scene_Graph* sg ) : file_(NULL)
         {
             sg_ = sg;
         }
@@ -50,6 +53,15 @@ namespace Model
         World_Loader::~World_Loader( void )
         {
             sg_ = NULL;
+            if( file_ )
+            {
+                if( file_->is_open() )
+                {
+                    file_->close();
+                }
+                delete file_;
+                file_ = NULL;
+            }
         }
 
 
@@ -61,7 +73,7 @@ namespace Model
 
 
 
-        void World_Loader::get_errors( string* msgs, unsigned* qty )
+        void World_Loader::get_errors( std::string* msgs, unsigned* qty )
         {
             if( !qty )
             {
@@ -99,15 +111,15 @@ namespace Model
 
 
 
-        void World_Loader::add_error_msg( unsigned erno, const string& txt )
+        void World_Loader::add_error_msg( unsigned erno, const std::string& txt )
         {
             if( !error_msgs_ )
             {
-                error_msgs_ = new vector<string*>;
+                error_msgs_ = new std::vector<std::string*>;
             }
 
-            string* temp = error_num_to_msg( erno, txt );
-            error_msgs_->push_back( new string(*temp) );
+            std::string* temp = error_num_to_msg( erno, txt );
+            error_msgs_->push_back( new std::string(*temp) );
             delete temp;
             temp = NULL;
         }
@@ -122,20 +134,20 @@ namespace Model
         /**  Generates an error message string.
          * \param erno The error number.
          */
-        string* World_Loader::error_num_to_msg(
+        std::string* World_Loader::error_num_to_msg(
                 unsigned erno,
-                const string&  )
+                const std::string&  )
         {
             //"\033[0,31mWORLD LOADING ERROR:\033[0m\t"
             char* buffer = new char[256];
-            string* msg  = NULL;
+            std::string* msg  = NULL;
             switch( erno )
             {
                 default:
                     sprintf( buffer,
                             "\033[0,31mWORLD LOADING ERROR (0x%x):\033[0m\t"
                             "undefined error.\n", erno );
-                    msg = new string( buffer );
+                    msg = new std::string( buffer );
                     break;
                 case 0:
                     delete buffer; 
@@ -145,7 +157,7 @@ namespace Model
                             "\033[0,31mWORLD LOADING ERROR (0x%x):\033[0m\t"
                             "get_errors() arguments (2) must not be NULL.\n",
                             erno );
-                    msg = new string( buffer );
+                    msg = new std::string( buffer );
                     break;
             }
 
@@ -160,12 +172,63 @@ namespace Model
 
 
 
-
-
-        bool World_Loader::operator()( const string& filename )
+        bool World_Loader::operator()(
+                const std::string&  path,
+                const std::string&  level_filename,
+                Shader*             shdr,
+                bool                coloring = false )
         {
-            ///
+            int qty = 0;
+            std::string  filename = "";
 
+            fprintf(
+                    stdout,
+                    "Begin loading level\t%s\n",
+                    level_filename.c_str() );
+
+            file_ = new std::ifstream;
+            file_->open( (path + "/" + level_filename).c_str() );
+
+            (*file_) >> qty;
+            file_->ignore();
+
+            std::vector<Model*> models;
+
+            fprintf( stdout, " Number of models in level:\t%i\n", qty );
+
+            GLfloat scale = 0.0f;
+            
+            while( !( getline(*file_, filename, ',').eof() ) )
+            {
+                filename = path + "/" + filename;
+                (*file_) >> scale;
+
+                fprintf(
+                        stderr,
+                        "filename:\t%s\nsize:\t\t%f\n",
+                        filename.c_str(),
+                        scale );
+                Model* mdl = new Model;
+                Mesh*  msh = obj_ld_.load_file(
+                        filename,
+                        shdr,
+                        coloring,
+                        scale );
+
+                mdl->add( msh );
+
+                sg_->add_models( &mdl, 1 );
+
+//                models.push_back( mdl );
+//                mdl->add_mesh
+            }
+
+
+
+
+            file_->close();
+            delete file_;
+            file_ = NULL;
             return false;
         }
 

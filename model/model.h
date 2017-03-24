@@ -23,6 +23,8 @@
 
 #include<forward_list>
 
+
+#include "Render_except.h"
 #include "../constants.h"
 #include "../shader_program.h"
 
@@ -32,6 +34,7 @@ namespace Model
 {
 
     class Mesh;
+    class Render_Exception;
 
     /**
      * The class for a single model, eventually these will be able to contain
@@ -44,30 +47,22 @@ namespace Model
             Model( void );
             ~Model( void );
 
-            void update( const glm::mat4&, bool );
+            void update( const glm::mat4&, bool ); ///< Will need heavy
+                                                   ///< modification later.
 
-            bool render( void );
-
-            void set_program( Shader* );
+            void render( const glm::mat4&  ) throw(Render_Exception);
 
             void add( Mesh* );
             void add( Model* );
 
         private:
 
-            Mesh* mesh_;
-
-            //
-
-            /** The shader program used for rendering.
-             */
-            Shader* program_;
-
-            bool dirty_;
+            Mesh*                       mesh_;
+            bool                        dirty_;
             /** A list of sub-models whose position is dependant on the parent
              * model's position.
              */
-            std::forward_list<Model*> children_;
+            std::forward_list<Model*>*  children_;
     };
 
 } //Model namespace.

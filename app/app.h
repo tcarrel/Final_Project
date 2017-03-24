@@ -5,15 +5,18 @@
  * \brief Application framework (Application class) declaration.
  */
 
-#ifndef  APPLICATION_H
-# define APPLICATION_H
-
 #include<GL/glew.h>
 
 #include<SDL2/SDL.h>
 #include<SDL2/SDL_opengl.h>
 
 #include<GL/glu.h>
+
+
+
+
+#ifndef  APPLICATION_H
+# define APPLICATION_H
 
 #include "../constants.h"
 #include "../shader_program.h"

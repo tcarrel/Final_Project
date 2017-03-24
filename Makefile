@@ -56,7 +56,8 @@ OBJ_FILES = .entry_point.o .app.o .window.o .GLSL_except.o .shader_program.o \
 			.model.o .mesh.o .vertex_array.o .input_handler.o .SG_except.o \
 			.scene_graph.o .sg_setup.o .helper_functions.o .obj.o \
             .OBJ_except.o .colors.o .random.o .null_command.o $(SHADER_OBJ) \
-			.texture_2D.o .texture_base.o .model_list.o .world_loader.o
+			.texture_2D.o .texture_base.o .model_list.o .world_loader.o \
+			.Render_except.o
 GCCERREXT = gccerr
 
 COPYOUTPUT = 2>&1 | tee $(ERROR_DIR)/$<.$(GCCERREXT)
@@ -142,7 +143,8 @@ $(ERROR_DIR): Makefile
 # compile Model namespace
 .model.o: $(MODEL_DIR)/model.cpp $(MODEL_DIR)/mesh.h \
 		$(MODEL_DIR)/model.h constants.h shader_program.h \
-		$(MODEL_DIR)/vertex.h $(MODEL_ERROR_DIR)
+		$(MODEL_DIR)/vertex.h $(MODEL_DIR)/Render_except.h \
+		$(MODEL_ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .mesh.o: $(MODEL_DIR)/mesh.cpp $(MODEL_DIR)/mesh.h \
@@ -164,6 +166,10 @@ $(ERROR_DIR): Makefile
 
 .vertex_array.o: $(MODEL_DIR)/vertex_array.cpp $(MODEL_DIR)/vertex_array.h \
 		$(MODEL_DIR)/vertex.h $(MODEL_ERROR_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
+.Render_except.o: $(MODEL_DIR)/Render_except.cpp $(MODEL_DIR)/Render_except.h \
+		$(MODEL_ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 $(MODEL_ERROR_DIR): $(ERROR_DIR)
@@ -188,7 +194,8 @@ $(MODEL_ERROR_DIR): $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .world_loader.o: $(OBJ_PATH)/world_loader.cpp $(OBJ_PATH)/world_loader.h \
-		$(OBJ_PATH)/obj.h
+		$(OBJ_PATH)/obj.h shader_program.h helper_functions.h \
+		$(OBJ_ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 $(OBJ_ERROR_DIR): $(ERROR_DIR) $(MODEL_ERROR_DIR)

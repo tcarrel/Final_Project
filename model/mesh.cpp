@@ -36,14 +36,13 @@ namespace Model
      * \param m The rendering mode to be used for this mesh.
      */
     Mesh::Mesh( const std::string& name, GLenum m = GL_TRIANGLES ) :
-        dirty_( true ),
         vertices_( new Vertex_Array ),
         verts_sent_to_gpu_( false ),
         qty_( 0 ),
         mode_( m ),
         vbo_( 0 ),
         vao_( 0 ),
-        size_( 1.0f ),
+        scale_factor_( 1.0f ),
         child_qty_( 0 ),
         children_( NULL ),
         name_( name )
@@ -54,8 +53,12 @@ namespace Model
 
     void Mesh::done( void )
     {
-        qty_ = vertices_->size();
-        init_gpu_buffers();
+        if( !verts_sent_to_gpu_ )
+        {
+            qty_ = vertices_->size();
+            init_gpu_buffers();
+            verts_sent_to_gpu_ = true;
+        }
 
         for( GLuint i = 0; i < child_qty_; i++ )
         {
@@ -84,11 +87,10 @@ namespace Model
 
         fprintf( stderr, "***\n" );
 
-        //glDeleteVertexArrays( 1, &vao_ );
-        //glDeleteBuffers( 1, &vbo_ );
+        glDeleteVertexArrays( 1, &vao_ );
+        glDeleteBuffers( 1, &vbo_ );
 
         vao_ = vbo_ = 0;
-
 
         if( child_qty_ > 0 )
         {
@@ -111,53 +113,30 @@ namespace Model
     /** For now, this will be responsible for sending all the draw calls to
      * the gpu.  Later, this will be responsible only for creating command
      * packets and sending those to the command buffer.
-     * \param prog If using a shader other than the one already stored.
      * \param vp The view-projection matrix.
-     * \param draw The dirty 'bit' passed in from the Scene_Graph.
      */
-    void Mesh::draw(
-            Shader*     prog,
-            glm::mat4*  vp,
-            bool        draw = false
-            ) throw( Scene_Graph_Exception )
+    void Mesh::draw( const glm::mat4& vp ) throw( Scene_Graph_Exception )
     {
-        if( draw || dirty_ )
+
+        if( !shader_ )
         {
-            Shader* sh = NULL;
-
-            if( prog )
-            {
-                prog->use_program();
-                sh = prog;
-            }
-            else if( shader_ )
-            {
-                shader_->use_program();
-                sh = shader_;
-            }
-            else
-            {
-                throw( Scene_Graph_Exception(
-                            "No shader program provided to mesh object.\n" ) );
-            }
-
-            glBindVertexArray( vao_ );
-
-            if( vp )
-            {
-                sh->set_uniform( "vp", *vp );
-            }
-
-            sh->set_uniform( "sf", size_ );
-            glDrawArrays( mode_, 0, qty_ );
+            fprintf( stderr, "Name: %s\n", name_.c_str() );
+            throw( Scene_Graph_Exception(
+                        "No shader program set to mesh.\n" ) );
         }
 
-        if( child_qty_ > 0 )
+        shader_->use_program();
+
+        glBindVertexArray( vao_ );
+
+        shader_->set_uniform( "vp", vp );
+        shader_->set_uniform( "sf", scale_factor_ );
+
+        glDrawArrays( mode_, 0, qty_ );
+
+        for( GLuint i = 0; i < child_qty_; i++ )
         {
-            for( GLuint i = 0; i < child_qty_; i++ )
-            {
-                children_[i]->draw( prog, vp, draw || dirty_ );
-            }
+            children_[i]->draw( vp );
         }
     }
 
@@ -266,7 +245,7 @@ namespace Model
 
     void Mesh::set_size( const GLfloat& size, const GLfloat& total )
     {
-        size_ = size / total;
+        scale_factor_ = size / total;
 
         for( GLuint i = 0; i < child_qty_; i++ )
         {
@@ -290,7 +269,7 @@ namespace Model
                 spacing.c_str(),
                 name_.c_str(),
                 spacing.c_str(),
-                size_,
+                scale_factor_,
                 spacing.c_str(),
                 vertices_->size()
                );
@@ -320,7 +299,7 @@ namespace Model
                 spacing.c_str(),
                 name_.c_str(),
                 spacing.c_str(),
-                size_,
+                scale_factor_,
                 spacing.c_str(),
                 vertices_->size()
                );

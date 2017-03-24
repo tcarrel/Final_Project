@@ -10,7 +10,9 @@
  * transforming the basis moves the entire world about the camera as necessary.
  */
 
+
 #include<GL/glew.h>
+
 #include<SDL2/SDL.h>
 #include<SDL2/SDL_opengl.h>
 
@@ -62,12 +64,10 @@ namespace Model
 
             //void update( );
 
-//            void add_models( Model*, GLuint );
-            void add_models( Mesh* );
+            void add_models( Model**, GLuint );
 
             ~Scene_Graph( void );
 
-            //void add_models( Mesh* );
         private:
             
             friend void delete_sg( void );
@@ -84,13 +84,12 @@ namespace Model
 
             GLuint      model_qty_; ///< Size of the model array.
 
-
-            Mesh**      models_;
-            //Model**     models_;     ///< The children of the root node of the
-                                     ///< scene graph.
-            glm::vec4   pos_;        ///< The world xform.
-            glm::mat4   view_;       ///< The view matrix for the world.
-            glm::mat4   frustum_;    ///< The projection matrix for the world.
+//            Mesh**      models_;
+            Model**     models_;  ///< The children of the root node of the
+                                  ///< Scene_Graph.
+            glm::vec4   pos_;     ///< The world xform.
+            glm::mat4   view_;    ///< The view matrix for the world.
+            glm::mat4   frustum_; ///< The projection matrix for the world.
 
             glm::mat4   vp_;
 
@@ -101,7 +100,7 @@ namespace Model
             App::Window* window_;
 
             /** Generic ctor is disabled.
-             */
+            */
             Scene_Graph() {};
     };
 

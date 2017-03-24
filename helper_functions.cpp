@@ -7,6 +7,8 @@
 
 #include<string>
 #include<sstream>
+#include<fstream>
+#include<cctype>
 #include<glm/glm.hpp>
 
 /**
@@ -43,3 +45,18 @@ std::string numtoa( uint32_t i )
     return S.str();
 }
 
+
+
+
+
+
+/**  Skip whitespace at the beginning of a stream.
+ * \param in The stream to remove whitespace from.
+ */
+void skip_whitespace( std::ifstream& in )
+{
+    while( isspace( in.peek() ) )
+    {
+        in.ignore();
+    }
+}

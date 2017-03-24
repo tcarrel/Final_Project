@@ -20,7 +20,8 @@
 
 namespace Color
 {
-
+    /** An array of colors.
+     */
     uint32_t Color_Array[] =
     {
         ABSOLUTE_ZERO,
@@ -1313,6 +1314,9 @@ namespace Color
 
 # define NUM_COLORS (1301 - 16)
 
+    /** Returns and random color.
+     * @return A random color.
+     */
     uint32_t random_color()
     {
         return Color_Array[ Random::rand_unsigned( NUM_COLORS ) ];

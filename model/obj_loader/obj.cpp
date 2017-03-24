@@ -20,15 +20,14 @@
 #include<iostream>
 using std::istream;
 using std::endl;
+
 #include<sstream>
 using std::stringstream;
-
 
 #include<cstdio>
 #include<cstdlib>
 #include<cctype>
 #include<cfloat>
-
 
 #include<glm/ext.hpp>
 
@@ -38,17 +37,14 @@ using std::stringstream;
 
 
 
-
-
 namespace Model
 {
     namespace OBJ
     {
-
         /** Generic ctor.
          */
         OBJ_File::OBJ_File( void ) :
-            tracing_(false),
+            trace_(NULL),
             filename_(NULL),
             obj_name_(NULL),
             line_(0),
@@ -57,16 +53,22 @@ namespace Model
             top_mesh_(NULL),
             mesh_qty_(0),
             color_by_(true),
-            already_loaded_(false)
+            already_loaded_(false),
+            loading_(false)
         {
             size_[0] = size_[1] = size_[2] = 0.0f;
         }
+
+
+
+
 
         /** Dtor
          */
         OBJ_File::~OBJ_File( void )
         {
             reset();
+            stop_trace();
         }
 
 
@@ -91,57 +93,36 @@ namespace Model
 
                 while( isspace( peek() ) )
                 {
-                    file_.ignore();
+                    file_->ignore();
                 }
 
                 switch( peek() )
                 {
                     case '#': //comment
-                        comment();
+                        comment( *file_ );
                         break;
                     case 'v':
-                        v();
-                        break;
-                    case 'g':
-                        g();
-                        break;
-                    case 'f':
-                        f();
-                        break;
-                    case 'm':
-                        m();
+                        v( *file_ );
                         break;
                     case 'o':
-                        o();
+                        //fallthrough..
+                    case 'g':
+                        g_or_o( *file_ );
+                        break;
+                    case 'f':
+                        f( *file_ );
+                        break;
+                    case 'm':
+                        m( *file_ );
                         break;
                     case 's':
-                        s();
+                        s( *file_ );
                         break;
                     case 'u':
-                        u();
-                        break;
-                    case ' ':
-                    case '\t':
-                    case '\n':
-                    case '\f':
-                    case '\v':
-                    case '\r':
-                        file_.ignore();
+                        u( *file_ );
                         break;
                     default:
-                        /*
-                           fprintf(
-                           stderr,
-                           "Character <%c>.\nFile <%s>.\n",
-                           peek(),
-                           filename_->c_str()
-                           );
-                           fflush( stderr );
-                           throw(
-                           OBJ_Exception( "Unexpected character." )
-                           );
-                           */
-                        ;
+                        ; // Do nothing.
                 }
             }
             size_[0] = max_[0] - min_[0];
@@ -160,37 +141,37 @@ namespace Model
 
         /**  Determines what to parse for lines beginning with 'v'.
         */
-        void OBJ_File::v( void )
+        void OBJ_File::v( std::istream& file )
         {
             string s;
 
-            file_ >> s;
+            file >> s;
 
             if( s == "v" )
             {
-                vertex();
+                vertex( file );
                 return;
             }
 
             if( s == "vt" )
             {
-                tex_coord();
+                tex_coord( file );
                 return;
             }
 
             if( s == "vn" )
             {
-                normal();
+                normal( file );
                 return;
             }
 
             if( s == "vp" )
             {
-                if( tracing_ )
+                if( trace_ )
                 {
-                    trace_ << "### Paramaterized ###" << endl;
+                    *trace_ << "### Paramaterized ###" << endl;
                 }
-                comment();
+                comment( file );
             }
 
 
@@ -200,32 +181,25 @@ namespace Model
                     "Model, file <%s>, may not render correctly.\n",
                     filename_->c_str()
                    );
-            comment();
+            comment( file );
         }
 
 
-        /** Parses a 'g' line.
-        */
-        void OBJ_File::g( void )
-        {
-            if( tracing_ )
-            {
-                trace_ << "### g ###" << endl;
-            }
-            o();
-        }
+
 
 
         /** Parses an 'f' line.
         */
-        void OBJ_File::f( void )
+        void OBJ_File::f( std::istream& file )
         {
             string v;
-            file_ >> v;
+            file >> v;
 
-            if( tracing_ )
+            if( trace_ )
             {
-                trace_ << "$$$ Read Face: ";
+                *trace_
+                    << "==============================================\n"
+                    << "$$$ Read Face:\n";
             }
 
             for( int j = 0; j < 3; j++ )
@@ -235,10 +209,10 @@ namespace Model
 
                 faces_.push_back( index );
 
-                file_ >> val[0];
+                file >> val[0];
                 if( peek() != ' ' )
                 {
-                    file_.ignore();
+                    file.ignore();
                 }
                 else
                 {
@@ -249,14 +223,14 @@ namespace Model
 
                 if( isdigit( peek() ) )
                 {
-                    file_ >> val[1];
+                    file >> val[1];
                 }
                 else
                 {
                     val[1] = 0;
                 }
-                file_.ignore();
-                file_ >> val[2];            
+                file.ignore();
+                file >> val[2];            
 
                 for( int i = 0; i < 3; i++ )
                 {
@@ -287,9 +261,9 @@ namespace Model
                 index->t = val[1];
                 index->n = val[2];
 
-                if( tracing_ )
+                if( trace_ )
                 {
-                    trace_ << val[0] << "/" << val[1] << "/" << val[2] << " ";
+                    *trace_ << val[0] << "/" << val[1] << "/" << val[2] << "\n";
                 }
                 glm::vec3 vert;
                 glm::vec4 color;
@@ -309,9 +283,9 @@ namespace Model
                     color= to_vec_color( Color::random_color() | 0xFF );
                 }
 
-                if( tracing_ )
+                if( trace_ )
                 {
-                    trace_
+                    *trace_
                         << "\tpos  : " << glm::to_string( vert ) << "\n"
                         << "\tcolor: " << glm::to_string( color ) << endl;
                 }
@@ -324,77 +298,101 @@ namespace Model
                 index = NULL;
             }
 
-            if( tracing_ )
+            if( trace_ )
             {
-                trace_ << endl;
+                *trace_ << endl;
             }
         }
 
-        /** Parses an 'm' line.
+
+
+
+        /** Parses an 'm' line.  Not implemented yet, so they are just
+         * ignored.
         */
-        void OBJ_File::m( void )
+        void OBJ_File::m( std::istream& file )
         {
-            if( tracing_ )
+            if( trace_ )
             {
-                trace_ << "### m ###" << endl;
+                *trace_ << "### m ###" << endl;
             }
-            comment();
+            comment( file );
         }
 
-        /** Parses an 'o' line.
+
+
+
+
+        /** Parses a 'g' or an 'o' line.
         */
-        void OBJ_File::o( void )
+        void OBJ_File::g_or_o( std::istream& file )
         {
             if( !obj_name_ )
             {
                 obj_name_ = new string;
             }
 
-            file_ >> *obj_name_;
-            file_ >> *obj_name_;
+            file >> *obj_name_;
+            file >> *obj_name_;
 
             add_mesh();
 
-            if( tracing_ )
+            if( trace_ )
             {
-                trace_ << "Object Name:  " << *obj_name_ << endl;
+                *trace_ << "Object Name:  " << *obj_name_ << endl;
             }
         }
 
-        void OBJ_File::s( void )
+
+
+
+
+        /** Parses an 's' line.  Not implemented yet, so they are just
+         * ignored.
+         */
+        void OBJ_File::s( std::istream& file )
         {
-            if( tracing_ )
+            if( trace_ )
             {
-                trace_ << "### s ###" << endl;
+                *trace_ << "### s ###" << endl;
             }
-            comment();
+            comment( file );
         }
 
 
-        void OBJ_File::u( void )
+
+
+
+        /** Parses a 'u' line.  Not implemented yet, so they are just
+         * ignored.
+         */
+        void OBJ_File::u( std::istream& file )
         {
-            if( tracing_ )
+            if( trace_ )
             {
-                trace_ << "### u ###" << endl;
+                *trace_ << "### u ###" << endl;
             }
-            comment();
+            comment( file );
         }
+
+
+
 
 
         /** Parses a single vertex coordinate, discards the w-coordinate
          * since that always needs to be set to 1.
          */
-        void OBJ_File::vertex( void )
+        void OBJ_File::vertex( std::istream& file )
         {
             float x, y, z;
-            file_ >> x;
-            file_ >> y;
-            file_ >> z;
+            file >> x;
+            file >> y;
+            file >> z;
 
             glm::vec3 v( x, y, z );
-            if( tracing_ )
+            if( trace_ )
             {
-                trace_
+                *trace_
                     << "Read vertex: ("
                     << x << ") (" << y << ") (" << z << ")\n"
                     << glm::to_string( v ) << endl;
@@ -408,123 +406,73 @@ namespace Model
 
 
 
+
         /** Parses a normal coordinate.
         */
-        void OBJ_File::normal( void )
+        void OBJ_File::normal( std::istream& file )
         {
             float x, y, z;
             //          string dummy;
-            file_ >> x;
-            file_ >> y;
-            file_ >> z;
+            file >> x;
+            file >> y;
+            file >> z;
 
             glm::vec3 v = glm::normalize( glm::vec3( x, y, z ) );
-            if( tracing_ )
+            if( trace_ )
             {
-                trace_
+                *trace_
                     << "Read normal: ("
                     << x << ") (" << y << ") (" << z << ")\n"
                     << glm::to_string( v ) << endl;
             }
 
             normals_.push_back( v );
-            //getline( file_, dummy ); /// << may cause problems later.
-            //file_.ignore();
         }
+
+
+
 
 
 
         /** Parses a texture coordinate.
         */
-        void OBJ_File::tex_coord( void )
+        void OBJ_File::tex_coord( std::istream& file )
         {
             float u, v;
             //         string dummy;
-            file_ >> u;
-            file_ >> v;
+            file >> u;
+            file >> v;
 
             glm::vec2 norm(u, v);
-            if( tracing_ )
+            if( trace_ )
             {
-                trace_
+                *trace_
                     << "Read texture: ("
                     << u << ") (" << v << ")\n"
                     << glm::to_string( norm ) << endl;
             }
 
-
             textures_.push_back( norm );
         }
+
+
+
+
 
 
         /** Discards the entire current line, which has been determined to be
          * a comment.
          */
-        void OBJ_File::comment( void )
+        void OBJ_File::comment( std::istream& file )
         {
             string x;
-            getline( file_, x );
+            getline( file, x );
+            if( trace_ )
+            {
+                *trace_ << "Comment: " << x << endl;
+            }
         }
 
-
-
-
-
-
-
-        /** Inserts all of the verticies into the provided Vertex_Array.
-         * \param va The Vertex_Array.
-         * \param c Decides whether or not randomized vertex colors should be
-         * used.
-         */
-        void OBJ_File::fill( Vertex_Array& va, bool c )
-        {
-            if( tracing_ )
-            {
-                trace_
-                    << " &&&&&&&&&&&&&\n"
-                    << "&&& LOADING &&&\n"
-                    << " &&&&&&&&&&&&&\n" 
-                    << "&&& # faces &&&\n"
-                    << faces_.size() << "\n"
-                    << " &&&&&&&&&&&&" << endl;
-            }
-
-            va.pre_size( faces_.size() );
-
-            for( unsigned i = 0; i < faces_.size(); i++ )
-            {
-                Index_Set* is = faces_[i];
-                glm::vec3 vert;
-                glm::vec4 color;
-                if( !c )
-                {
-                    vert = vertices_[is->v];
-                    color = glm::vec4(
-                            normals_[is->n].x,
-                            normals_[is->n].y,
-                            normals_[is->n].z,
-                            1.0f
-                            );
-                }
-                else
-                {
-                    vert = vertices_[is->v];
-                    color= to_vec_color( Color::random_color() | 0xFF );
-                }
-
-                if( tracing_ )
-                {
-                    trace_
-                        << i << "\tpos  : " << glm::to_string( vert ) << "\n"
-                        << i << "\tcolor: " << glm::to_string( color ) << endl;
-                }
-
-                va.add( Vertex( vert, color ) );
-                is = NULL;
-            }
-            va.done();
-        }
 
 
 
@@ -536,11 +484,11 @@ namespace Model
         void OBJ_File::reset( void )
         {
             close();
-            stop_trace();
 
             if( obj_name_ )
             {
                 delete obj_name_;
+                obj_name_ = NULL;
             }
 
             for( unsigned i = 0; i < faces_.size(); i++ )
@@ -548,26 +496,32 @@ namespace Model
                 if( faces_[i] )
                 {
                     delete faces_[i];
+                    faces_[i] = NULL;
                 }
             }
+            faces_.clear();
 
-            vertices_.resize(0);
-            textures_.resize(0);
-            normals_.resize(0);
+            vertices_.clear();
+            textures_.clear();
+            normals_.clear();
             line_ = 0;
 
             if( max_ )
             {
                 delete [] max_;
+                max_ = NULL;
             }
 
             if( min_ )
             {
                 delete [] min_;
+                min_ = NULL;
             }
+            size_[0] = size_[1] = size_[2] = 0.0f;
 
             return;
         }
+
 
 
 
@@ -577,33 +531,52 @@ namespace Model
          */
         void OBJ_File::trace( const string& name )
         {
-            trace_.open( name.c_str() );
-            tracing_ = true;
+            if( !trace_ )
+            {
+                trace_ = new std::ofstream( name.c_str() );
+            }
+            else
+            {
+                trace_->close();
+                trace_->open( name.c_str() );
+            }
         }
+
+
+
+
 
         /**  Stops debug tracing if it's being used.
         */
         void OBJ_File::stop_trace( void )
         {
-            if( trace_.is_open() )
+            if( trace_ )
             {
-                trace_.close();
+                trace_->close();
+                delete trace_;
+                trace_ = NULL;
             }
-            tracing_ = false;
         }
+
+
+
 
 
         /** Closes the obj file being read.
         */
         void OBJ_File::close( void )
         {
-            if( filename_ )
+            if( !loading_ && filename_ )
             {
                 delete filename_;
                 filename_ = NULL;
-                file_.close();
+                file_->close();
+                delete file_;
+                file_ = NULL;
             }
         }
+
+
 
 
 
@@ -612,48 +585,49 @@ namespace Model
          * \param y Y-axis value.
          * \param z Z-axis value.
          */
-        void OBJ_File::measure( float x, float y, float z )
+        void OBJ_File::measure( const float& x, const float& y, const float& z )
         {
+            //Minimums
             if( !min_ )
             {
                 min_ = new float[3];
                 min_[0] = min_[1] = min_[2] = FLT_MAX;
             }
 
+            if( x < min_[0] )
+            {
+                min_[0] = x;
+            }
+            if( y < min_[1] )
+            {
+                min_[1] = y;
+            }
+            if( z < min_[2] )
+            {
+                min_[2] = z;
+            }
+
+            //Maximums
             if( !max_ )
             {
                 max_ = new float[3];
                 max_[0] = max_[1] = max_[2] = FLT_MIN;
             }
 
-            if( x < min_[0] )
-            {
-                min_[0] = x;
-            }
             if( x > max_[0] )
             {
                 max_[0] = x;
-            }
-
-            if( y < min_[1] )
-            {
-                min_[1] = y;
             }
             if( y > max_[1] )
             {
                 max_[1] = y;
             }
-
-            if( z < min_[2] )
-            {
-                min_[2] = z;
-            }
             if( z > max_[2] )
             {
                 max_[2] = z;
             }
-
         }
+
 
 
 
@@ -691,28 +665,30 @@ namespace Model
         {
             string name = *filename_ + "^^" + *obj_name_;
 
-            Mesh* mesh = m_list_.get_mesh(name);
+            Mesh* mesh = NULL;
+            mesh = m_list_.get_mesh(name);
             bool already_loaded_ = mesh != NULL;
 
             if( !already_loaded_ )
             {
+                if( trace_ )
+                {
+                    *trace_ << "Creating new mesh, name: " << name << endl;
+                }
                 mesh = new Mesh( name, GL_TRIANGLES );
+                m_list_.add_mesh( mesh );
             }
 
+            cur_va_     = mesh->get_array();
+
             if( mesh_qty_ == 0 )
-            {
+            { 
                 top_mesh_   = mesh;
-                cur_va_     = mesh->get_array();
                 mesh_qty_   = 1;
                 return;
             }
 
             top_mesh_->add_child( mesh );
-            if( !already_loaded_ )
-            {
-                cur_va_->done();
-            }
-            cur_va_     = mesh->get_array();
             mesh_qty_++;
             return;
         }
@@ -751,15 +727,20 @@ namespace Model
             {
                 throw( OBJ_Exception( "Shader cannot be NULL." ) );
             }
+            open( filename );
+            loading_ = true;
+
             reset();
 
             color_by_ = co;
-            open( filename );
             parse();
 
             top_mesh_->set_shader( shader );
             top_mesh_->set_size( size, max_dim() );
             top_mesh_->done();
+
+            loading_ = false;
+            close();
 
             return top_mesh_;
         }

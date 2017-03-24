@@ -96,7 +96,7 @@ namespace Model
      */
     Scene_Graph::Scene_Graph( SG_Setup* su ) :
         model_qty_( 0 ),
-        models_( new Mesh*[1] )
+        models_( NULL )
     {
         assert( su != NULL );
 
@@ -170,18 +170,9 @@ namespace Model
     */
     Scene_Graph::~Scene_Graph( void )
     {
-        /*
-           for( int i = 0; i < model_qty_; i++ )
-           {
-           delete moodels_[i];
-           }
-           delete [] models_;
-           */
-
-        if( models_[0] )
+        for( GLuint i = 0; i < model_qty_; i++ )
         {
-            delete models_[0];
-            models_[0] = NULL;
+            delete models_[i];
         }
         delete [] models_;
     }
@@ -190,40 +181,26 @@ namespace Model
 
 
 
-
-    /**  Adds models to be the children of the scene graph's root node.
-     * \param m A pointer to the model.
+    /**  Adds models to be the children of the root node of the Scene_Graph.
+     * \param mdls A pointer to an array of pointers to models.
+     * \param qty The number of models to be added.
      */
-#if 0
-    void Scene_Graph::add_models( Model* m, unsigned qty );
-#endif
-    void Scene_Graph::add_models( Mesh* m )
+    void Scene_Graph::add_models( Model** mdls, unsigned qty )
     {
-
-        if( !m )
-        {
-            return;
-        }
-
-        models_[0] = m;
-        model_qty_ = 1;
-
-#if 0
-        Models** temp = models_;
-        models_ = new Models*[model_qty_ + qty];
-        for( int i = 0; i < model_qty_; i++ )
+        Model** temp = models_;
+        models_ = new Model*[model_qty_ + qty];
+        for( GLuint i = 0; i < model_qty_; i++ )
         {
             models_[i] = temp[i];
             temp[i] = NULL;
         }
-        for( int i = 0; i < qty; i++ )
+        for( GLuint i = 0; i < qty; i++ )
         {
-            models_[model_qty + i] = m[i];
+            models_[model_qty_ + i] = mdls[i];
         }
         model_qty_ += qty;
 
         delete [] temp;
-#endif
     }
 
 
@@ -240,15 +217,7 @@ namespace Model
 
         for( GLuint i = 0; i < model_qty_; i++ )
         {
-            if( dirty_ )
-            {
-                models_[i]->draw( NULL, &vp_, dirty_ );
-                dirty_ = false;
-            }
-            else
-            {
-                models_[i]->draw( NULL, NULL, dirty_ );
-            }
+            models_[i]->render( vp_ );
         }
 
         window_->swap();

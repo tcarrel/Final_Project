@@ -6,7 +6,13 @@
  *
  */
 
+#include<fstream>
 
-extern glm::vec4    to_vec_color( uint32_t );
-extern std::string  numtoa( GLuint i );
+
+
+
+extern  glm::vec4       to_vec_color( uint32_t );
+extern  std::string     numtoa( GLuint i );
+extern  void            skip_whitespace( std::ifstream& in );
+
 

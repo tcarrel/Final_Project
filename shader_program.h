@@ -6,10 +6,14 @@
  */
 
 #include<GL/glew.h>
+
 #include<SDL2/SDL.h>
 #include<SDL2/SDL_opengl.h>
 
 #include<glm/glm.hpp>
+
+
+
 
 #include<cassert>
 #include<limits.h>
@@ -129,6 +133,6 @@ class Shader
 
 };  // Shader class.
 
-const char* get_type_string( GLenum );
+extern const char* get_type_string( GLenum );
 
 #endif /* __SHADER_PROGRAM_H__ */

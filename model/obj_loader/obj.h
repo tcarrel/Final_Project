@@ -50,48 +50,74 @@ namespace Model
                 OBJ_File( void );
                 ~OBJ_File( void );
 
+                Mesh* load_file(
+                        const string&,
+                        Shader*,
+                        bool,
+                        GLfloat ) throw(  OBJ_Exception );
+
+                void        reset( void );
+                void        trace( const string& );
+                void        stop_trace( void );
+                glm::vec3   size(  void );
+                float       max_dim(   void );
+
+            private:
+
+                //Private functions.///////////////////////
+
+                void        parse( void ) throw(  OBJ_Exception );
+                void        close( void );
+
                 /**  Opens an .obj file.
                  * \param f The filename.
                  */
                 inline void open( const char* f )
-                { filename_ = new string( f ); file_.open( f ); }
+                { filename_ = new string( f ); file_ = new std::ifstream( f ); }
+
                 /**  Opens an .obj file.
                  * \param s The filename.
                  */
                 inline void open( const string& s )
                 { open( s.c_str() ); }
 
-                void parse( void )
-                    throw(  OBJ_Exception );
-                void fill(  Vertex_Array&, bool );
-                void reset( void );
-                void close( void );
-                void trace( const string& );
-                void stop_trace( void );
-                glm::vec3 size(  void );
-                float max_dim(   void );
-
-
-                Mesh* load_file( const string&, Shader*, bool, GLfloat )
-                    throw(  OBJ_Exception );
-
-            private:
-
                 /**  Condition of the input file stream.
                  */
                 inline bool good( void )
-                { return file_.good(); }
+                { return file_->good(); }
 
                 /**  Checks whether or not a file is opened.
                  */
                 inline bool is_open( void )
-                { return file_.is_open(); }
+                { return file_->is_open(); }
 
                 /**  Checks if eof has been read.
                  */
                 inline bool eof( void )
-                { return file_.eof(); }
+                { return file_->eof(); }
 
+                void add_mesh();
+//                void fill( GLuint, bool );
+
+                void vertex( std::istream& );
+                void tex_coord( std::istream& );
+                void normal( std::istream& );
+                void v( std::istream& );
+                void g_or_o( std::istream& );
+                void f( std::istream& );
+                void m( std::istream& );
+                void s( std::istream& );
+                void u( std::istream& );
+                void comment( std::istream& );
+                void measure( const float&, const float&, const float& );
+
+                /**  Returns the next character to be read from the file
+                 * without popping it from the queue.
+                 */
+                inline char peek( void ) { return file_->peek(); }
+
+
+                //Internal types.//////////////////////////
                 struct Index_Set
                 {
                     int v = 0;
@@ -105,32 +131,10 @@ namespace Model
                     unsigned    end;
                 };
 
-                void add_mesh();
-//                void fill( GLuint, bool );
 
-                void vertex();
-                void tex_coord();
-                void normal();
-                void v();
-                void g();
-                void f();
-                void m();
-                void o();
-                void s();
-                void u();
-                void comment();
-
-                void measure( float, float, float );
-
-                /**  Returns the next character to be read from the file
-                 * without popping it from the queue.
-                 */
-                inline char peek( void ) { return file_.peek(); }
-
-                std::ifstream   file_; ///< Input file stream.
-
-                std::ofstream   trace_;
-                bool            tracing_;
+                //Private members./////////////////////////
+                std::ifstream*  file_; ///< IF stream.
+                std::ofstream*  trace_; ///< OF stream for debug tracing.
 
                 vector<glm::vec3> vertices_;
                 vector<glm::vec2> textures_;
@@ -138,11 +142,11 @@ namespace Model
 
                 vector<Index_Set*> faces_;
 
-                string* filename_; ///< The name of the file being read, mostly
-                                   ///< for debugging purposes.
-                string* obj_name_; ///< The name of the object.
+                string*     filename_; ///< The name of the file being read,
+                                       ///< mostly for debugging purposes.
+                string*     obj_name_; ///< The name of the object.
 
-                unsigned line_; ///< The previous line number;
+                unsigned    line_; ///< The previous line number;
 
                 GLfloat     size_[3]; 
                 GLfloat*    min_;
@@ -157,6 +161,7 @@ namespace Model
 
                 bool        color_by_;
                 bool        already_loaded_;
+                bool        loading_;
         };
 
     } // OBJ namespace.
