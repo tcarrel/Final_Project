@@ -25,8 +25,10 @@ using std::map;
 
 
 #include "OBJ_except.h"
-#include "model_list.h"
+//#include "model_list.h"
 #include "../model.h"
+
+#include "../../tracking_list.h"
 
 class Shader;
 
@@ -157,7 +159,8 @@ namespace Model
                 Vertex_Array*
                             cur_va_;
 
-                Model_list  m_list_;
+                Tracking_List<Mesh> m_list_;
+//                Model_list  m_list_;
 
                 bool        color_by_;
                 bool        already_loaded_;

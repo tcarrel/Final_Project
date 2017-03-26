@@ -669,7 +669,7 @@ namespace Model
             string name = *filename_ + "^^" + *obj_name_;
 
             Mesh* mesh = NULL;
-            mesh = m_list_.get_mesh(name);
+            mesh = m_list_.get(name);
             bool already_loaded_ = mesh != NULL;
 
             if( !already_loaded_ )
@@ -679,7 +679,7 @@ namespace Model
                     *trace_ << "Creating new mesh, name: " << name << endl;
                 }
                 mesh = new Mesh( name, GL_TRIANGLES );
-                m_list_.add_mesh( mesh );
+                m_list_.add( mesh );
             }
 
             cur_va_     = mesh->get_array();
