@@ -1,9 +1,9 @@
 /**
  * 
- * \file texture_2D.h
- * \author Thomas R. Carrel
+ * @file 2D.texture.h
+ * @author Thomas R. Carrel
  *
- * \brief Declares the Texture_2D class.
+ * @brief Declares the Texture_2D class.
  *
  */
 
@@ -31,7 +31,7 @@ namespace Model
 
     namespace Texture
     {
-        /**  For loading images int 2D textures on the GPU.
+        /**  For loading images into 2D textures on the GPU.
         */
         class Texture_2D : public Texture_base
         {

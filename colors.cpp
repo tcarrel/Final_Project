@@ -1319,7 +1319,7 @@ namespace Color
      */
     uint32_t random_color()
     {
-        return Color_Array[ Random::rand_unsigned( NUM_COLORS ) ];
+        return Color_Array[ get_rand( NUM_COLORS ) ];
     }
 
 } //Color namespace.

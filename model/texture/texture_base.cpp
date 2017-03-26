@@ -18,9 +18,13 @@ namespace Model
     namespace Texture
     {
 
+        Tracking_List<Texture_base> Texture_base::list_;
+
         /** Ctor.
          */
-        Texture_base::Texture_base( void )
+        Texture_base::Texture_base( GLenum T ) :
+            type_(T),
+            loaded_( false )
         {
             glGenTextures( 1, &handle_ );
         }

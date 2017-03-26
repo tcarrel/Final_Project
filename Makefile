@@ -210,6 +210,8 @@ $(OBJ_ERROR_DIR): $(ERROR_DIR) $(MODEL_ERROR_DIR)
 		$(TEX_PATH)/texture_base.h $(TEX_ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
+__all_texture_types.h: $(TEX_PATH)/texture_base.h $(TEX_PATH)/2D.texture.h
+
 $(TEX_ERROR_DIR): $(MODEL_ERROR_DIR) $(ERROR_DIR)
 	mkdir -p $@
 

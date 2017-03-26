@@ -19,6 +19,7 @@
 #ifndef  _TEXTURE_BASE_H_
 # define _TEXTURE_BASE_H_
 
+#include "../../tracking_list.h"
 
 namespace Model
 {
@@ -26,13 +27,14 @@ namespace Model
     namespace Texture
     {
 
+        class Texture_list;
+
         /**  Base class for loading textures.
         */
         class Texture_base
         {
             public:
-
-                Texture_base();
+                Texture_base( GLenum );
                 virtual ~Texture_base( void ) {}
 
                 /** Return the location of the texture on the GPU.
@@ -48,7 +50,15 @@ namespace Model
 
                 /**  The 'name' of the texture on the gpu.
                  */
-                GLuint  handle_;
+                GLuint                              handle_;
+                /**  Stores the type of texture, this cannot be determined at
+                 * compile time.
+                 */
+                const   GLenum                      type_;
+                /** Whether or not the texture has been loaded.
+                 */
+                bool                                loaded_;
+                static  Tracking_List<Texture_base> list_;
         };
 
     } //Texture namespace.
