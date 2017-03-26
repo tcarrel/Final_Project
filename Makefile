@@ -55,8 +55,8 @@ DOXY_OUTPUT_DIR = $(ERROR_DIR)/Doxygen
 OBJ_FILES = .entry_point.o .app.o .window.o .GLSL_except.o .shader_program.o \
 			.model.o .mesh.o .vertex_array.o .input_handler.o .SG_except.o \
 			.scene_graph.o .sg_setup.o .helper_functions.o .obj.o \
-            .OBJ_except.o .colors.o .random.o .null_command.o $(SHADER_OBJ) \
-			.texture_2D.o .texture_base.o .model_list.o .world_loader.o \
+            .OBJ_except.o .colors.o .null_command.o $(SHADER_OBJ) \
+			.texture_2D.o .texture_base.o .world_loader.o \
 			.Render_except.o
 GCCERREXT = gccerr
 
@@ -127,11 +127,9 @@ $(APP_ERROR_DIR): $(ERROR_DIR)
 .helper_functions.o: helper_functions.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
-.colors.o: colors.cpp colors.h
+.colors.o: colors.cpp colors.h random.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
-.random.o: random.cpp random.h
-	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 $(ERROR_DIR): Makefile
 	mkdir -p $@
@@ -182,16 +180,13 @@ $(MODEL_ERROR_DIR): $(ERROR_DIR)
 
 # compile Model::OBJ namespace
 .obj.o: $(OBJ_PATH)/obj.cpp $(OBJ_PATH)/obj.h helper_functions.h \
-		$(MODEL_DIR)/mesh.h $(OBJ_ERROR_DIR)
+		$(MODEL_DIR)/mesh.h tracking_list.h $(OBJ_ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .OBJ_except.o: $(OBJ_PATH)/OBJ_except.cpp $(OBJ_PATH)/OBJ_except.h \
 		$(OBJ_ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
-.model_list.o: $(OBJ_PATH)/model_list.cpp $(OBJ_PATH)/model_list.h \
-		$(MODEL_DIR)/mesh.h $(OBJ_ERROR_DIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .world_loader.o: $(OBJ_PATH)/world_loader.cpp $(OBJ_PATH)/world_loader.h \
 		$(OBJ_PATH)/obj.h shader_program.h helper_functions.h \
@@ -211,7 +206,7 @@ $(OBJ_ERROR_DIR): $(ERROR_DIR) $(MODEL_ERROR_DIR)
 		$(TEX_ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
-.texture_2D.o: $(TEX_PATH)/texture_2D.cpp $(TEX_PATH)/texture_2D.h \
+.texture_2D.o: $(TEX_PATH)/2D.texture.cpp $(TEX_PATH)/2D.texture.h \
 		$(TEX_PATH)/texture_base.h $(TEX_ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
