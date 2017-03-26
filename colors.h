@@ -540,6 +540,7 @@ namespace Color
         GLOSSY_GRAPE            = 0xAB92B300,
         GO_GREEN                = 0x00AB6600,
         GOLD_METALLIC           = 0xD4AF3700,
+        GOLD_METALIC            = GOLD_METALLIC,
         GOLD_WEB                = 0xFFD70000,
         GOLDEN                  = GOLD_WEB,
         GOLD_FUSION             = 0x85754E00,
