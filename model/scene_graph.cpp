@@ -182,8 +182,8 @@ namespace Model
 
 
     /**  Adds models to be the children of the root node of the Scene_Graph.
-     * \param mdls A pointer to an array of pointers to models.
-     * \param qty The number of models to be added.
+     * @param mdls A pointer to an array of pointers to models.
+     * @param qty The number of models to be added.
      */
     void Scene_Graph::add_models( Model** mdls, unsigned qty )
     {

@@ -173,11 +173,13 @@ namespace Model
 
 
         bool World_Loader::operator()(
-                const std::string&  path,
+                const std::string&  p,
                 const std::string&  level_filename,
                 Shader*             shdr,
                 bool                coloring = false )
         {
+            std::string path = p + "/";
+
             int qty = 0;
             std::string  filename = "";
 
@@ -187,7 +189,7 @@ namespace Model
                     level_filename.c_str() );
 
             file_ = new std::ifstream;
-            file_->open( (path + "/" + level_filename).c_str() );
+            file_->open( (path + level_filename).c_str() );
 
             (*file_) >> qty;
             file_->ignore();
@@ -198,16 +200,19 @@ namespace Model
 
             GLfloat scale = 0.0f;
             
+            obj_ld_.trace( "_obj.trace" );
             while( !( getline(*file_, filename, ',').eof() ) )
             {
-                filename = path + "/" + filename;
+                filename = path + filename;
                 (*file_) >> scale;
+                file_->ignore();
 
                 fprintf(
                         stderr,
-                        "filename:\t%s\nsize:\t\t%f\n",
+                        "filename:\t%s\nscale:\t\t%f\n",
                         filename.c_str(),
                         scale );
+
                 Model* mdl = new Model;
                 Mesh*  msh = obj_ld_.load_file(
                         filename,
@@ -219,9 +224,11 @@ namespace Model
 
                 sg_->add_models( &mdl, 1 );
 
+                obj_ld_.reset();
 //                models.push_back( mdl );
 //                mdl->add_mesh
             }
+            obj_ld_.stop_trace();
 
 
 

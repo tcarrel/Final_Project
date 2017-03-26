@@ -519,6 +519,9 @@ namespace Model
             }
             size_[0] = size_[1] = size_[2] = 0.0f;
 
+            top_mesh_ = NULL;
+            mesh_qty_ = 0;
+
             return;
         }
 
@@ -727,6 +730,7 @@ namespace Model
             {
                 throw( OBJ_Exception( "Shader cannot be NULL." ) );
             }
+            fprintf( stderr, "###%s, %f\n", filename.c_str(), size );
             open( filename );
             loading_ = true;
 

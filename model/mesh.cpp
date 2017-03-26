@@ -130,6 +130,7 @@ namespace Model
         glBindVertexArray( vao_ );
 
         shader_->set_uniform( "vp", vp );
+        fprintf( stderr, "Name: %s\tscale: %f\n", name_.c_str(), scale_factor_ );
         shader_->set_uniform( "sf", scale_factor_ );
 
         glDrawArrays( mode_, 0, qty_ );

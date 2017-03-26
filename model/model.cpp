@@ -84,7 +84,10 @@ namespace Model
                     (*iter)->render(vp);
                 }
             }
-            mesh_->draw(vp);
+            if( mesh_ )
+            {
+                mesh_->draw(vp);
+            }
             return;
         }
 
