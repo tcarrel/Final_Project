@@ -201,7 +201,7 @@ $(OBJ_ERROR_DIR): $(ERROR_DIR) $(MODEL_ERROR_DIR)
 
 
 
-# compile Model::Image namespace
+# compile Model::Texture namespace
 .texture_base.o: $(TEX_PATH)/texture_base.cpp $(TEX_PATH)/texture_base.h \
 		$(TEX_ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)

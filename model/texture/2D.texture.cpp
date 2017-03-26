@@ -8,7 +8,7 @@
 
 
 #include "texture_base.h"
-#include "texture_2D.h"
+#include "2D.texture.h"
 
 
 namespace Model
