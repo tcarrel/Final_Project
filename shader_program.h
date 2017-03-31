@@ -39,7 +39,6 @@ class Shader
 {
     public:
         Shader( void );
-        ~Shader(void );
         
         bool compile( void ) throw(GLSL_Program_Exception);
 
@@ -74,13 +73,21 @@ class Shader
         void print_active_attribs( void );
         void print_active_uniform_blocks( void );
 
+        Shader* get_ptr( void );
+        void delete_this( void );
+
+        std::string id_str( void );
+
     private:
+        // Not sure this will work, but I need to prevent implicit deletion.
+        ~Shader(void );
 
         void compile_shader( GLchar*, Shaders, GLuint* )
             throw( GLSL_Program_Exception );
         void link( void ) throw( GLSL_Program_Exception ); ///< Called by
                                                            ///< compile().
         int type_id( Shaders );
+        GLint get_uniform_location( const char* );
 
         struct 
         {
@@ -92,7 +99,7 @@ class Shader
             GLchar* compute     = NULL;
         } code_; ///<  Pointers to the source code for the various shaders.
 
-        struct
+        struct ID
         {
             GLuint  vertex      = 0;
             GLuint  tcs         = 0;
@@ -101,7 +108,7 @@ class Shader
             GLuint  fragment    = 0;
             GLuint  compute     = 0;
         } ids_; ///< Store the ids of the individual shaders.  This may be used
-        ///< later for some additional optimization.
+                ///< later for some additional optimization.
 
         struct 
         {
@@ -113,24 +120,24 @@ class Shader
             GLuint  compute;
         } shaders_; ///< The location of the shaders in the GPU's memory.
 
-        GLuint      program_; ///<  The handle for the shader program after
-        ///< it's been compiled.
-        bool        ready_; ///<  Flag indicating the shader has been compiled,
-        ///< linked, and is ready for use.
+        GLuint                      program_; ///<  The handle for the shade
+                                      ///< program after it's been compiled.
 
-        static Shader* current_program_; ///< Used to reduce the number
-        ///< glUseProgram calls.
+        bool                        ready_; ///<  Flag indicating the shader
+                                    ///< has been compiled, linked, and is
+                                    ///< ready for use.
 
+        static  Shader*             current_program_; ///< Used to reduce the
+                                                      ///< number of
+                                                      ///< glUseProgram calls.
 
-        std::map<std::string, int> uniform_locations_;
+        GLuint                      qty_in_use_;
 
-
-        GLint get_uniform_location( const char* );
-
+        std::map<std::string, int>  uniform_locations_;
+        
         //Prevent copying
         Shader( const Shader& o ) { };
         Shader& operator=( const Shader& o ) { return *this; }
-
 };  // Shader class.
 
 extern const char* get_type_string( GLenum );

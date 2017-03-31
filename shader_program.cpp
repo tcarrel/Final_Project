@@ -66,8 +66,12 @@ Shader* Shader::current_program_ = NULL;
 
 
 /** Ctor.
-*/
-Shader::Shader( void ) : program_( 0 ), ready_( false )
+ *
+ */
+Shader::Shader( void ) :
+    program_(0),
+    ready_(false),
+    qty_in_use_(1)
 {}
 
 
@@ -76,15 +80,15 @@ Shader::Shader( void ) : program_( 0 ), ready_( false )
 
 
 /** Dtor.
- *  Deletes the shader from the GPU's memory.
+ *  Deletes the shader from the GPU's memory.  The dtor is private and can
+ *  only be called by the shader object itself.  Since the object can be used
+ *  an indeterminate number of times, it is necessary to prevent multi-free
+ *  errors.  In order to reduce this as a possibily assigning a Shader* to a
+ *  variable should be done with Shader->get_ptr() and deletion should be done
+ *  with Shader->delete_this().
  */
 Shader::~Shader( void )
 {
-    if( program_ == 0 )
-    {
-        return;
-    }
-
     //Get shader qty.
     GLint shader_qty = 0;;
     glGetProgramiv( program_, GL_ATTACHED_SHADERS, &shader_qty );
@@ -129,7 +133,7 @@ void Shader::bind_attrib_location( GLuint location, const char* name )
 /**  Binds fragment data.
  * \param loc The location.
  * \param name The name.
-*/
+ */
 void Shader::bind_frag_data_location( GLuint loc, const char* name )
 {
     glBindFragDataLocation( program_, loc, name );
@@ -143,7 +147,7 @@ void Shader::bind_frag_data_location( GLuint loc, const char* name )
  * \param y The second value.
  * \param z The third value.
  *
-*/
+ */
 void Shader::set_uniform( const char* name, float x, float y, float z )
 {
     GLint loc = get_uniform_location(name);
@@ -156,7 +160,7 @@ void Shader::set_uniform( const char* name, float x, float y, float z )
 /**  Sends 3-element vectors to the GPU.
  *  \param name The name of the uniform.
  *  \param v The vec3 containing the data to be sent.
-*/
+ */
 void Shader::set_uniform( const char* name, const glm::vec3& v )
 {
     this->set_uniform( name, v.x, v.y, v.z );
@@ -168,7 +172,7 @@ void Shader::set_uniform( const char* name, const glm::vec3& v )
 /**  Sends 4-element vectors to the GPU.
  * \param name The name of the uniform.
  * \param v The vec4 containing the data to be sent.
-*/
+ */
 void Shader::set_uniform( const char* name, const glm::vec4& v )
 {
     GLint loc = get_uniform_location(name);
@@ -181,7 +185,7 @@ void Shader::set_uniform( const char* name, const glm::vec4& v )
 /**  Sends 2-element vectors to the GPU.
  * \param name The name of the uniform.
  * \param v The vec2 containing the data to be sent.
-*/
+ */
 void Shader::set_uniform( const char* name, const glm::vec2& v )
 {
     GLint loc = get_uniform_location(name);
@@ -196,13 +200,13 @@ void Shader::set_uniform( const char* name, const glm::vec2& v )
 /**  Sends a 4x4 matrix to the GPU.
  * \param name The name of the uniform.
  * \param m The mat4 to be sent.
-*/
+ */
 void Shader::set_uniform( const char* name, const glm::mat4& m )
 {
 
-//    fprintf( stderr, "Set Uniformm: %s\n", glm::to_string( m ).c_str() );
+    //    fprintf( stderr, "Set Uniformm: %s\n", glm::to_string( m ).c_str() );
     GLint loc = get_uniform_location(name);
-//    fprintf( stderr, "Uniform loc: %s, %i\n\n", name, loc );
+    //    fprintf( stderr, "Uniform loc: %s, %i\n\n", name, loc );
     glUniformMatrix4fv( loc, 1, GL_FALSE, &m[0][0] );
 }
 
@@ -573,7 +577,12 @@ void Shader::add_code( SHADER_TYPE_NAME* code, int type )
  */
 bool Shader::compile( void ) throw( GLSL_Program_Exception )
 {
-    if( !(code_.vertex || code_.fragment) )
+    if( ready_ )
+    {
+        return !ERROR;
+    }
+
+    if( !(code_.vertex && code_.fragment) )
     {
         printf( "Missing shaders." );
         return ERROR;
@@ -880,6 +889,63 @@ GLint Shader::get_uniform_location( const char* name )
 
     return uniform_locations_[name];
 }
+
+
+
+
+
+
+
+/** Should be used when storing pointer to a shader, this tracks the quantity
+ * in used so that they can be properly deleted (or not deleted) with
+ * delete_this().
+ */
+Shader* Shader::get_ptr( void )
+{
+    ++qty_in_use_;
+    return this;
+}
+
+
+
+
+
+
+/** Tracks the number of locations where a specific instance of this shader is
+ * being used and the specific instance will delete itself if it is no longer
+ * needed.
+ */
+void Shader::delete_this( void )
+{
+    if( program_ == 0 )
+    {
+        return;
+    }
+
+    qty_in_use_--;
+    if( qty_in_use_ > 0 )
+    {
+        return;
+    }
+
+    fprintf( stderr, "&&^^\n" );
+    delete this;
+}
+
+
+
+
+std::string Shader::id_str( void )
+{
+    return
+        numtoa(ids_.vertex)   + "." +
+        numtoa(ids_.tcs)      + "." +
+        numtoa(ids_.tev)      + "." +
+        numtoa(ids_.geometry) + "." +
+        numtoa(ids_.fragment) + "." +
+        numtoa(ids_.compute);
+}
+
 
 
 
