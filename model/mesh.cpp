@@ -26,7 +26,6 @@
 
 namespace Model
 {
-
     GLuint          Mesh::curr_vao_ = 0;
 
     /**
@@ -46,6 +45,7 @@ namespace Model
         child_qty_( 0 ),
         children_( NULL ),
         name_( name )
+        , qty_in_use_( 1 )
     {}
 
 
@@ -69,21 +69,36 @@ namespace Model
 
 
 
+    Mesh* Mesh::get_ptr( void )
+    {
+        qty_in_use_++;
+        return this;
+    }
+
+
+
+
+
+    bool Mesh::delete_this( void )
+    {
+        --qty_in_use_;
+        if( qty_in_use_ > 0 )
+        {
+            return false;
+        }
+        delete this;
+        return true;
+    }
+
+
+
 
 
     /** Mesh dtor.
     */
     Mesh::~Mesh( void )
     {
-        /**
-         * We cannot delete shaders explicitly as there is no way to easily
-         * tell if they are be used in for rendering multiple meshes.  For the
-         * time being, we will rely on the OS to clean up after us after
-         * program exit.  As the program becomes more mature, we will store a
-         * list of all shader program created and create a SIGKILL handler to
-         * delete them on exit and no sooner.
-         */
-        shader_ = NULL;
+        shader_->delete_this();
 
         fprintf( stderr, "***\n" );
 
@@ -96,7 +111,7 @@ namespace Model
         {
             for( GLuint i = 0; i < child_qty_; i++ )
             {
-                delete children_[i];
+                children_[i]->delete_this();
                 children_[i] = NULL;
             }
             delete [] children_;
@@ -147,7 +162,7 @@ namespace Model
      */
     void Mesh::set_shader( Shader* p )
     {
-        shader_ = p;
+        shader_ = p->get_ptr();
         for( GLuint i = 0; i < child_qty_; i++ )
         {
             children_[i]->set_shader(p);
@@ -233,7 +248,7 @@ namespace Model
             children_[i] = temp[i];
             temp[i] = NULL;
         }
-        children_[old_qty] = child;
+        children_[old_qty] = child->get_ptr();
 
         delete [] temp;
     }

@@ -679,7 +679,7 @@ namespace Model
                     *trace_ << "Creating new mesh, name: " << name << endl;
                 }
                 mesh = new Mesh( name, GL_TRIANGLES );
-                m_list_.add( mesh );
+                m_list_.add( mesh->name(), mesh );
             }
 
             cur_va_     = mesh->get_array();

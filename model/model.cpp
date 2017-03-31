@@ -34,7 +34,8 @@ namespace Model
      */
     Model::~Model( void )
     {
-        delete mesh_;
+        mesh_->delete_this();
+        mesh_ = NULL;
     }
 
 
@@ -109,7 +110,7 @@ namespace Model
     {
         if( !mesh_ )
         {
-            mesh_ = m;
+            mesh_ = m->get_ptr();
             return;
         }
 

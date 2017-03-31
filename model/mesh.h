@@ -51,7 +51,6 @@ namespace Model
         public:
 
             Mesh( const string&, GLenum );
-            ~Mesh( void );
 
             void set_shader( Shader* );
 
@@ -73,7 +72,12 @@ namespace Model
 
             void print_info( void );
 
+            Mesh* get_ptr( void );
+            bool delete_this( void );
+
         private:
+            ~Mesh( void ); ///< See the Shader dtor for why it is necessary
+                           ///< this be private.
 
             void print_info( string );
             void init_gpu_buffers( void );
@@ -136,6 +140,9 @@ namespace Model
                                    ///< allows for instanced rendering and
                                    ///< eliminates the need to reload models if
                                    ///< they are still in memory.
+
+            GLuint          qty_in_use_; ///< Tracks the number of this
+                                         ///<instance of mesh currently in use.
     };
 
 } //Model namespace.
