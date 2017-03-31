@@ -197,37 +197,37 @@ namespace App
             }
 
             //Render as wireframe.
-            if( *argv_[i] == "--wf" )
+            else if( *argv_[i] == "--wf" )
             {
                 window_->set_wireframe_front();
             }
-            if( *argv_[i] == "--wf=1" )
+            else if( *argv_[i] == "--wf=1" )
             {
                 window_->set_wireframe_front();
             }
-            if( *argv_[i] == "--wf=on" )
+            else if( *argv_[i] == "--wf=on" )
             {
                 window_->set_wireframe_front();
             }
 
 
             //Render as wireframe with back facing edges shown.
-            if( *argv_[i] == "--wf=2" )
+            else if( *argv_[i] == "--wf=2" )
             {
                 window_->set_wireframe_full();
             }
-            if( *argv_[i] == "--wf=full" )
+            else if( *argv_[i] == "--wf=full" )
             {
                 window_->set_wireframe_full();
             }
 
 
             //Normal rendering mode.
-            if( *argv_[i] == "--wf=0" )
+            else if( *argv_[i] == "--wf=0" )
             {
                 window_->set_wireframe_off();
             }
-            if( *argv_[i] == "--wf=off" )
+            else if( *argv_[i] == "--wf=off" )
             {
                 window_->set_wireframe_off();
             }
