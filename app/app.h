@@ -12,8 +12,8 @@
 
 #include<GL/glu.h>
 
-
-
+#include<vector>
+#include<string>
 
 #ifndef  APPLICATION_H
 # define APPLICATION_H
@@ -44,12 +44,18 @@ namespace App
     class Application
     {
         public:
-            Application( void );
-            Application( int, char** );
+            Application( std::vector<std::string*>& );
             ~Application(void );
 
             int run( void ); 
         private:
+            //disable copying.
+//            Application( void ) {}
+//            Application( const Application& ) {}
+//            const Application& operator=( const Application& ) { return *this; }
+
+            void parse_args( void );
+            void command_line_help( void );
 
             void start_up( void );
 
@@ -63,8 +69,8 @@ namespace App
 
             Model::Mesh* mesh_;
 
-            int     argc_;
-            char**  argv_;
+            int                         argc_;
+            std::vector<std::string*>   argv_;
     };
 
 } //App namespace.

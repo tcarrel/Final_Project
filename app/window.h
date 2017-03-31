@@ -56,6 +56,10 @@ namespace App
             void    swap( void );
             void    redraw( void );
 
+            void    set_poly( void );
+            void    set_wireframe_front( void );
+            void    set_wireframe_full( void );
+            void    set_wireframe_off( void );
 #ifdef DEBUG
             void    debug_draw( Shader* );
 #endif
@@ -87,9 +91,11 @@ namespace App
                             pos_y_, ///< Window vertical position.
                             bpp_; ///< Bits Per Pixel
 
-            Uint32          flags_; ///< SDL2 fllags related to the window.
+            Uint32          flags_; ///< SDL2 flags related to the window.
             float           aspect_; ///< The aspect ratio of the window.
 
+            GLenum          gl_face_; ///< GL_FRONT, GL_BACK, GL_FRONT_AND_BACK
+            GLenum          gl_mode_; ///< GL_FILL, GL_LINE
     };
 
 } //App namespace.

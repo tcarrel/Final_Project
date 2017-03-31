@@ -37,7 +37,7 @@ namespace App
     Window::Window( glm::vec4 c ) :
         Window( c.x, c.y, c.z )
     {}
-    
+
 
     /** Create window using a vec3 for the clear color.
      * \param c Clear color.
@@ -56,7 +56,9 @@ namespace App
         clear_color_{r, g, b, 1.0f },
         is_good_( true ),
         window_( NULL ),
-        gl_( NULL )
+        gl_( NULL ),
+        gl_face_(GL_FRONT),
+        gl_mode_(GL_FILL)
         {
 
             if( !(SDL_WasInit( SDL_INIT_EVERYTHING ) & SDL_INIT_VIDEO) )
@@ -184,13 +186,13 @@ namespace App
                     stderr, "%sCould not create SDL window.\n%s\n",
                     error_text,
                     SDL_GetError()
-                    );
+                   );
             is_good_ = false;
             return;
         }
 
 #ifdef REMOTE_WINDOW
-//        SDL_SetWindowBordered( window_ 
+        //        SDL_SetWindowBordered( window_ 
 #endif
 
         flags_ = SDL_GetWindowFlags( window_ );
@@ -284,7 +286,7 @@ namespace App
             return;
         }
 
-        glPolygonMode( GL_FRONT, GL_FILL );
+        set_poly();
         glEnable( GL_CULL_FACE );
         glEnable( GL_DEPTH_TEST );
         glCullFace( GL_BACK );
@@ -364,6 +366,41 @@ namespace App
         this->swap();
     }
 #endif
+
+    void Window::set_poly()
+    {
+        glPolygonMode( gl_face_, gl_mode_ );
+    }
+
+
+
+    void Window::set_wireframe_front( void )
+    {
+#ifdef DEBUG
+        fprintf( stderr, "Setting front wireframe mode.\n" );
+#endif
+        gl_mode_ = GL_LINE;
+        set_poly();
+    }
+
+
+    void Window::set_wireframe_full( void )
+    {
+#ifdef DEBUG
+        fprintf( stderr, "Setting full wireframe mode." );
+#endif
+        gl_face_ = GL_FRONT_AND_BACK;
+        gl_mode_ = GL_LINE;
+        set_poly();
+    }
+
+
+    void Window::set_wireframe_off( void )
+    {
+        gl_face_ = GL_FRONT;
+        gl_mode_ = GL_FILL;
+        set_poly();
+    }
 
 
 } //App namespace.

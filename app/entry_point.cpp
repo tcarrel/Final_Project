@@ -11,22 +11,23 @@
 
 #include "app.h"
 
+#include<string>
+#include<vector>
+
 
 
 /**  The entry point for the game.
 */
 int main( int argc, char* argv[] )
 {
-    if( argc > 1 )
+    std::vector<std::string*> args;
+    for( int i = 0; i < argc; i++ )
     {
-        App::Application app(argc, argv);
-        app.run();
+        args.push_back( new string(argv[i]) );
     }
-    else
-    {
-        App::Application app;
-        app.run();
-    }
+
+    App::Application app(args);
+    app.run();
 
     return 0;
 }
