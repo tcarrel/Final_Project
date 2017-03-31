@@ -189,7 +189,7 @@ namespace Model
                     level_filename.c_str() );
 
             file_ = new std::ifstream;
-            file_->open( (path + level_filename).c_str() );
+            file_->open( (path + level_filename + ".cn").c_str() );
 
             (*file_) >> qty;
             file_->ignore();
