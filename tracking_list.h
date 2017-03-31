@@ -1,9 +1,9 @@
 /**
  *
- * \file tracking_list.h
- * \author Thomas R. Carrel
+ * @file tracking_list.h
+ * @author Thomas R. Carrel
  *
- *
+ * @brief 
  */
 
 
@@ -27,7 +27,9 @@ template<typename T> class Tracking_List
         ~Tracking_List( void ); ///< Dtor.
 
         T* get( const string& );
-        void add( T* );
+        void add( const string&, T* );
+
+        bool remove( const string& );
     private:
         /** Maps the names to the pointer. */
         static unordered_map<string, T*>    data_; 
@@ -37,6 +39,9 @@ template<typename T> class Tracking_List
 
 template<typename T> unordered_map<string, T*>  Tracking_List<T>::data_;
 template<typename T> vector<string>             Tracking_List<T>::names_;
+
+
+
 
 template<typename T> Tracking_List<T>::~Tracking_List( void )
 {
@@ -52,8 +57,8 @@ template<typename T> Tracking_List<T>::~Tracking_List( void )
 }
 
 /** Gets the pointer to a Mesh that has already been loaded.
- * \param n The name of the mesh.
- * \return Returns NULL if the mesh has not yet been loaded.
+ * @param n The name of the mesh.
+ * @return Returns NULL if the mesh has not yet been loaded.
  */
 template<typename T> T* Tracking_List<T>::get( const string& n )
 {
@@ -68,17 +73,36 @@ template<typename T> T* Tracking_List<T>::get( const string& n )
 }
 
 /** Adds a loaded mesh to the list.
- * \param m The Mesh to be added.
+ * @param newT The element to be added.
  */
-template<typename T> void Tracking_List<T>::add( T* m )
+template<typename T> void Tracking_List<T>::add( const string& name, T* newT )
 {
-    if( get( m->name() ) )
+    if( get( name ) )
     {
         return;
     }
 
-    names_.push_back( m->name() );
-    data_[ m->name() ] = m;
+    names_.push_back( name );
+    data_[ name ] = newT;
 }
 
+
+/** Removes an element.
+ * @param m The element to be removed.
+ */
+template<typename T> bool Tracking_List<T>::remove( const string& name )
+{
+    for( auto i = names_.begin(); i != names_.end(); i++ )
+    {
+        if( *i == name )
+        {
+            data_[name] = NULL;
+            data_.erase( name );
+            names_.erase( i );
+            return true;
+        }
+    }
+
+    return false;
+}
 #endif /*__TRACKING_LIST_H__*/
