@@ -108,7 +108,7 @@ namespace Model
         /** Assignment operator.
          * \param rhs The Vertex to be assigned from.
          */
-        Vertex& operator=( const Vertex& rhs )
+        const Vertex& operator=( const Vertex& rhs )
         {
             this->pos   =   rhs.pos;
             this->color =   rhs.color;
