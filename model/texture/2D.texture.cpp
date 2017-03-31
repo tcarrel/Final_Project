@@ -17,11 +17,18 @@ namespace Model
     {
 
         /** Load an image file into a texture.
-         * \param filename The name of the file to load.
+         * @param filename The name of the file to load.
          */
-        Texture_2D::Texture_2D( std::string filename) :
-            Texture_base(GL_TEXTURE_2D)
+        Texture_2D::Texture_2D( const std::string& filename) :
+            Texture_base(filename, GL_TEXTURE_2D)
         {
+            if( loaded_ )
+            {
+                // The image has already been loaded and the base class has
+                //already setup the object as needed.
+                return;
+            }
+
             unsigned char* image = NULL;
             int width, height;
 
@@ -62,6 +69,8 @@ namespace Model
 
             //Image is no longed needed in system memory.
             SOIL_free_image_data( image ); 
+
+            loaded_ = true;
         }
 
     } //Texture namespace.

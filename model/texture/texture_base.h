@@ -15,6 +15,7 @@
 #include<SOIL/SOIL.h>
 
 #include<string>
+using std::string;
 
 #ifndef  _TEXTURE_BASE_H_
 # define _TEXTURE_BASE_H_
@@ -34,7 +35,6 @@ namespace Model
         class Texture_base
         {
             public:
-                Texture_base( GLenum );
                 virtual ~Texture_base( void ) {}
 
                 /** Return the location of the texture on the GPU.
@@ -47,6 +47,8 @@ namespace Model
                 void error_check( unsigned char*, std::string& );
 
             protected:
+                //Object can only be created as part of a child object.
+                Texture_base( const string&, const GLenum& );
 
                 /**  The 'name' of the texture on the gpu.
                  */
@@ -58,8 +60,12 @@ namespace Model
                 /** Whether or not the texture has been loaded.
                  */
                 bool                                loaded_;
+                /** We want to avoid repeatedly loading the same texture.
+                 */
                 static  Tracking_List<Texture_base> list_;
         };
+
+        extern const string tex_type_to_string( GLenum );
 
     } //Texture namespace.
 

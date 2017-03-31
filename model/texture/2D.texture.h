@@ -36,7 +36,7 @@ namespace Model
         class Texture_2D : public Texture_base
         {
             public:
-                Texture_2D( std::string );
+                Texture_2D( const std::string& );
 
                 /** Dtor.
                  */
