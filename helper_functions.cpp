@@ -60,3 +60,13 @@ void skip_whitespace( std::ifstream& in )
         in.ignore();
     }
 }
+
+
+
+/**  Return the provided text in bold.
+ * @param text The text to be changed.
+ */
+std::string bold( const std::string& text )
+{
+    return "\033[1m" + text + "\033[0m";
+}
