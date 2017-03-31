@@ -66,15 +66,14 @@ const string COMPILE_TIME_AND_DATE = xxx(COMPILE_TIME);
 
 
 
+/** The name of the game.  Mainly used by the windowing system. */
+const string    TITLE   =   "Turbine Engine Demonstration"; 
 
-const string    TITLE   =   "Senior Project"; ///< The name of the game.
-                                              ///< Mainly used by the windowing
-                                              ///< system.
-const bool      ERROR   =   false; ///< For error checking, so that fuctions
-                                   ///< returning errors can be consistant.
+/** For error checking, so that fuctions returning errors can be consistant. */
+const bool      ERROR   =   false; 
 
-/** Shader types.  Used in compiling shaders.
- */
+
+/** Shader types.  Used in compiling shaders. */
 enum Shaders
 {
     VERTEX_SHADER = GL_VERTEX_SHADER,
