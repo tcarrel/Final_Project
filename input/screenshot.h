@@ -1,9 +1,9 @@
 /**
  *
- * \file screenshot.h
- * \author Thomas R. Carrel
+ * @file screenshot.h
+ * @author Thomas R. Carrel
  *
- * \brief A Command class for taking screenshots.
+ * @brief A Command class for taking screenshots.
  *
  */
 
@@ -41,8 +41,9 @@ namespace Input
             Screenshot_Command( App::Window* w ) :
                 w_( w->w() ), h_( w->h() ) {}
 
-            /** Nothing is needed to be passed into this command, so it just
-             * calls the version of the same function that takes no arguments.
+            /** Nothing is needed to be passed into this command, so the
+             * parameter is ignored and it just calls the version of the same
+             * function that takes no arguments.
              */
             void execute( void* )
             { execute(); }
@@ -61,6 +62,8 @@ namespace Input
                 std::string filename = string( asctime( time_info ) );
                 filename = "Screenshots/Screenshot " + filename + ".bmp";
 
+                //   Remove 'illegal' characters from the date so it can be
+                // used in the filename.
                 for( auto i = filename.begin(); i != filename.end(); i++ )
                 {
                     if( *i < 31 )
@@ -77,7 +80,7 @@ namespace Input
 
                     if( *i == ':' )
                     {
-                        *i = '-';
+                        *i = '|';
                     }
                 }
 
@@ -102,6 +105,8 @@ namespace Input
              */
             static const Commands_Enum TYPE = SCREENSHOT_COMMAND;
 
+            /* Not static because they may change later.
+             */
             unsigned w_; ///< Window width.
             unsigned h_; ///< Window height.
     };
