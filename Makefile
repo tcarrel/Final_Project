@@ -28,7 +28,7 @@ SDL2_CFLAGS := $(shell sdl2-config --cflags)
 
 MAIN = gg
 
-SHADERS = simple.v.glsl simple.f.glsl
+SHADERS = simple.v.glsl simple.f.glsl plane.c.glsl plane.e.glsl
 SHADER_HEADER = shaders.h
 SHADER_DEF = shaders.cpp
 SHADER_OBJ = .shaders.o
@@ -74,8 +74,9 @@ OS_ID = -D OS_ID_STRING="$(OS_VERS)"
 AUTHOR_ID = -D AUTHOR_ID_STRING="$(AUTHOR)"
 DATE = -D COMPILE_TIME="$(shell date)"
 COLOR = -D COLOR_ARRAY
+CLEAR_ARGS = -D CLEAR_ARGS
 
-INFO = $(COMPILER_ID) $(OS_ID) $(AUTHOR_ID) $(DATE) $(COLOR)
+INFO = $(COMPILER_ID) $(OS_ID) $(AUTHOR_ID) $(DATE) $(COLOR) $(CLEAR_ARGS)
 
 
 CXXFLAGS = $(SDL2_CFLAGS) -time -Wall -g -std=c++11 -D TIMED -D DEBUG \
@@ -251,7 +252,7 @@ $(INPUT_ERROR_DIR): $(ERROR_DIR)
 $(SHADER_OBJ): $(SHADER_DEF) $(SHADER_HEADER)
 	$(CXX) $(CXXFLAGS) -c $(SHADER_DEF) -o $@
 
-$(SHADER_HEADER): $(SHADER_DEF)
+$(SHADER_HEADER): $(SHADER_DEF) $(SHADERS)
 
 $(SHADER_DEF): $(SHADERS) $(ERROR_DIR) $(SHADER_PROCESSOR)
 	$(SHADER_PROCESSOR) $(SHADER_HEADER) \
