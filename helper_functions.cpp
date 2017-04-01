@@ -38,7 +38,7 @@ glm::vec4 to_vec_color( uint32_t color )
 /**  Converts and integer to a string.
  * \param i The integer.
  */
-std::string numtoa( uint32_t i )
+std::string numtoa( const uint32_t& i )
 {
     std::stringstream S;
     S << i;
@@ -70,3 +70,7 @@ std::string bold( const std::string& text )
 {
     return "\033[1m" + text + "\033[0m";
 }
+
+
+
+

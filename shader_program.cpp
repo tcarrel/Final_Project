@@ -530,7 +530,7 @@ void Shader::print_active_uniform_blocks( void )
  * \param code The address for the struct containing the code.
  * \param type The type of shader being compiled (vertex, fragment, etc).
  */
-void Shader::add_code( SHADER_TYPE_NAME* code, int type )
+void Shader::add_code( SHADER_TYPE_NAME* code )
 {
 #ifdef DEBUG_SHADER_PROG
     fprintf(
@@ -539,30 +539,31 @@ void Shader::add_code( SHADER_TYPE_NAME* code, int type )
             *code
            );
 #endif
+    char type = code->name[code->name.length() - 1];
 
     switch( type )
     {
-        case VERTEX_SHADER:
+        case 'v': //VERTEX_SHADER:
             code_.vertex    = code->code;
             ids_.vertex     = code->id;
             return;
-        case TCS_SHADER:
+        case 't': //TCS_SHADER:
             code_.tcs       = code->code;
             ids_.tcs        = code->id;
             return;
-        case TEV_SHADER:
+        case 'e': //TEV_SHADER:
             code_.tev       = code->code;
             ids_.tev        = code->id;
             return;
-        case GEOMETRY_SHADER:
+        case 'g': //GEOMETRY_SHADER:
             code_.geometry  = code->code;
             ids_.geometry   = code->id;
             return;
-        case FRAGMENT_SHADER:
+        case 'f': //FRAGMENT_SHADER:
             code_.fragment  = code->code;
             ids_.fragment   = code->id;
             return;
-        case COMPUTE_SHADER:
+        case 'c': //COMPUTE_SHADER:
             code_.compute   = code->code;
             ids_.compute    = code->id;
             return;

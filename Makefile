@@ -28,7 +28,7 @@ SDL2_CFLAGS := $(shell sdl2-config --cflags)
 
 MAIN = gg
 
-SHADERS = simple.v.glsl simple.f.glsl plane.c.glsl plane.e.glsl
+SHADERS = simple.v.glsl simple.f.glsl plane.t.glsl plane.e.glsl
 SHADER_HEADER = shaders.h
 SHADER_DEF = shaders.cpp
 SHADER_OBJ = .shaders.o

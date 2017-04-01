@@ -80,8 +80,8 @@ namespace App
             //    Model::OBJ::OBJ_File loader;
 
             shader_ = (new Shader);//->get_ptr();
-            shader_->add_code( &SIMPLE_v, VERTEX_SHADER   );
-            shader_->add_code( &SIMPLE_f, FRAGMENT_SHADER );
+            shader_->add_code( get_shader("SIMPLE_v") );
+            shader_->add_code( get_shader("SIMPLE_f") );
 
             if( shader_->compile() == ERROR )
             {

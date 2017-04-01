@@ -51,7 +51,7 @@ class Shader
         inline const GLuint& get( void ) { return program_; }
         bool operator==( Shader& );
         void print( void ); 
-        void add_code( SHADER_TYPE_NAME*, int );
+        void add_code( SHADER_TYPE_NAME* );
         void use_program( void ) throw( GLSL_Program_Exception);
         
 
