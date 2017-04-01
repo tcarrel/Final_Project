@@ -17,4 +17,5 @@ extern  std::string     numtoa( const uint32_t& i );
 extern  void            skip_whitespace( std::ifstream& );
 extern  std::string     bold( const std::string& );
 extern  SHADER_TYPE_NAME* get_shdr( const std::string& );
+extern  std::string shader_filename_to_struct_name( const std::string& );
 

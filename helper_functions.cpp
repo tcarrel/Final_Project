@@ -74,3 +74,23 @@ std::string bold( const std::string& text )
 
 
 
+/**
+ */
+std::string shader_filename_to_struct_name( const std::string& fname )
+{
+    std::string name = fname.substr( 0, fname.find_first_of('.') ) + "_";
+
+    for( unsigned i = 0; i < name.length(); i++ )
+    {
+        if( 'a' < name[i] && name[i] < 'z' )
+        {
+            name[i] -= ('a' - 'A');
+        }
+    }
+    name += fname.substr( fname.find_first_of('.') )[1];
+
+    return name;
+}
+
+
+
