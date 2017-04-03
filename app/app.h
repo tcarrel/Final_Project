@@ -49,10 +49,6 @@ namespace App
 
             int run( void ); 
         private:
-            //disable copying.
-//            Application( void ) {}
-//            Application( const Application& ) {}
-//            const Application& operator=( const Application& ) { return *this; }
 
             void parse_args( void );
             void command_line_help( void );
@@ -60,7 +56,7 @@ namespace App
             void start_up( void );
 
             Window*  window_; ///< The window object that the game will be
-            ///< displayed in.
+                              ///< displayed in.
 
             Shader* shader_;
             Input::Input_Handler input_;

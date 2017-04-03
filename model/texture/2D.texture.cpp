@@ -35,12 +35,24 @@ namespace Model
             glBindTexture( type_, handle_ );
 
             //Tiling
-            glTexParameteri( type_, GL_TEXTURE_WRAP_S, GL_REPEAT );
-            glTexParameteri( type_, GL_TEXTURE_WRAP_T, GL_REPEAT );
+            glTexParameteri(
+                    type_,
+                    GL_TEXTURE_WRAP_S,
+                    GL_REPEAT );
+            glTexParameteri(
+                    type_,
+                    GL_TEXTURE_WRAP_T,
+                    GL_REPEAT );
 
             //Filtering
-            glTexParameteri( type_, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
-            glTexParameteri( type_, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR );
+            glTexParameteri(
+                    type_,
+                    GL_TEXTURE_MIN_FILTER,
+                    GL_LINEAR_MIPMAP_LINEAR );
+            glTexParameteri(
+                    type_,
+                    GL_TEXTURE_MAG_FILTER,
+                    GL_LINEAR_MIPMAP_LINEAR );
 
             image = SOIL_load_image
                 (

@@ -53,7 +53,7 @@ std::string numtoa( const uint32_t& i )
 /**  Skip whitespace at the beginning of a stream.
  * \param in The stream to remove whitespace from.
  */
-void skip_whitespace( std::ifstream& in )
+void skip_whitespace( std::istream& in )
 {
     while( isspace( in.peek() ) )
     {
@@ -63,13 +63,14 @@ void skip_whitespace( std::ifstream& in )
 
 
 
-/**  Return the provided text in bold.
- * @param text The text to be changed.
- */
-std::string bold( const std::string& text )
-{
-    return "\033[1m" + text + "\033[0m";
-}
+
+
+
+
+
+
+
+
 
 
 
@@ -82,7 +83,7 @@ std::string shader_filename_to_struct_name( const std::string& fname )
 
     for( unsigned i = 0; i < name.length(); i++ )
     {
-        if( 'a' < name[i] && name[i] < 'z' )
+        if( 'a' <= name[i] && name[i] <= 'z' )
         {
             name[i] -= ('a' - 'A');
         }

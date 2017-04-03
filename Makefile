@@ -1,5 +1,4 @@
 #
-#
 #   Thomas Russel Carrel
 #
 #   Makefile
@@ -11,13 +10,11 @@
 #  from g++ and copy it into a file.
 #
 ###############################################################################
-
 ###############################################################################
-#                                                                             #
-#  Set variables.                                                             #
-#                                                                             #
+#
+#  Set variables.
+#
 ###############################################################################
-
 CXX = g++
 CXX_VERS := $(shell g++ -dumpversion)
 OS_VERS := $(shell g++ -dumpmachine)
@@ -63,7 +60,6 @@ GCCERREXT = gccerr
 COPYOUTPUT = 2>&1 | tee $(ERROR_DIR)/$<.$(GCCERREXT)
 COPYDOXYOUTPUT = 2>&1 | tee $(DOXY_OUTPUT_DIR)/$<.doxy.out
 
-
 SOIL_LIB = -lSOIL
 SDL2_LIB := $(shell sdl2-config --libs)
 GLUT_LIB = -lGL -lGLU -lGLEW -lglut
@@ -81,23 +77,16 @@ INFO = $(COMPILER_ID) $(OS_ID) $(AUTHOR_ID) $(DATE) $(COLOR) $(CLEAR_ARGS)
 
 CXXFLAGS = $(SDL2_CFLAGS) -time -Wall -g -std=c++11 -D TIMED -D DEBUG \
 		   -D GLEW_STATIC -O0 $(INFO)
-
-
-
 ###############################################################################
-#                                                                             #
-#  The adjacency list.                                                        #
-#                                                                             #
+#
+#  The adjacency list.
+#
 ###############################################################################
 
 # link
 $(MAIN): $(OBJ_FILES) $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) $(OBJ_FILES) $(ALL_LIBS) -o $(MAIN) \
 		2>&1 | tee $(ERROR_DIR)/$(MAIN).$(GCCERREXT)
-
-
-
-
 
 # compile App namespace.
 .entry_point.o: $(APP_DIR)/entry_point.cpp $(APP_DIR)/app.h constants.h \
@@ -116,10 +105,6 @@ $(MAIN): $(OBJ_FILES) $(ERROR_DIR)
 $(APP_ERROR_DIR): $(ERROR_DIR)
 	mkdir -p $@
 
-
-
-
-
 # compile the global namespace
 .shader_program.o: shader_program.cpp shader_program.h constants.h \
 		GLSL_except.h helper_functions.h $(SHADER_HEADER) $(ERROR_DIR)
@@ -131,13 +116,8 @@ $(APP_ERROR_DIR): $(ERROR_DIR)
 .colors.o: colors.cpp colors.h random.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
-
 $(ERROR_DIR): Makefile
 	mkdir -p $@
-
-
-
-
 
 # compile Model namespace
 .model.o: $(MODEL_DIR)/model.cpp $(MODEL_DIR)/mesh.h \
@@ -174,11 +154,6 @@ $(ERROR_DIR): Makefile
 $(MODEL_ERROR_DIR): $(ERROR_DIR)
 	mkdir -p $@
 
-
-
-
-
-
 # compile Model::OBJ namespace
 .obj.o: $(OBJ_PATH)/obj.cpp $(OBJ_PATH)/obj.h helper_functions.h \
 		$(MODEL_DIR)/mesh.h tracking_list.h $(OBJ_ERROR_DIR)
@@ -188,7 +163,6 @@ $(MODEL_ERROR_DIR): $(ERROR_DIR)
 		$(OBJ_ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
-
 .world_loader.o: $(OBJ_PATH)/world_loader.cpp $(OBJ_PATH)/world_loader.h \
 		$(OBJ_PATH)/obj.h shader_program.h helper_functions.h \
 		$(OBJ_ERROR_DIR)
@@ -196,11 +170,6 @@ $(MODEL_ERROR_DIR): $(ERROR_DIR)
 
 $(OBJ_ERROR_DIR): $(ERROR_DIR) $(MODEL_ERROR_DIR)
 	mkdir -p $@
-
-
-
-
-
 
 # compile Model::Texture namespace
 .texture_base.o: $(TEX_PATH)/texture_base.cpp $(TEX_PATH)/texture_base.h \
@@ -215,10 +184,6 @@ __all_texture_types.h: $(TEX_PATH)/texture_base.h $(TEX_PATH)/2D.texture.h
 
 $(TEX_ERROR_DIR): $(MODEL_ERROR_DIR) $(ERROR_DIR)
 	mkdir -p $@
-
-
-
-
 
 # compile Input namespace
 .input_handler.o: $(INPUT_DIR)/input_handler.cpp $(INPUT_DIR)/input_handler.h \
@@ -240,11 +205,6 @@ $(INPUT_DIR)/window_show.h: $(INPUT_DIR)/command.h $(INPUT_DIR)/command_enum.h \
 $(INPUT_ERROR_DIR): $(ERROR_DIR)
 	mkdir -p $@
 
-
-
-
-
-
 # fulfill additional dependencies
 .GLSL_except.o: GLSL_except.cpp GLSL_except.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
@@ -262,21 +222,11 @@ constants.h: colors.h
 
 helper_functions.h: helper_functions.cpp
 
-
-
-
-
-
 # clean
 clean:
 	rm -f .*.o $(MAIN) $(SHADER_HEADER) $(SHADER_DEF) a.out
 	rm -rf $(ERROR_DIR)
 	rm -rf $(DOC_DIR)
-
-
-
-
-
 
 # compile documentation.
 doc: Doxyfile $(DOC_DIR) *.cpp *.h $(MAIN) $(DOXY_OUTPUT_DIR)
@@ -288,15 +238,13 @@ $(DOC_DIR):
 $(DOXY_OUTPUT_DIR): $(ERROR_DIR)
 	mkdir -p $@
 
-
 ###############################################################################
-#                                                                             #
-#  Grouped commands                                                           #
-#                                                                             #
+#
+#  Grouped commands.
+#
 ###############################################################################
-
-
 
 all: Main doc
 
 Main: $(MAIN)
+

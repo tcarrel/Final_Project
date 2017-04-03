@@ -23,7 +23,7 @@
 
 //helper functions
 
-
+//Tracking_List<Shader> Shader::tracker_;
 
 /**  Returns a string containing the name of the shader type.
  * \param s A value from the shader type enum (Shaders).
@@ -532,6 +532,10 @@ void Shader::print_active_uniform_blocks( void )
  */
 void Shader::add_code( SHADER_TYPE_NAME* code )
 {
+    if( !code )
+    {
+        return;
+    }
 #ifdef DEBUG_SHADER_PROG
     fprintf(
             stderr,
@@ -578,6 +582,15 @@ void Shader::add_code( SHADER_TYPE_NAME* code )
  */
 bool Shader::compile( void ) throw( GLSL_Program_Exception )
 {
+    Shader* temp = tracker_.get( id_str() );
+    if( temp )
+    {
+        program_ = temp->program_;
+        qty_in_use_ = 1; //New instance of this object.
+        uniform_locations_ = temp->uniform_locations_;
+        ready_ = true;
+    }
+
     if( ready_ )
     {
         return !ERROR;
@@ -608,6 +621,8 @@ bool Shader::compile( void ) throw( GLSL_Program_Exception )
         ready_ = true;
         use_program();
     }
+
+    tracker_.add( id_str(), this );
 
     return !ERROR;
 }
@@ -948,7 +963,23 @@ std::string Shader::id_str( void )
 }
 
 
+/*
+Shader* Shader::check_existance(
+        SHADER_TYPE_NAME* s0, SHADER_TYPE_NAME* s1, SHADER_TYPE_NAME* s2,
+        SHADER_TYPE_NAME* s3, SHADER_TYPE_NAME* s4, SHADER_TYPE_NAME* s5
+        )
+{
+    string id =
+        numtoa( s0->id ) + "." +
+        numtoa( s1->id ) + "." +
+        numtoa( s2->id ) + "." +
+        numtoa( s3->id ) + "." +
+        numtoa( s4->id ) + "." +
+        numtoa( s5->id );
 
+    return tracker_.get( id );
+}
+*/
 
 
 

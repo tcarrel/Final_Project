@@ -6,7 +6,10 @@
  */
 
 #include "window.h"
+#include "../helper_functions.h"
 
+#define WARNING red("WARNING!!").c_str()
+#define ERROR bright_red("ERROR!!").c_str()
 
 namespace App
 {
@@ -14,12 +17,12 @@ namespace App
     /**
      * Pre-formatted warning text.
      */
-    char warning_text[] = "\033[0;31;40mWARNING!!\033[0m";
+//    char warning_text[] = red("WARNING!!").c_str();
 
     /**
      * Pre-formatted error text.
      */
-    char error_text[]   = "\033[1;31;40mERROR!!\033[0m";
+//    char error_text[]   = bright_red("ERROR!!");
 
 
     /** Create default window.  Sets a hard coded clear color for OpenGL,
@@ -71,7 +74,7 @@ namespace App
                 fprintf(
                         stderr,
                         "%s\tCould not query display.\tSDL Error:\t%s\n",
-                        error_text,
+                        ERROR,
                         SDL_GetError()
                        );
                 is_good_ = false;
@@ -173,7 +176,7 @@ namespace App
                     stderr,
                     "%s\tFailed to set window to fullscreen.\t"
                     "SDL Error:\t%s\n",
-                    error_text,
+                    ERROR,
                     SDL_GetError() 
                    );
             return;
@@ -184,7 +187,7 @@ namespace App
         {
             fprintf(
                     stderr, "%sCould not create SDL window.\n%s\n",
-                    error_text,
+                    ERROR,
                     SDL_GetError()
                    );
             is_good_ = false;
@@ -216,7 +219,7 @@ namespace App
             fprintf(
                     stderr,
                     "%s\tCould not create OpenGL context.\tSDL Error:\n%s\n",
-                    error_text,
+                    ERROR,
                     SDL_GetError()
                    );
             is_good_ = false;
@@ -244,7 +247,7 @@ namespace App
             fprintf(
                     stderr,
                     "%s\tUnable to initialize GLEW.\tGLEW Error:\t%s\n",
-                    error_text,
+                    ERROR,
                     glewGetErrorString( glew_error )
                    );
             is_good_ = false;
@@ -256,7 +259,7 @@ namespace App
             fprintf(
                     stderr,
                     "%s\tUnable to set VSync.\tSDL Error:\t%s\n",
-                    warning_text,
+                    WARNING,
                     SDL_GetError()
                    );
         }
@@ -278,7 +281,7 @@ namespace App
             fprintf(
                     stderr,
                     "%s\tCould not initialize OpenGL!\tGLU Error:\t%s\n\n",
-                    error_text,
+                    ERROR,
                     gluErrorString( error )
                    );
             error = glGetError();
@@ -404,3 +407,7 @@ namespace App
 
 
 } //App namespace.
+
+
+#undef ERROR
+#undef WARNING

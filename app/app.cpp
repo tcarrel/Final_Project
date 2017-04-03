@@ -17,9 +17,11 @@
 #include "../model/obj_loader/obj.h"
 #include "../model/obj_loader/world_loader.h"
 
-#include "../helper_functions.h"
-
 #include "../model/scene_graph.h"
+
+#define GLM_INCLUDED //From window.h
+#include "../helper_functions.h"
+#undef  GLM_INCLUDED
 
 
 namespace App
@@ -46,6 +48,7 @@ namespace App
      */
     Application::Application( std::vector<std::string*>& argv ) :
         window_( new Window( to_vec_color( Color::ROSE_GOLD ) ) ),
+        shader_( NULL ),
         input_( window_ ),
         world_( NULL ),
         mesh_( NULL )
@@ -77,33 +80,7 @@ namespace App
             delete sg;
             sg = NULL;
 
-            //    Model::OBJ::OBJ_File loader;
-
-            shader_ = (new Shader);//->get_ptr();
-            shader_->add_code( get_shader("SIMPLE_v") );
-            shader_->add_code( get_shader("SIMPLE_f") );
-
-            if( shader_->compile() == ERROR )
-            {
-                fprintf(
-                        stderr,
-                        "Could not compile shaders.\n\n"
-                       );
-
-            }
-
-            //   loader.trace( "_obj.trace" );
-            //          mesh_ = loader.load_file( "resource/F22.obj", shader_, false, 1.0f );
-            //  loader.stop_trace();
-
-            //           mesh_->print_info();
-
-            shader_->print();
-            shader_->print_active_uniforms();
-
-            loader( "resource", "load_list", shader_, false );
-
-            //            world_->add_models( mesh_ );
+            loader( "resource", "load_list", false );
 
         }
         else

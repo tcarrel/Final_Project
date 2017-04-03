@@ -1,5 +1,8 @@
-1
+3
+*SHADERS*,2
+simple.v.glsl
+simple.f.glsl
 F22.obj, 1.1
-cube.obj, 0.7
+utah_teapot.obj, 0.75
 torus.obj, 1.717
 

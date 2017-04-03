@@ -9,7 +9,9 @@
 
 
 #include<cstdio>
+
 #include "texture_base.h"
+#include "../../helper_functions.h"
 
 
 namespace Model
@@ -57,7 +59,9 @@ namespace Model
          * @param addr Pointer to the image.
          * @param filename Used for the error message, if necessary.
          */
-        void Texture_base::error_check( unsigned char* addr, std::string& filename )
+        void Texture_base::error_check(
+                unsigned char* addr,
+                std::string& filename )
         {
             if( addr )
             {
@@ -84,7 +88,7 @@ namespace Model
                 case GL_TEXTURE_2D:
                     return "TEXTURE_2D";
                 default:
-                    return "UNIMPLENTED_TEXTURE";
+                    return bright_red("UNIMPLENTED_or_UNKNOWN_TEXTURE");
             }
         }
 

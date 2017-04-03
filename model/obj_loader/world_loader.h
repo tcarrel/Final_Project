@@ -17,17 +17,16 @@
 
 #include<GL/glu.h>
 
-#include "obj.h"
-
 #ifndef  _LIST_LOADER_H_
 # define _LIST_LOADER_H_
 
 #include<glm/glm.hpp>
 
-
 #include<fstream>
 #include<string>
 #include<vector>
+
+#include "obj.h"
 
 class Shader;
 
@@ -47,7 +46,6 @@ namespace Model
                 bool operator()(
                         const std::string&,
                         const std::string&,
-                        Shader*,
                         bool );
 
 
@@ -57,8 +55,12 @@ namespace Model
                 void    add_error_msg(    unsigned, const std::string& );
                 string* error_num_to_msg( unsigned, const std::string& );
 
-                OBJ_File                        obj_ld_;
-                static Scene_Graph*             sg_;
+                void    load_shader(      void );
+
+                OBJ_File                            obj_ld_;
+                static Scene_Graph*                 sg_;
+
+                Shader*                             cur_shader_;
 
                 //Error handling.
                 static std::vector<std::string*>*   error_msgs_;

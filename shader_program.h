@@ -25,8 +25,8 @@
 #include "GLSL_except.h"
 
 #include "shaders.h"
-
 #include "helper_functions.h"
+#include "tracking_list.h"
 
 #ifndef  __SHADER_PROGRAM_H__
 # define __SHADER_PROGRAM_H__
@@ -77,6 +77,12 @@ class Shader
         void delete_this( void );
 
         std::string id_str( void );
+
+        /*
+        static Shader* check_existance(
+                SHADER_TYPE_NAME*, SHADER_TYPE_NAME*, SHADER_TYPE_NAME*,
+                SHADER_TYPE_NAME*, SHADER_TYPE_NAME*, SHADER_TYPE_NAME* );
+                */
 
     private:
         // Not sure this will work, but I need to prevent implicit deletion.
@@ -134,10 +140,11 @@ class Shader
         GLuint                      qty_in_use_;
 
         std::map<std::string, int>  uniform_locations_;
-        
-        //Prevent copying
-        Shader( const Shader& o ) { };
-        Shader& operator=( const Shader& o ) { return *this; }
+        Tracking_List<Shader>       tracker_;
+
+        //Prevent external copying.
+        Shader(            const Shader& ) { };
+        Shader& operator=( const Shader& ) { return *this; }
 };  // Shader class.
 
 extern const char* get_type_string( GLenum );

@@ -14,7 +14,6 @@
 #include "../mesh.h"
 
 #include "../../colors.h"
-#include "../../helper_functions.h"
 #include "../../shader_program.h"
 
 #include<iostream>
@@ -31,6 +30,9 @@ using std::stringstream;
 
 #include<glm/ext.hpp>
 
+#define GLM_INCLUDED
+#include "../../helper_functions.h"
+#undef GLM_INCLUDED
 // Local helper functions.
 
 
@@ -57,6 +59,7 @@ namespace Model
             loading_(false)
         {
             size_[0] = size_[1] = size_[2] = 0.0f;
+            trace_ = new std::ofstream("/dev/null");
         }
 
 
@@ -559,6 +562,7 @@ namespace Model
                 delete trace_;
                 trace_ = NULL;
             }
+            trace_ = new std::ofstream("/dev/null");
         }
 
 

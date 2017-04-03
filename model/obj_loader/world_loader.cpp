@@ -16,6 +16,7 @@
 #include "../scene_graph.h"
 #include "../mesh.h"
 
+#include "../../shaders.h"
 #include "../../shader_program.h"
 #include "../../helper_functions.h"
 
@@ -111,7 +112,9 @@ namespace Model
 
 
 
-        void World_Loader::add_error_msg( unsigned erno, const std::string& txt )
+        void World_Loader::add_error_msg(
+                unsigned erno,
+                const std::string& txt )
         {
             if( !error_msgs_ )
             {
@@ -175,7 +178,6 @@ namespace Model
         bool World_Loader::operator()(
                 const std::string&  p,
                 const std::string&  level_filename,
-                Shader*             shdr,
                 bool                coloring = false )
         {
             std::string path = p + "/";
@@ -203,6 +205,13 @@ namespace Model
             obj_ld_.trace( "_obj.trace" );
             while( !( getline(*file_, filename, ',').eof() ) )
             {
+                if( filename == "*SHADERS*" )
+                {
+                    fprintf( stderr, "Load shaders.\n" );
+                    load_shader();
+                    continue;
+                }
+
                 filename = path + filename;
                 (*file_) >> scale;
                 file_->ignore();
@@ -216,7 +225,7 @@ namespace Model
                 Model* mdl = new Model;
                 Mesh*  msh = obj_ld_.load_file(
                         filename,
-                        shdr,
+                        cur_shader_,
                         coloring,
                         scale );
 
@@ -240,6 +249,38 @@ namespace Model
         }
 
 
+
+
+
+
+        void World_Loader::load_shader( void )
+        {
+            string fname;
+            cur_shader_ = new Shader;
+            int qty;
+            *file_ >> qty;
+            file_->ignore();
+
+            for( int i = 0; i < qty; i++ )
+            {
+                getline( *file_, fname );
+
+                string shdr_name = shader_filename_to_struct_name( fname );
+                fprintf( stderr, "#%i %s\n", i, shdr_name.c_str() );
+
+                cur_shader_->add_code(
+                        get_shader( shdr_name ) );
+
+            }
+            if( cur_shader_->compile() == ERROR )
+            {
+                fprintf(
+                        stderr,
+                        "Could not compile shaders.\n\n"
+                       );
+
+            }
+        }
 
 
 

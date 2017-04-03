@@ -10,13 +10,16 @@
 
 #include "../shader_program.h"
 #include "../app/window.h"
-#include "../helper_functions.h"
 #include "../colors.h"
 
 #include "obj_loader/obj.h"
 
 #include<stdio.h>
 #include<glm/ext.hpp>
+
+#define GLM_INCLUDED
+#include "../helper_functions.h"
+#undef GLM_INCLUDED
 
 
 /** Set to false in order to color vertices using their normal vector,
@@ -145,7 +148,12 @@ namespace Model
         glBindVertexArray( vao_ );
 
         shader_->set_uniform( "vp", vp );
-        fprintf( stderr, "Name: %s\tscale: %f\n", name_.c_str(), scale_factor_ );
+        fprintf(
+                stderr,
+                "Name: %s\tscale: %f\n",
+                name_.c_str(),
+                scale_factor_ );
+
         shader_->set_uniform( "sf", scale_factor_ );
 
         glDrawArrays( mode_, 0, qty_ );
