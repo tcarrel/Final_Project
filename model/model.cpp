@@ -1,8 +1,8 @@
 /**
- * \file model.cpp
- * \author Thomas R. Carrel
+ * @file model.cpp
+ * @author Thomas R. Carrel
  *
- * \brief Defines the Model class.
+ * @brief Defines the Model class.
  */
 
 
@@ -23,6 +23,7 @@ namespace Model
     Model::Model( void ) :
         mesh_( NULL ),
         dirty_( true ),
+        translation_( glm::mat4(1.0f) ),
         children_( NULL )
     {}
 
@@ -46,11 +47,9 @@ namespace Model
     {
         bool draw = dirty_ || d;
 
-       
         if( draw )
         {
             //Update the local transformation matrix.
-
             for( 
                     auto iter = children_->begin(); 
                     iter != children_->end();
@@ -67,7 +66,7 @@ namespace Model
 
 
     /**  Calls the mesh's draw command.
-     * \param vp The (v)iew (p)rojection matrix.
+     * @param vp The (v)iew (p)rojection matrix.
     */
     void Model::render( const glm::mat4& vp ) throw(Render_Exception)
     {
@@ -87,7 +86,7 @@ namespace Model
             }
             if( mesh_ )
             {
-                mesh_->draw(vp);
+                mesh_->draw(vp, translation_);
             }
             return;
         }
@@ -104,7 +103,7 @@ namespace Model
     /**  Adds the mesh for this model.  If a mesh is already set, it creates a
      * new Model object ands the mesh to that model and sets it as a child
      * model.
-     * \param m The Mesh to be added.
+     * @param m The Mesh to be added.
      */
     void Model::add( Mesh* m )
     {
@@ -127,7 +126,7 @@ namespace Model
 
 
     /**  Adds a model as a child.
-     * \param m The Model to be added.
+     * @param m The Model to be added.
      */
     void Model::add( Model* m )
     {
@@ -136,6 +135,29 @@ namespace Model
             children_ = new std::forward_list<Model*>;
         }
         children_->push_front(m);
+    }
+
+
+
+
+
+    /**  Sets the position vector.
+     * @param x The x-coordinate.
+     * @param y The y-coordinate.
+     * @param z The z-coordinate.
+     */
+    void Model::set_position( GLfloat& x, GLfloat& y, GLfloat& z )
+    {
+//        pos_ = glm::translate( x, y, z );
+        /*
+        pos_ = glm::mat4(
+                pos_[0][0], pos_[1][0], pos_[2][0], pos_[3][0],
+                pos_[0][1], pos_[1][1], pos_[2][1], pos_[3][1],
+                pos_[0][2], pos_[1][2], pos_[2][2], pos_[3][2],
+                x         , y         , z         , 1.0f );
+                */
+//        pos_ = glm::translate( glm::mat4(1.0f), glm::vec3(x, y, z) );
+        translation_ = glm::translate( glm::vec3( x, y, z ) );
     }
 
 } //Model namespace.

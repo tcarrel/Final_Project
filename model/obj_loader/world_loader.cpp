@@ -78,10 +78,8 @@ namespace Model
         {
             if( !qty )
             {
-//                add_error_msg( "
                 return;
             }
-
 
             if( !msgs )
             {
@@ -141,9 +139,9 @@ namespace Model
                 unsigned erno,
                 const std::string&  )
         {
-            //"\033[0,31mWORLD LOADING ERROR:\033[0m\t"
             char* buffer = new char[256];
             std::string* msg  = NULL;
+
             switch( erno )
             {
                 default:
@@ -193,6 +191,13 @@ namespace Model
             file_ = new std::ifstream;
             file_->open( (path + level_filename + ".cn").c_str() );
 
+            while( file_->peek() == '#' )
+            {
+                getline( *file_, filename );
+                filename = "";
+            }
+            filename = "";
+
             (*file_) >> qty;
             file_->ignore();
 
@@ -200,11 +205,22 @@ namespace Model
 
             fprintf( stdout, " Number of models in level:\t%i\n", qty );
 
-            GLfloat scale = 0.0f;
+            GLfloat floats[3];
+            floats[0] = floats[1] = floats[2] = 0.0f;
             
-            obj_ld_.trace( "_obj.trace" );
+//            obj_ld_.trace( "_obj.trace" );
             while( !( getline(*file_, filename, ',').eof() ) )
             {
+                if( filename[0] == '#' )
+                {
+                    while( file_->peek() != '\n' )
+                    {
+                        file_->ignore();
+                    }
+                    file_->ignore();
+                    continue; // Comment
+                }
+
                 if( filename == "*SHADERS*" )
                 {
                     fprintf( stderr, "Load shaders.\n" );
@@ -213,34 +229,42 @@ namespace Model
                 }
 
                 filename = path + filename;
-                (*file_) >> scale;
+                *file_ >> floats[0];
                 file_->ignore();
 
                 fprintf(
                         stderr,
                         "filename:\t%s\nscale:\t\t%f\n",
                         filename.c_str(),
-                        scale );
+                        floats[0] );
 
                 Model* mdl = new Model;
                 Mesh*  msh = obj_ld_.load_file(
                         filename,
                         cur_shader_,
                         coloring,
-                        scale );
+                        floats[0] );
+
+                for( int i = 0; i < 3; i++ )
+                {
+                    *file_ >> floats[i];
+                    file_->ignore();
+                }
+
+                fprintf( 
+                        stderr,
+                        "position = ( %f, %f, %f )\n",
+                        floats[0], floats[1], floats[2]
+                       );
+                mdl->set_position( floats[0], floats[1], floats[2] );
 
                 mdl->add( msh );
 
                 sg_->add_models( &mdl, 1 );
 
                 obj_ld_.reset();
-//                models.push_back( mdl );
-//                mdl->add_mesh
             }
             obj_ld_.stop_trace();
-
-
-
 
             file_->close();
             delete file_;
@@ -264,6 +288,11 @@ namespace Model
             for( int i = 0; i < qty; i++ )
             {
                 getline( *file_, fname );
+                if( fname[0] == '#' )
+                {
+                    fname = "";
+                    continue; // Comment
+                }
 
                 string shdr_name = shader_filename_to_struct_name( fname );
                 fprintf( stderr, "#%i %s\n", i, shdr_name.c_str() );
@@ -281,8 +310,6 @@ namespace Model
 
             }
         }
-
-
 
     } //OBJ namespace.
 

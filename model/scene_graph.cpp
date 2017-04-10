@@ -181,11 +181,11 @@ namespace Model
 
 
 
-    /**  Adds models to be the children of the root node of the Scene_Graph.
-     * @param mdls A pointer to an array of pointers to models.
+    /** Adds models to be the children of the root node of the Scene_Graph.
+     * @param mdl A pointer to an array of pointers to models.
      * @param qty The number of models to be added.
      */
-    void Scene_Graph::add_models( Model** mdls, unsigned qty )
+    void Scene_Graph::add_models( Model** mdl, unsigned qty )
     {
         Model** temp = models_;
         models_ = new Model*[model_qty_ + qty];
@@ -196,7 +196,7 @@ namespace Model
         }
         for( GLuint i = 0; i < qty; i++ )
         {
-            models_[model_qty_ + i] = mdls[i];
+            models_[model_qty_ + i] = mdl[i];
         }
         model_qty_ += qty;
 

@@ -1,8 +1,17 @@
-3
+7
 *SHADERS*,2
 simple.v.glsl
 simple.f.glsl
-F22.obj, 1.1
-utah_teapot.obj, 0.75
-torus.obj, 1.717
+cube.obj,1,-1,0,0
+twisted.obj,1,0,0,0
+F22.obj,1,1,0,0
+torus.obj,1,0,0,1
+bunny.obj,1,0,0,-1
+monkey.obj,1,1,0,-1
+utah_teapot.obj,1,0,0,0
+#*SHADERS*,4
+#simple.v.glsl
+#simple.f.glsl
+#plane.t.glsl
+#plane.e.glsl
 

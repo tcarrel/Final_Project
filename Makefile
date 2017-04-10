@@ -75,6 +75,8 @@ CLEAR_ARGS = -D CLEAR_ARGS
 INFO = $(COMPILER_ID) $(OS_ID) $(AUTHOR_ID) $(DATE) $(COLOR) $(CLEAR_ARGS)
 
 
+#CXXFLAGS = $(SDL2_CFLAGS) -time -Wall -g -std=c++11 -D TIMED -D DEBUG \
+#		   -D GLEW_STATIC -O0
 CXXFLAGS = $(SDL2_CFLAGS) -time -Wall -g -std=c++11 -D TIMED -D DEBUG \
 		   -D GLEW_STATIC -O0 $(INFO)
 ###############################################################################
@@ -89,6 +91,9 @@ $(MAIN): $(OBJ_FILES) $(ERROR_DIR)
 		2>&1 | tee $(ERROR_DIR)/$(MAIN).$(GCCERREXT)
 
 # compile App namespace.
+#.entry_point.o: $(APP_DIR)/entry_point.cpp $(APP_DIR)/app.h constants.h \
+#		$(SHADER_HEADER) $(APP_ERROR_DIR)
+#	$(TIME) $(CXX) $(CXXFLAGS) $(INFO) -c $< -o $@ $(COPYOUTPUT)
 .entry_point.o: $(APP_DIR)/entry_point.cpp $(APP_DIR)/app.h constants.h \
 		$(SHADER_HEADER) $(APP_ERROR_DIR)
 	$(TIME) $(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)

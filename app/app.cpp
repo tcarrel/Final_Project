@@ -38,16 +38,15 @@ namespace App
 
 
     /**  Ctor.
-     *   Creates the window object for the game and initializes it, this
-     *   version of the ctor allows command line arguments to be passed in from
-     *   main.  At this point this does nothing different compared to the
-     *   Generic ctor as there are no command line options that any part of
-     *   the program needs to be aware of, yet.
-     *   \param argc argc taken from the command line.
-     *   \param argv argv taken from the command line.
+     * Creates the window object for the game and initializes it, this version
+     * of the ctor allows command line arguments to be passed in from main.  At
+     * this point this does nothing different compared to the generic ctor as
+     * there are no command line options that any part of the program needs to
+     * be aware of, yet.
+     * @param argv argv taken from the command line.
      */
     Application::Application( std::vector<std::string*>& argv ) :
-        window_( new Window( to_vec_color( Color::ROSE_GOLD ) ) ),
+        window_( new Window( to_vec_color( Color::GUNMETAL ) ) ),
         shader_( NULL ),
         input_( window_ ),
         world_( NULL ),
@@ -60,28 +59,29 @@ namespace App
         {
 
 #ifdef DEBUG
-            fprintf( stderr, "Window created successfully.\n" );
+            fprintf(
+                    stderr,
+                    "Window created successfully.\nAspect Ratio\t=\t%f\n",
+                    window_->aspect() );
 #endif
             parse_args();
 
             Model::SG_Setup* sg = new Model::SG_Setup;
 
-            sg->position( 0.0f, 0.0f, 0.0f );
-            sg->eye_position( 2.0f, 1.75f, -2.0f );
-            sg->target( 0.0f, 0.0f, 0.0f );
-            sg->up_dir( 0.0f, 1.0f, 0.0f );
-            sg->perspective( 45.0f, 1.0f, 5.0f, window_->aspect() );
-            sg->window( window_ );
+            sg->position(        0.0f,  0.0f,  0.0f );
+            sg->eye_position(    2.0f, 1.75f, -2.0f );
+            sg->target(          0.0f,  0.0f,  0.0f );
+            sg->up_dir(          0.0f,  1.0f,  0.0f );
+            sg->perspective(    45.0f,  1.0f, 30.0f, window_->aspect() );
+            sg->window(         window_ );
 
             world_ = Model::Scene_Graph::ctor( sg );
             Model::OBJ::World_Loader loader( world_ );
-
 
             delete sg;
             sg = NULL;
 
             loader( "resource", "load_list", false );
-
         }
         else
         {
@@ -89,10 +89,6 @@ namespace App
         }
 
     }
-
-
-
-
 
     /**  Initializes SDL2 and the window object.
     */
@@ -105,10 +101,6 @@ namespace App
             window_->init();
         }
     }
-
-
-
-
 
     /**  Game main loop.
      *     This contains the main loop of the game as well as performing the
@@ -158,13 +150,6 @@ namespace App
 
     void Application::parse_args( void )
     {
-#ifdef DEBUG
-        fprintf( stderr, "argc(%ld)\n", argv_.size() );
-        for( unsigned i = 0; i < argv_.size(); i++ )
-        {
-            fprintf( stderr, "  argv[%i]: \"%s\"\n", i, argv_[i]->c_str() );
-        }
-#endif
 
         for( unsigned i = 1; i < argv_.size(); i++ )
         {
@@ -176,25 +161,44 @@ namespace App
             //Render as wireframe.
             else if( *argv_[i] == "--wf" )
             {
+                fprintf(
+                        stderr,
+                        "\"%s\" ",
+                        argv_[i]->c_str() );
                 window_->set_wireframe_front();
             }
             else if( *argv_[i] == "--wf=1" )
             {
+                fprintf(
+                        stderr,
+                        "\"%s\" ",
+                        argv_[i]->c_str() );
                 window_->set_wireframe_front();
             }
             else if( *argv_[i] == "--wf=on" )
             {
+                fprintf(
+                        stderr,
+                        "\"%s\" ",
+                        argv_[i]->c_str() );
                 window_->set_wireframe_front();
             }
-
 
             //Render as wireframe with back facing edges shown.
             else if( *argv_[i] == "--wf=2" )
             {
+                fprintf(
+                        stderr,
+                        "\"%s\" ",
+                        argv_[i]->c_str() );
                 window_->set_wireframe_full();
             }
             else if( *argv_[i] == "--wf=full" )
             {
+                fprintf(
+                        stderr,
+                        "\"%s\" ",
+                        argv_[i]->c_str() );
                 window_->set_wireframe_full();
             }
 
@@ -202,10 +206,18 @@ namespace App
             //Normal rendering mode.
             else if( *argv_[i] == "--wf=0" )
             {
+                fprintf(
+                        stderr,
+                        "\"%s\" ",
+                        argv_[i]->c_str() );
                 window_->set_wireframe_off();
             }
             else if( *argv_[i] == "--wf=off" )
             {
+                fprintf(
+                        stderr,
+                        "\"%s\" ",
+                        argv_[i]->c_str() );
                 window_->set_wireframe_off();
             }
 

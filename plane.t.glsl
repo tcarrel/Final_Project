@@ -2,8 +2,8 @@
 
 layout (vertices = 3) out;
 
-in vec4 C;
-out vec4 Color;
+//in vec4 C;
+//out vec4 Color;
 
 void main( void )
 {
@@ -19,5 +19,5 @@ void main( void )
   gl_out[gl_InvocationID].gl_Position =
     gl_in[gl_InvocationID].gl_Position;
 
-  Color = C;
+//  Color = C;
 }

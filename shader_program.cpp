@@ -523,12 +523,9 @@ void Shader::print_active_uniform_blocks( void )
 
 
 
-/**  Add pointers to the code for the current shader program.
- *  Since shader code is stored as a constant, this can be accomplished fairly
- *  easily.
- *
- * \param code The address for the struct containing the code.
- * \param type The type of shader being compiled (vertex, fragment, etc).
+/**  Add pointers to the code for the current shader program.  Since shader
+ * code is stored as a constant, this can be accomplished fairly easily.
+ * @param code The address for the struct containing the code.
  */
 void Shader::add_code( SHADER_TYPE_NAME* code )
 {

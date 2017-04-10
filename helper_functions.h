@@ -35,6 +35,8 @@ extern          std::string         shader_filename_to_struct_name(
 
 #ifndef  __TEXT_FORMATTING_HELPER_FUNCTIONS__
 # define __TEXT_FORMATTING_HELPER_FUNCTIONS__
+// These are defined here so they can be inlined.
+
 /**  Return the provided text in bright red.
  * @param text The text to be changed.
  */

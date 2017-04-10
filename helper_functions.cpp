@@ -95,3 +95,10 @@ std::string shader_filename_to_struct_name( const std::string& fname )
 
 
 
+
+/**
+ */
+inline unsigned get_bits( const float& v )
+{
+    return *((int*) &v);
+}

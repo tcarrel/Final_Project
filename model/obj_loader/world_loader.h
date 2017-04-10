@@ -48,14 +48,14 @@ namespace Model
                         const std::string&,
                         bool );
 
-
                 void get_errors( std::string*, unsigned* );
+
             private:
 
-                void    add_error_msg(    unsigned, const std::string& );
-                string* error_num_to_msg( unsigned, const std::string& );
+                void    add_error_msg(      unsigned,   const   std::string& );
+                string* error_num_to_msg(   unsigned,   const   std::string& );
 
-                void    load_shader(      void );
+                void    load_shader(        void );
 
                 OBJ_File                            obj_ld_;
                 static Scene_Graph*                 sg_;

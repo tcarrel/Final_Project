@@ -11,6 +11,7 @@
 #include "vertex_array.h"
 
 #include<glm/ext.hpp>
+#include<cfloat>
 
 namespace Model
 {
@@ -138,6 +139,76 @@ namespace Model
         delete [] data_;
         size_ = max_size_ = 0;
         data_ = NULL;
+    }
+
+
+
+    void Vertex_Array::scale( const GLfloat& scl )
+    {
+        for( GLuint i = 0; i < size_; i++ )
+        { data_[i].pos = scl * data_[i].pos;
+        }
+    }
+
+
+
+
+    void Vertex_Array::center( const GLchar& axes )
+    {
+        const bool x = (axes &  0x00000001);
+        const bool y = (axes & (0x00000001 << 1));
+        const bool z = (axes & (0x00000001 << 2));
+        center( x, y, z );
+    }
+
+
+
+    void Vertex_Array::center( const bool& xxx, const bool& yyy, const bool& zzz )
+    {
+        enum Axes : GLuint {
+            AXIS_X,
+            AXIS_Y,
+            AXIS_Z,
+            AXES_ALL
+        };
+
+        GLboolean center_axis[3];
+        center_axis[AXIS_X] = xxx;
+        center_axis[AXIS_Y] = yyy;
+        center_axis[AXIS_Z] = zzz;
+
+        GLfloat max[AXES_ALL], min[AXES_ALL];
+
+        for( GLuint i = 0; i < AXES_ALL; i++ )
+        {
+            max[i] = FLT_MIN;
+            min[i] = FLT_MAX;
+        }
+
+        for( GLuint i = 0; i < size_; i++ )
+        {
+            min[AXIS_X] = ((data_[i].pos.x < min[AXIS_X]) ? data_[i].pos.x : min[AXIS_X]);
+            max[AXIS_X] = ((data_[i].pos.x > max[AXIS_X]) ? data_[i].pos.x : max[AXIS_X]);
+
+            min[AXIS_Y] = ((data_[i].pos.y < min[AXIS_Y]) ? data_[i].pos.y : min[AXIS_Y]);
+            max[AXIS_Y] = ((data_[i].pos.y > max[AXIS_Y]) ? data_[i].pos.y : max[AXIS_Y]);
+
+            min[AXIS_Z] = ((data_[i].pos.z < min[AXIS_Z]) ? data_[i].pos.z : min[AXIS_Z]);
+            max[AXIS_Z] = ((data_[i].pos.z > max[AXIS_Z]) ? data_[i].pos.z : max[AXIS_Z]);
+        }
+
+        GLfloat offsets[AXES_ALL];
+        for( GLuint i = 0; i < AXES_ALL; i++ )
+        {
+            offsets[i] = ((center_axis[i]) ? (min[i] - max[i]) : (0.0f)) / 2.000000f;
+        }
+
+        for( GLuint i = 0; i < size_; i++ )
+        {
+            data_[i].pos.x -= offsets[AXIS_X];
+            data_[i].pos.y -= offsets[AXIS_Y];
+            data_[i].pos.z -= offsets[AXIS_Z];
+        }
     }
 
 } //Model namespace.

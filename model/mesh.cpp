@@ -44,11 +44,12 @@ namespace Model
         mode_( m ),
         vbo_( 0 ),
         vao_( 0 ),
+        original_scale_( 1.0f ),
         scale_factor_( 1.0f ),
         child_qty_( 0 ),
         children_( NULL ),
-        name_( name )
-        , qty_in_use_( 1 )
+        name_( name ),
+        qty_in_use_( 1 )
     {}
 
 
@@ -128,12 +129,16 @@ namespace Model
 
 
 
-    /** For now, this will be responsible for sending all the draw calls to
-     * the gpu.  Later, this will be responsible only for creating command
-     * packets and sending those to the command buffer.
-     * \param vp The view-projection matrix.
+    /** For now, this will be responsible for sending all the draw calls to the
+     * gpu.  Later, this will be responsible only for creating command packets
+     * and sending those to the command buffer.
+     * @param vp The view-projection matrix.
+     * @param trans The translation matrix to be passed into the shader as a
+     * uniform.
      */
-    void Mesh::draw( const glm::mat4& vp ) throw( Scene_Graph_Exception )
+    void Mesh::draw(
+            const glm::mat4& vp,
+            const glm::mat4& trans ) throw( Scene_Graph_Exception )
     {
 
         if( !shader_ )
@@ -148,19 +153,20 @@ namespace Model
         glBindVertexArray( vao_ );
 
         shader_->set_uniform( "vp", vp );
+        shader_->set_uniform( "translation", trans );
         fprintf(
                 stderr,
                 "Name: %s\tscale: %f\n",
                 name_.c_str(),
                 scale_factor_ );
 
-        shader_->set_uniform( "sf", scale_factor_ );
+        shader_->set_uniform( "_sf", scale_factor_ );
 
         glDrawArrays( mode_, 0, qty_ );
 
         for( GLuint i = 0; i < child_qty_; i++ )
         {
-            children_[i]->draw( vp );
+            children_[i]->draw( vp, trans );
         }
     }
 
@@ -198,6 +204,8 @@ namespace Model
         {
             return;
         }
+//        vertices_->center();
+        vertices_->scale( scale_factor_ );
 
         glGenVertexArrays( 1, &vao_ );
         glBindVertexArray( vao_ );
@@ -231,10 +239,6 @@ namespace Model
                 );
 
         verts_sent_to_gpu_ = true;
-        /*
-           delete vertices_;
-           vertices_ = NULL;
-           */
     }
 
 
@@ -333,6 +337,5 @@ namespace Model
             children_[i]->print_info( spacing + "  " );
         }
     }
-
 } //Model namespace.
 

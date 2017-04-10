@@ -38,7 +38,6 @@ namespace Model
         public:
             SG_Setup( void );
 
-
             void position(      GLfloat,    GLfloat,    GLfloat );
             void eye_position(  GLfloat,    GLfloat,    GLfloat );
             void target(        GLfloat,    GLfloat,    GLfloat );
@@ -100,7 +99,7 @@ namespace Model
              */
             GLfloat     pers_angle;
 
-            GLfloat     pers_aspect;    ///< Screen aspect ratio.
+            GLfloat     pers_aspect;  ///< Screen aspect ratio.
 
             GLfloat     ortho_left;   ///< Orthographic, left plane position.
             GLfloat     ortho_right;  ///< Orthographic, right plane position.

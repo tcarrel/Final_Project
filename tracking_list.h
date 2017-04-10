@@ -73,6 +73,7 @@ template<typename T> T* Tracking_List<T>::get( const string& n )
 }
 
 /** Adds a loaded mesh to the list.
+ * @param name The name/key attributed to the entry.
  * @param newT The element to be added.
  */
 template<typename T> void Tracking_List<T>::add( const string& name, T* newT )
@@ -88,7 +89,7 @@ template<typename T> void Tracking_List<T>::add( const string& name, T* newT )
 
 
 /** Removes an element.
- * @param m The element to be removed.
+ * @param name The element to be removed.
  */
 template<typename T> bool Tracking_List<T>::remove( const string& name )
 {

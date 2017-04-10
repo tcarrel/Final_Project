@@ -18,6 +18,7 @@
 #include<GL/glu.h>
 
 #include<glm/glm.hpp>
+#include<glm/gtx/transform.hpp>
 
 #include<stdio.h>
 
@@ -32,7 +33,6 @@ class Shader;
 
 namespace Model
 {
-
     class Mesh;
     class Render_Exception;
 
@@ -44,26 +44,29 @@ namespace Model
     class Model
     {
         public:
+
             Model( void );
             ~Model( void );
 
             void update( const glm::mat4&, bool ); ///< Will need heavy
                                                    ///< modification later.
-
-            void render( const glm::mat4&  ) throw(Render_Exception);
+            void render( const glm::mat4& )
+                throw(Render_Exception);
 
             void add( Mesh* );
             void add( Model* );
 
+            void set_position( GLfloat&, GLfloat&, GLfloat& );
         private:
 
             Mesh*                       mesh_;
             bool                        dirty_;
+            glm::mat4                   translation_;
+
             /** A list of sub-models whose position is dependant on the parent
              * model's position.
              */
             std::forward_list<Model*>*  children_;
     };
-
 } //Model namespace.
 #endif

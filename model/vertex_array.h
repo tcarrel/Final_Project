@@ -16,6 +16,7 @@
 #include<GL/glu.h>
 
 #include<glm/glm.hpp>
+#include<glm/gtc/matrix_transform.hpp>
 
 #include<stdarg.h>
 
@@ -42,7 +43,7 @@ namespace Model
             void done( void );
 
             /**
-             * \return The current size of the array.
+             * @return The current size of the array.
              */
             GLuint size() { return size_; }
 
@@ -62,15 +63,19 @@ namespace Model
             { return (void*) data_; }
 
             void clear( void );
+
+            void scale( const GLfloat& );
+            void center( void )
+            { center( true, true, true ); }
+            void center( const GLchar& );
+            void center( const bool&, const bool&, const bool& );
             
         private:
-
             //private data.
             Vertex* data_; ///< Vertex data.
 
             GLuint size_; ///< Current number of indices used.
             GLuint max_size_; ///< Current size allocated in memory.
-
 
             //private functions.
             void grow( void );
