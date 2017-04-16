@@ -54,7 +54,7 @@ OBJ_FILES = .entry_point.o .app.o .window.o .GLSL_except.o .shader_program.o \
 			.scene_graph.o .sg_setup.o .helper_functions.o .obj.o \
             .OBJ_except.o .colors.o .null_command.o $(SHADER_OBJ) \
 			.texture_2D.o .texture_base.o .world_loader.o \
-			.Render_except.o
+			.Render_except.o .skybox.o
 GCCERREXT = gccerr
 
 COPYOUTPUT = 2>&1 | tee $(ERROR_DIR)/$<.$(GCCERREXT)
@@ -150,6 +150,9 @@ $(ERROR_DIR): Makefile
 
 .vertex_array.o: $(MODEL_DIR)/vertex_array.cpp $(MODEL_DIR)/vertex_array.h \
 		$(MODEL_DIR)/vertex.h $(MODEL_ERROR_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
+.skybox.o: $(MODEL_DIR)/skybox.cpp $(MODEL_DIR)/skybox.h $(MODEL_ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .Render_except.o: $(MODEL_DIR)/Render_except.cpp $(MODEL_DIR)/Render_except.h \
