@@ -27,9 +27,6 @@ namespace Model
 
     namespace Texture
     {
-
-        class Texture_list;
-
         /**  Base class for loading textures.
         */
         class Texture_base

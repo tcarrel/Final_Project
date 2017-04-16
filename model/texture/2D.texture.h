@@ -13,7 +13,6 @@
 #include<SDL2/SDL_opengl.h>
 
 #include<GL/gl.h>
-//#include<GL/freeglut.h>
 
 #include<SOIL/SOIL.h>
 
@@ -26,11 +25,11 @@
 
 namespace Model
 {
-
-    class Texture_base;
-
     namespace Texture
     {
+
+        class Texture_base;
+
         /**  For loading images into 2D textures on the GPU.
         */
         class Texture_2D : public Texture_base
@@ -39,7 +38,7 @@ namespace Model
                 Texture_2D( const std::string& );
 
                 /** Dtor.
-                 */
+                */
                 ~Texture_2D( void ) {}
         };
 
