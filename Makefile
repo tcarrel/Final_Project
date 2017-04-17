@@ -55,6 +55,7 @@ OBJ_FILES = .entry_point.o .app.o .window.o .GLSL_except.o .shader_program.o \
             .OBJ_except.o .colors.o .null_command.o $(SHADER_OBJ) \
 			.texture_2D.o .texture_base.o .world_loader.o \
 			.Render_except.o .skybox.o
+GLSL_FILES := $(shell ls *.glsl)
 GCCERREXT = gccerr
 
 COPYOUTPUT = 2>&1 | tee $(ERROR_DIR)/$<.$(GCCERREXT)
@@ -86,7 +87,7 @@ CXXFLAGS = $(SDL2_CFLAGS) -time -Wall -g -std=c++11 -D TIMED -D DEBUG \
 ###############################################################################
 
 # link
-$(MAIN): $(OBJ_FILES) $(ERROR_DIR)
+$(MAIN): $(OBJ_FILES) $(ERROR_DIR) Makefile
 	$(CXX) $(CXXFLAGS) $(OBJ_FILES) $(ALL_LIBS) -o $(MAIN) \
 		2>&1 | tee $(ERROR_DIR)/$(MAIN).$(GCCERREXT)
 
@@ -121,7 +122,7 @@ $(APP_ERROR_DIR): $(ERROR_DIR)
 .colors.o: colors.cpp colors.h random.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
-$(ERROR_DIR): Makefile
+$(ERROR_DIR):
 	mkdir -p $@
 
 # compile Model namespace
@@ -222,7 +223,7 @@ $(SHADER_OBJ): $(SHADER_DEF) $(SHADER_HEADER)
 
 $(SHADER_HEADER): $(SHADER_DEF) $(SHADERS)
 
-$(SHADER_DEF): $(SHADERS) $(ERROR_DIR) $(SHADER_PROCESSOR)
+$(SHADER_DEF): $(SHADERS) $(ERROR_DIR) $(SHADER_PROCESSOR) $(GLSL_FILES)
 	$(SHADER_PROCESSOR) $(SHADER_HEADER) \
 			2>&1 | tee $(ERROR_DIR)/$(SHADER_PROCESSOR).$(GCCERREXT)
 
