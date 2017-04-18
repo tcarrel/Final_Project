@@ -143,26 +143,32 @@ namespace Model
 
         //Unrolled loop
         image = SOIL_load_image( faces[0].c_str(),  &w, &h, NULL, SOIL_LOAD_RGB );
+        check_SOIL_error( image, faces[0] );
         glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image );
         SOIL_free_image_data( image );
 
         image = SOIL_load_image( faces[1].c_str(),  &w, &h, NULL, SOIL_LOAD_RGB );
+        check_SOIL_error( image, faces[1] );
         glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image );
         SOIL_free_image_data( image );
 
         image = SOIL_load_image( faces[2].c_str(),  &w, &h, NULL, SOIL_LOAD_RGB );
+        check_SOIL_error( image, faces[2] );
         glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image );
         SOIL_free_image_data( image );
 
         image = SOIL_load_image( faces[3].c_str(),  &w, &h, NULL, SOIL_LOAD_RGB );
+        check_SOIL_error( image, faces[3] );
         glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image );
         SOIL_free_image_data( image );
 
         image = SOIL_load_image( faces[4].c_str(),  &w, &h, NULL, SOIL_LOAD_RGB );
+        check_SOIL_error( image, faces[4] );
         glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image );
         SOIL_free_image_data( image );
 
-        image = SOIL_load_image( faces[6].c_str(),  &w, &h, NULL, SOIL_LOAD_RGB );
+        image = SOIL_load_image( faces[5].c_str(),  &w, &h, NULL, SOIL_LOAD_RGB );
+        check_SOIL_error( image, faces[5] );
         glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image );
         SOIL_free_image_data( image );
 

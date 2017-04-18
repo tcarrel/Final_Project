@@ -26,6 +26,11 @@ extern          SHADER_TYPE_NAME*   get_shdr( const std::string& );
 extern          std::string         shader_filename_to_struct_name(
         const std::string& );
 
+extern          int                 get_bits( const float& );
+
+extern          void                check_SOIL_error( unsigned char*,
+        const std::string& );
+
 
 
 

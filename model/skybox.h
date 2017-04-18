@@ -42,8 +42,8 @@ namespace Model
 
             Shader* program_handle_;
             GLuint  texture_handle_;
-
-            GLuint  vao_, vbo_;
+            GLuint  vao_;
+            GLuint  vbo_;
     };
 } //Model namespace.
 

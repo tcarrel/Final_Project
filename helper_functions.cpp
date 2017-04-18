@@ -11,9 +11,11 @@
 #include<cctype>
 #include<glm/glm.hpp>
 
+#include<SOIL/SOIL.h>
+
 /**
  *  Converts a hex integer to a vec4 color.
- *  \param color The hex value of the desired color, RGBA-format, 8-bits per
+ *  @param color The hex value of the desired color, RGBA-format, 8-bits per
  *  field.
  */
 glm::vec4 to_vec_color( uint32_t color )
@@ -36,7 +38,7 @@ glm::vec4 to_vec_color( uint32_t color )
 
 
 /**  Converts and integer to a string.
- * \param i The integer.
+ * @param i The integer.
  */
 std::string numtoa( const uint32_t& i )
 {
@@ -51,7 +53,7 @@ std::string numtoa( const uint32_t& i )
 
 
 /**  Skip whitespace at the beginning of a stream.
- * \param in The stream to remove whitespace from.
+ * @param in The stream to remove whitespace from.
  */
 void skip_whitespace( std::istream& in )
 {
@@ -75,7 +77,9 @@ void skip_whitespace( std::istream& in )
 
 
 
-/**
+/**  Converts a shader program filename to an internal shader name.
+ * @param fname The filename.
+ * @return The internally used shader name.
  */
 std::string shader_filename_to_struct_name( const std::string& fname )
 {
@@ -96,9 +100,39 @@ std::string shader_filename_to_struct_name( const std::string& fname )
 
 
 
-/**
+/**  Get the raw binary data from a float in a type that can be used with
+ * bitwise operations.
+ * @param f The float to be copied.
+ * @return An unsigned int that has the same binary representation as the
+ * float that had been passed in.
  */
-inline unsigned get_bits( const float& v )
+inline unsigned get_bits( const float& f )
 {
-    return *((int*) &v);
+    return *((int*) &f);
 }
+
+
+
+
+
+
+/**  Check an image for errors from the SOIL library.
+ * @param image The raw image data.
+ * @param file The filename of the image.
+ */
+void check_SOIL_error( unsigned char* image, const std::string& file )
+{
+    if( image )
+    {
+        return;
+    }
+
+    fprintf(
+            stderr,
+            "Image Load Error < %s > %s\n",
+            file.c_str(),
+            SOIL_last_result()
+           );
+}
+
+
