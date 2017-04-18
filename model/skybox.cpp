@@ -132,12 +132,10 @@ namespace Model
     {
         const GLenum type = GL_TEXTURE_CUBE_MAP;
 
-            int w   =   0,
-                h   =   0,
-                width   =   0,
-                height  =   0;
+        int w   =   0,
+            h   =   0;
 
-            unsigned char* image = NULL;
+        unsigned char* image = NULL;
 
         glGenTextures(1, &texture_handle_);
         glBindTexture( type, texture_handle_ );
@@ -167,7 +165,7 @@ namespace Model
         image = SOIL_load_image( faces[6].c_str(),  &w, &h, NULL, SOIL_LOAD_RGB );
         glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image );
         SOIL_free_image_data( image );
-        
+
         image = NULL; w = 0; h = 0;
 
         //Specify image parameters.
@@ -188,8 +186,8 @@ namespace Model
         program_handle_->use_program();
         //  Remove the translation components of the view matrix before sending
         //it to the GPU.
-        glm::mat4 v = glm::mat4( glm::mat3( view ) );
-        program_handle_->set_uniform( "view", v );
+        //        glm::mat4 v = glm::mat4( glm::mat3( view ) );
+        program_handle_->set_uniform( "view", glm::mat4( glm::mat3( view ) ) );
         program_handle_->set_uniform( "projection", proj );
 
         glBindVertexArray( vao_ );
