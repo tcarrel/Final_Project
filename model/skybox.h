@@ -19,11 +19,10 @@
 #include<string>
 #include<cassert>
 
-#include "../shader_program.h"
-
-
 #ifndef  _SKYBOX_MODEL_H_
 # define _SKYBOX_MODEL_H_
+
+class Shader;
 
 namespace Model
 {
@@ -36,11 +35,15 @@ namespace Model
                     const std::string&, const std::string&,
                     const std::string&, const std::string& );
 
+            void render( const glm::mat4&, const glm::mat4& );
+
         private:
             void load_textures( std::string* );
 
             Shader* program_handle_;
             GLuint  texture_handle_;
+
+            GLuint  vao_, vbo_;
     };
 } //Model namespace.
 

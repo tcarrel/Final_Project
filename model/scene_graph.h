@@ -41,6 +41,7 @@ namespace Model
     class Mesh;
     class Model;
     class SG_Setup;
+    class Skybox;
 
 
     /**
@@ -65,6 +66,14 @@ namespace Model
             //void update( );
 
             void add_models( Model**, GLuint );
+            void add_skybox(
+                    const string&,
+                    const string&,
+                    const string&,
+                    const string&,
+                    const string&,
+                    const string&
+                    );
 
             ~Scene_Graph( void );
 
@@ -76,17 +85,17 @@ namespace Model
             */
             Scene_Graph( SG_Setup* );
 
-            /** Private dtor... this is an experiment.
-             */
-            static Scene_Graph*
-                __instance__; ///<  Scene_Graph is a singleton, but using it as
-                              ///< a global variable should be avoided.
+            /**  Scene_Graph is a singleton, but using it as a global variable
+             * should be avoided.
+            */
+            static Scene_Graph* __instance__;
 
+            Skybox*     skybox_;
+            
             GLuint      model_qty_; ///< Size of the model array.
 
-//            Mesh**      models_;
             Model**     models_;  ///< The children of the root node of the
-                                  ///< Scene_Graph.
+            ///< Scene_Graph.
             glm::vec4   pos_;     ///< The world xform.
             glm::mat4   view_;    ///< The view matrix for the world.
             glm::mat4   frustum_; ///< The projection matrix for the world.

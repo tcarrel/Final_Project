@@ -26,7 +26,7 @@
 //Tracking_List<Shader> Shader::tracker_;
 
 /**  Returns a string containing the name of the shader type.
- * \param s A value from the shader type enum (Shaders).
+ * @param s A value from the shader type enum (Shaders).
  */
 string get_shader_type_string( Shaders s )
 {
@@ -111,7 +111,7 @@ Shader::~Shader( void )
         glDeleteShader( shader_names[i] );
     }
 
-    delete[] shader_names;
+    delete [] shader_names;
     glDeleteProgram( program_ );
 }
 
@@ -120,8 +120,8 @@ Shader::~Shader( void )
 
 
 /**  Binds an attribute from the shader program.
- * \param location The location.
- * \param name The name of the attribute variable in the shader.
+ * @param location The location.
+ * @param name The name of the attribute variable in the shader.
  */
 void Shader::bind_attrib_location( GLuint location, const char* name )
 {
@@ -131,8 +131,8 @@ void Shader::bind_attrib_location( GLuint location, const char* name )
 
 
 /**  Binds fragment data.
- * \param loc The location.
- * \param name The name.
+ * @param loc The location.
+ * @param name The name.
  */
 void Shader::bind_frag_data_location( GLuint loc, const char* name )
 {
@@ -142,10 +142,10 @@ void Shader::bind_frag_data_location( GLuint loc, const char* name )
 
 
 /**  Sends 3-element vectors to the GPU from individual values.
- * \param name The name of the uniform.
- * \param x The first value.
- * \param y The second value.
- * \param z The third value.
+ * @param name The name of the uniform.
+ * @param x The first value.
+ * @param y The second value.
+ * @param z The third value.
  *
  */
 void Shader::set_uniform( const char* name, float x, float y, float z )
@@ -158,8 +158,8 @@ void Shader::set_uniform( const char* name, float x, float y, float z )
 
 
 /**  Sends 3-element vectors to the GPU.
- *  \param name The name of the uniform.
- *  \param v The vec3 containing the data to be sent.
+ *  @param name The name of the uniform.
+ *  @param v The vec3 containing the data to be sent.
  */
 void Shader::set_uniform( const char* name, const glm::vec3& v )
 {
@@ -170,8 +170,8 @@ void Shader::set_uniform( const char* name, const glm::vec3& v )
 
 
 /**  Sends 4-element vectors to the GPU.
- * \param name The name of the uniform.
- * \param v The vec4 containing the data to be sent.
+ * @param name The name of the uniform.
+ * @param v The vec4 containing the data to be sent.
  */
 void Shader::set_uniform( const char* name, const glm::vec4& v )
 {
@@ -183,8 +183,8 @@ void Shader::set_uniform( const char* name, const glm::vec4& v )
 
 
 /**  Sends 2-element vectors to the GPU.
- * \param name The name of the uniform.
- * \param v The vec2 containing the data to be sent.
+ * @param name The name of the uniform.
+ * @param v The vec2 containing the data to be sent.
  */
 void Shader::set_uniform( const char* name, const glm::vec2& v )
 {
@@ -198,8 +198,8 @@ void Shader::set_uniform( const char* name, const glm::vec2& v )
 
 
 /**  Sends a 4x4 matrix to the GPU.
- * \param name The name of the uniform.
- * \param m The mat4 to be sent.
+ * @param name The name of the uniform.
+ * @param m The mat4 to be sent.
  */
 void Shader::set_uniform( const char* name, const glm::mat4& m )
 {
@@ -214,8 +214,8 @@ void Shader::set_uniform( const char* name, const glm::mat4& m )
 
 
 /**  Sends a 3x3 matrix to the GPU.
- * \param name The name of the uniform.
- * \param m The mat3 to be sent.
+ * @param name The name of the uniform.
+ * @param m The mat3 to be sent.
  */
 void Shader::set_uniform( const char* name, const glm::mat3& m )
 {
@@ -227,8 +227,8 @@ void Shader::set_uniform( const char* name, const glm::mat3& m )
 
 
 /**  Sends a single floating point value to the GPU.
- * \param name The name of the uniform.
- * \param f The value to be sent.
+ * @param name The name of the uniform.
+ * @param f The value to be sent.
  */
 void Shader::set_uniform( const char* name, float f )
 {
@@ -241,8 +241,8 @@ void Shader::set_uniform( const char* name, float f )
 
 
 /**  Sends a single integer to the GPU.
- * \param name The name of the uniform.
- * \param i The integer to be sent.
+ * @param name The name of the uniform.
+ * @param i The integer to be sent.
  */
 void Shader::set_uniform( const char* name, int i )
 {
@@ -255,8 +255,8 @@ void Shader::set_uniform( const char* name, int i )
 
 
 /**  Sends a single unsigned integer to the GPU.
- * \param name The name of the uniform.
- * \param u The value to be sent.
+ * @param name The name of the uniform.
+ * @param u The value to be sent.
  */
 void Shader::set_uniform( const char* name, GLuint u )
 {
@@ -269,8 +269,8 @@ void Shader::set_uniform( const char* name, GLuint u )
 
 
 /**  Sends a single boolean to the GPU.
- * \param name The name of the uniform.
- * \param b The value to be sent.
+ * @param name The name of the uniform.
+ * @param b The value to be sent.
  */
 void Shader::set_uniform( const char* name, bool b )
 {
@@ -284,7 +284,7 @@ void Shader::set_uniform( const char* name, bool b )
 
 
 /**  Prints out all the uniform variables in the current shader program.
- * \todo Apple compatability.
+ * @todo Apple compatability.
  */
 void Shader::print_active_uniforms( void )
 {
@@ -510,9 +510,9 @@ void Shader::print_active_uniform_blocks( void )
                     name
                     );
             printf("\t%s (%s)\n", name, get_type_string( results[1] ) );
-            delete[] name;
+            delete [] name;
         }
-        delete[] uniform_indices;
+        delete [] uniform_indices;
     }
 #endif
 }
@@ -582,6 +582,7 @@ bool Shader::compile( void ) throw( GLSL_Program_Exception )
     Shader* temp = tracker_.get( id_str() );
     if( temp )
     {
+        fprintf( stderr, "%s, already loaded.\n", id_str().c_str() );
         program_ = temp->program_;
         qty_in_use_ = 1; //New instance of this object.
         uniform_locations_ = temp->uniform_locations_;
@@ -629,12 +630,12 @@ bool Shader::compile( void ) throw( GLSL_Program_Exception )
 
 
 /**  Compiles an individual shader.
- * \param source The actual code to be compiled.
- * \param type The type of shader to be compiled.
- * \param handle The address where the shader's handle is to be stored.
+ * @param source The actual code to be compiled.
+ * @param type The type of shader to be compiled.
+ * @param handle The address where the shader's handle is to be stored.
  */
 void Shader::compile_shader(
-        GLchar*   source,
+        GLchar* source,
         Shaders type,
         GLuint* handle )
 throw( GLSL_Program_Exception )
@@ -688,13 +689,6 @@ throw( GLSL_Program_Exception )
 }
 
 
-
-
-
-
-
-
-
 /** Calls glUseProgram, if necessary.
  * Calls to glUseProgram are expensive and to be avoided, if possible.
  */
@@ -714,13 +708,7 @@ void Shader::use_program( void ) throw(GLSL_Program_Exception)
 
 
 
-
-
-
-
-
-/** \todo Add additional error checking and debugging capabilities.
- *
+/** @todo Add additional error checking and debugging capabilities.
  * Linker for shader programs.
  */
 void Shader::link() throw( GLSL_Program_Exception )
@@ -732,7 +720,7 @@ void Shader::link() throw( GLSL_Program_Exception )
 
     if( program_ <= 0 )
     {
-        throw GLSL_Program_Exception( "Program has not been compiled." );
+        throw GLSL_Program_Exception( "Program could not be linked." );
     }
 
     glLinkProgram( program_ );
@@ -759,6 +747,8 @@ void Shader::link() throw( GLSL_Program_Exception )
 
         throw GLSL_Program_Exception( "Program link failed:\n" + log_text );
     }
+    
+    ready_ = true;
 }
 
 
@@ -863,7 +853,7 @@ void Shader::print( void )
 
 
 /**  Gets the id of the specified shader.
- * \param t A value from the shader types enum (Shaders).
+ * @param t A value from the shader types enum (Shaders).
  */
 int  Shader::type_id( Shaders t )
 {
@@ -983,7 +973,7 @@ Shader* Shader::check_existance(
 
 
 /** Returns the human-readable name of the type.
- * \param t The type.
+ * @param t The type.
  */
 const char* get_type_string( GLenum t )
 {

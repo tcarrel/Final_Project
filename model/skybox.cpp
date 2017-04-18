@@ -8,59 +8,54 @@
 
 
 #include "skybox.h"
+#include "../shader_program.h"
 #include "../shaders.h"
+#include "../helper_functions.h"
 
+#include<cstdio>
 #include<climits>
-
-const GLuint SKYBOX_V_ID = UINT_MAX - 15;
-const GLuint SKYBOX_F_ID = UINT_MAX - 30;
 
 namespace Model
 {
     Skybox::Skybox(
-            const std::string& lef,
             const std::string& rig,
+            const std::string& lef,
             const std::string& top,
             const std::string& bot,
-            const std::string& fro,
-            const std::string& bac )
+            const std::string& bac,
+            const std::string& fro ) :
+        program_handle_( new Shader )
     {
-        std::string* faces = new std::string[6];
-        faces[0] = rig; faces[1] = lef; faces[2] = top;
-        faces[3] = bot; faces[4] = bac; faces[5] = fro;
-        load_textures( faces );
-        delete [] faces;
-        faces = NULL;
+        const std::string path = "resource/skybox/";
 
-        //Hard-coded shader programs.
-        SHADER_TYPE_NAME vertex(
-                "#version 450 core\nlayout (location = 0) in vec3 position;\n"
-                "out vec3 tex_coords;\nuniform mat4 projection;\n"
-                "uniform mat4 view;\nvoid main()\n{\n"
-                "  gl_Position = projection * view * vec4(position, 1.0);\n "
-                " tex_coords  = position;\n}\n", 222, SKYBOX_V_ID, "SKYBOX_v" );
+        std::string* faces = new::string[6];
+        faces[0] = path + rig;
+        faces[1] = path + lef;
+        faces[2] = path + top;
+        faces[3] = path + bot;
+        faces[4] = path + bac;
+        faces[5] = path + fro;
 
-        SHADER_TYPE_NAME fragment(
-                "#version 450 core\n"
-                "in  vec3 tex_coords;\n"
-                "out vec4 color;\n"
-                "uniform samplerCube skybox;\n"
-                "void main()\n"
-                "{\n"
-                "  color = texture(skybox, tex_coords);\n"
-                "}\n"
-                ,
-                138,
-                SKYBOX_F_ID,
-                "SKYBOX_f"
-                );
+        program_handle_->add_code( get_shader( "SKYBOX_v" ) );
+        program_handle_->add_code( get_shader( "SKYBOX_f" ) );
+        fprintf( stderr, "Compiling Cubemap shaders.\n" );
+
+        if( program_handle_->compile() == ERROR )
+        {
+            fprintf(
+                    stderr,
+                    "%s",
+                    red( "Could not compile skybox shader.\n\n" ).c_str()
+                   );
+        }
+        else
+        {
+            fprintf( stderr,
+                    "Cubemap shaders compiled successfully.\n" );
+        }
 
 
-
-
-
-
-        //Hard-coded vertices will work fine.
+        //Hard-coded vertices are sufficient.
         GLfloat vertices[] =
         {
             -1.0f,  1.0f, -1.0f,
@@ -105,8 +100,28 @@ namespace Model
             -1.0f, -1.0f,  1.0f,
             1.0f, -1.0f,  1.0f
         };
+        GLuint num_verts = 3 * 6 * 6;
+
+        glGenVertexArrays( 1, &vao_ );
+        glBindVertexArray( vao_ );
+
+        glGenBuffers( 1, &vbo_ );
+        glBindBuffer( GL_ARRAY_BUFFER, vbo_ );
+        glBufferData(
+                GL_ARRAY_BUFFER,
+                sizeof(GLfloat) * num_verts,
+                vertices,
+                GL_STATIC_DRAW
+                );
+
+        glEnableVertexAttribArray( 0 );
+        glVertexAttribPointer(
+                0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (void*) 0 );
 
 
+        load_textures( faces );
+        delete [] faces;
+        faces = NULL;
     }
 
 
@@ -115,21 +130,38 @@ namespace Model
     {
         GLenum type = GL_TEXTURE_CUBE_MAP;
 
-        int width   =   0,
-            height  =   0;
-        unsigned char* image = NULL;
-
         glGenTextures(1, &texture_handle_);
         glBindTexture( type, texture_handle_ );
+        glActiveTexture( GL_TEXTURE1 );
 
         for( GLuint i = 0; i < 6; i++ )
         {
-            image = SOIL_load_image(
+            int width   =   0,
+                height  =   0;
+
+            unsigned char* image = SOIL_load_image(
                     faces[i].c_str(),
                     &width,
                     &height,
-                    0,
+                    NULL,
                     SOIL_LOAD_RGB );
+
+            if( image )
+            {
+                fprintf(
+                        stderr,
+                        "Texture image loaded:\n  Filename\t< %s >\n"
+                        "  Size\t\t< %i x %i >\n",
+                        faces[i].c_str(), width, height );
+            }
+            else
+            {
+                fprintf(
+                        stderr,
+                        "Image load error <%s>:\n%s\n",
+                        faces[i].c_str(),
+                        SOIL_last_result() );
+            }
 
             glTexImage2D(
                     GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
@@ -142,6 +174,8 @@ namespace Model
                     GL_UNSIGNED_BYTE,
                     image
                     );
+
+            SOIL_free_image_data( image );
         }
 
         //Specify image parameters.
@@ -150,7 +184,30 @@ namespace Model
         glTexParameteri( type, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
         glTexParameteri( type, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
         glTexParameteri( type, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE );
+        glBindTexture( GL_TEXTURE_CUBE_MAP, 0 );
     }
+
+
+
+
+    void Skybox::render( const glm::mat4& view, const glm::mat4& proj )
+    {
+        program_handle_->use_program();
+        program_handle_->set_uniform( "projection", proj );
+        //  Remove the translation components of the view matrix before sending
+        //it to the GPU.
+        program_handle_->set_uniform( "view", glm::mat4( glm::mat3( view ) ) );
+
+        glDisable( GL_CULL_FACE );
+
+        glBindVertexArray( vao_ );
+        glBindTexture( GL_TEXTURE_CUBE_MAP, texture_handle_ );
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray( 0 );
+
+        glEnable( GL_CULL_FACE );
+    }
+
 
 } //Model namespace.
 

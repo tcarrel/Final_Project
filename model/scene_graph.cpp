@@ -13,6 +13,7 @@
 #include "SG_except.h"
 #include "model.h"
 #include "mesh.h"
+#include "skybox.h"
 
 #include "../app/window.h"
 
@@ -95,6 +96,7 @@ namespace Model
      * \param su pointer to a setup struct. Must not be NULL.
      */
     Scene_Graph::Scene_Graph( SG_Setup* su ) :
+        skybox_( NULL ),
         model_qty_( 0 ),
         models_( NULL )
     {
@@ -103,7 +105,8 @@ namespace Model
         window_ = su->win;
         assert( window_ );
 
-        pos_  = glm::vec4( su->model_x, su->model_y, su->model_z, 1.0f );
+//        pos_  = glm::vec4( su->model_x, su->model_y, su->model_z, 1.0f );
+        pos_ = glm::vec4( 1 );
 
         view_   = glm::lookAt(
                 glm::vec3(
@@ -159,7 +162,6 @@ namespace Model
             << "frustum_\t: " << glm::to_string( frustum_ ) << "\n"
             << "vp_\t\t: " << glm::to_string( vp_ ) << std::endl;
 #endif
-
     }; 
 
 
@@ -217,12 +219,41 @@ namespace Model
 
         for( GLuint i = 0; i < model_qty_; i++ )
         {
-            models_[i]->render( vp_ );
+            models_[i]->render( view_, frustum_ );
+        }
+
+        if( skybox_ )
+        {
+            skybox_->render( view_, frustum_ );
         }
 
         window_->swap();
     }
 
+
+
+
+
+
+    void Scene_Graph::add_skybox(
+                    const string& l,
+                    const string& r,
+                    const string& u,
+                    const string& d,
+                    const string& b,
+                    const string& f )
+    {
+        /*
+        fprintf( stderr,
+                "Skybox set with:\n"
+                "  left\t=\"%s\"\n  right\t=\"%s\"\n  top\t=\"%s\"\n"
+                "  bottom\t=\"%s\"\n  back\t=\"%s\"\n  front\t=\"%s\"\n\n",
+                l.c_str(), r.c_str(), u.c_str(),
+                d.c_str(), b.c_str(), f.c_str()
+               );
+               */
+        skybox_ = new Skybox( l, r, u, d, b, f );
+    }
 
 
 } //Model namespace.

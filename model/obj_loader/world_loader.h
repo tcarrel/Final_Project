@@ -56,6 +56,7 @@ namespace Model
                 string* error_num_to_msg(   unsigned,   const   std::string& );
 
                 void    load_shader(        void );
+                void    load_skybox(        void );
 
                 OBJ_File                            obj_ld_;
                 static Scene_Graph*                 sg_;

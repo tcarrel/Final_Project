@@ -68,7 +68,7 @@ namespace Model
     /**  Calls the mesh's draw command.
      * @param vp The (v)iew (p)rojection matrix.
     */
-    void Model::render( const glm::mat4& vp ) throw(Render_Exception)
+    void Model::render( const glm::mat4& view, const glm::mat4& proj ) throw(Render_Exception)
     {
         if( mesh_ )
         {
@@ -81,12 +81,12 @@ namespace Model
                         iter++
                    )
                 {
-                    (*iter)->render(vp);
+                    (*iter)->render( view, proj );
                 }
             }
             if( mesh_ )
             {
-                mesh_->draw(vp, translation_);
+                mesh_->draw( translation_, view, proj );
             }
             return;
         }

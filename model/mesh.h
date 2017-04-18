@@ -56,6 +56,7 @@ namespace Model
 
             void draw(
                     const glm::mat4&,
+                    const glm::mat4&,
                     const glm::mat4& )
                 throw( Scene_Graph_Exception );
 

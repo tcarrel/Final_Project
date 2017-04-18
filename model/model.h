@@ -50,7 +50,7 @@ namespace Model
 
             void update( const glm::mat4&, bool ); ///< Will need heavy
                                                    ///< modification later.
-            void render( const glm::mat4& )
+            void render( const glm::mat4&, const glm::mat4& )
                 throw(Render_Exception);
 
             void add( Mesh* );

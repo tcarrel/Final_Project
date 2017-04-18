@@ -27,7 +27,7 @@ namespace Model
     {
 
         /** A pointer/reference to the Scene_Graph.
-         */
+        */
         Scene_Graph* World_Loader::sg_                          =  NULL;
         /** If error messages are generated, this vector is allocated and used
          * to store them.  It can then be freed after the messages are read.
@@ -36,18 +36,10 @@ namespace Model
 
 
 
-
-
-
-
         World_Loader::World_Loader( Scene_Graph* sg ) : file_(NULL)
         {
             sg_ = sg;
         }
-
-
-
-
 
 
 
@@ -64,12 +56,6 @@ namespace Model
                 file_ = NULL;
             }
         }
-
-
-
-
-
-
 
 
 
@@ -207,8 +193,8 @@ namespace Model
 
             GLfloat floats[3];
             floats[0] = floats[1] = floats[2] = 0.0f;
-            
-//            obj_ld_.trace( "_obj.trace" );
+
+            //            obj_ld_.trace( "_obj.trace" );
             while( !( getline(*file_, filename, ',').eof() ) )
             {
                 if( filename[0] == '#' )
@@ -225,6 +211,13 @@ namespace Model
                 {
                     fprintf( stderr, "Load shaders.\n" );
                     load_shader();
+                    continue;
+                }
+
+                if( filename == "*SKYBOX*" )
+                {
+                    fprintf( stderr, "Load skybox.\n" );
+                    load_skybox();
                     continue;
                 }
 
@@ -305,10 +298,25 @@ namespace Model
             {
                 fprintf(
                         stderr,
-                        "Could not compile shaders.\n\n"
+                        "World loader could not compile shaders.\n\n"
                        );
 
             }
+        }
+
+
+
+        void World_Loader::load_skybox( void )
+        {
+            string r, l, u, d, b, f;
+            getline( *file_, r, ',' );
+            getline( *file_, l, ',' );
+            getline( *file_, u, ',' );
+            getline( *file_, d, ',' );
+            getline( *file_, b, ',' );
+            getline( *file_, f );
+
+            sg_->add_skybox( r, l, u, d, b, f );
         }
 
     } //OBJ namespace.

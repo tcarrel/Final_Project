@@ -68,9 +68,11 @@ namespace Model
                     GLfloat, GLfloat, GLfloat, GLfloat, GLfloat, GLfloat );
             void window(        App::Window* );
 
+            void add_skybox( 
+                    const string&, const string&, const string&,
+                    const string&, const string&, const string& );
+
             friend class Scene_Graph;
-
-
 
         private:
 

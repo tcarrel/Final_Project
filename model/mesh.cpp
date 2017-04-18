@@ -137,8 +137,9 @@ namespace Model
      * uniform.
      */
     void Mesh::draw(
-            const glm::mat4& vp,
-            const glm::mat4& trans ) throw( Scene_Graph_Exception )
+            const glm::mat4& model,
+            const glm::mat4& view,
+            const glm::mat4& proj ) throw( Scene_Graph_Exception )
     {
 
         if( !shader_ )
@@ -152,8 +153,9 @@ namespace Model
 
         glBindVertexArray( vao_ );
 
-        shader_->set_uniform( "vp", vp );
-        shader_->set_uniform( "translation", trans );
+        shader_->set_uniform( "model", model );
+        shader_->set_uniform( "view", view );
+        shader_->set_uniform( "projection", proj );
         fprintf(
                 stderr,
                 "Name: %s\tscale: %f\n",
@@ -166,7 +168,7 @@ namespace Model
 
         for( GLuint i = 0; i < child_qty_; i++ )
         {
-            children_[i]->draw( vp, trans );
+            children_[i]->draw( model, view, proj );
         }
     }
 

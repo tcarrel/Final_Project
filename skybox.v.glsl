@@ -1,9 +1,10 @@
 #version 450 core
 layout (location = 0) in vec3 position;
-out vec3 tex_coords;
 
 uniform mat4 projection;
 uniform mat4 view;
+
+out vec3 tex_coords;
 
 void main()
 {
