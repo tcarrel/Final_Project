@@ -66,9 +66,12 @@ namespace Model
 
 
     /**  Calls the mesh's draw command.
-     * @param vp The (v)iew (p)rojection matrix.
+     * @param view The view matrix.
+     * @param proj The projection matrix.
     */
-    void Model::render( const glm::mat4& view, const glm::mat4& proj ) throw(Render_Exception)
+    void Model::render(
+            const glm::mat4& view,
+            const glm::mat4& proj ) throw(Render_Exception)
     {
         if( mesh_ )
         {
@@ -148,15 +151,6 @@ namespace Model
      */
     void Model::set_position( GLfloat& x, GLfloat& y, GLfloat& z )
     {
-//        pos_ = glm::translate( x, y, z );
-        /*
-        pos_ = glm::mat4(
-                pos_[0][0], pos_[1][0], pos_[2][0], pos_[3][0],
-                pos_[0][1], pos_[1][1], pos_[2][1], pos_[3][1],
-                pos_[0][2], pos_[1][2], pos_[2][2], pos_[3][2],
-                x         , y         , z         , 1.0f );
-                */
-//        pos_ = glm::translate( glm::mat4(1.0f), glm::vec3(x, y, z) );
         translation_ = glm::translate( glm::vec3( x, y, z ) );
     }
 

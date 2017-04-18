@@ -19,6 +19,16 @@
 
 namespace Model
 {
+
+
+    /** Creates a cubemap-based skybox.
+     * @param rig The right (+X) face of the cube.
+     * @param lef The left (-X) face of the cube.
+     * @param top The top (+Y) face of the cube.
+     * @param bot The bottom (-Y) face of the cube.
+     * @param bac The back (+Z) face of the cube.
+     * @param fro The front (-Z) face of the cube.
+     */
     Skybox::Skybox(
             const std::string& rig,
             const std::string& lef,
@@ -142,34 +152,52 @@ namespace Model
         glActiveTexture( TEX_ );
 
         //Unrolled loop
-        image = SOIL_load_image( faces[0].c_str(),  &w, &h, NULL, SOIL_LOAD_RGB );
+        image = SOIL_load_image(
+                faces[0].c_str(),  &w, &h, NULL, SOIL_LOAD_RGB );
         check_SOIL_error( image, faces[0] );
-        glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image );
+        glTexImage2D(
+                GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, w, h, 0,
+                GL_RGB, GL_UNSIGNED_BYTE, image );
         SOIL_free_image_data( image );
 
-        image = SOIL_load_image( faces[1].c_str(),  &w, &h, NULL, SOIL_LOAD_RGB );
+        image = SOIL_load_image(
+                faces[1].c_str(),  &w, &h, NULL, SOIL_LOAD_RGB );
         check_SOIL_error( image, faces[1] );
-        glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image );
+        glTexImage2D(
+                GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, w, h, 0,
+                GL_RGB, GL_UNSIGNED_BYTE, image );
         SOIL_free_image_data( image );
 
-        image = SOIL_load_image( faces[2].c_str(),  &w, &h, NULL, SOIL_LOAD_RGB );
+        image = SOIL_load_image(
+                faces[2].c_str(),  &w, &h, NULL, SOIL_LOAD_RGB );
         check_SOIL_error( image, faces[2] );
-        glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image );
+        glTexImage2D(
+                GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGB, w, h, 0,
+                GL_RGB, GL_UNSIGNED_BYTE, image );
         SOIL_free_image_data( image );
 
-        image = SOIL_load_image( faces[3].c_str(),  &w, &h, NULL, SOIL_LOAD_RGB );
+        image = SOIL_load_image(
+                faces[3].c_str(),  &w, &h, NULL, SOIL_LOAD_RGB );
         check_SOIL_error( image, faces[3] );
-        glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image );
+        glTexImage2D(
+                GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, w, h, 0,
+                GL_RGB, GL_UNSIGNED_BYTE, image );
         SOIL_free_image_data( image );
 
-        image = SOIL_load_image( faces[4].c_str(),  &w, &h, NULL, SOIL_LOAD_RGB );
+        image = SOIL_load_image(
+                faces[4].c_str(),  &w, &h, NULL, SOIL_LOAD_RGB );
         check_SOIL_error( image, faces[4] );
-        glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image );
+        glTexImage2D(
+                GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, w, h, 0,
+                GL_RGB, GL_UNSIGNED_BYTE, image );
         SOIL_free_image_data( image );
 
-        image = SOIL_load_image( faces[5].c_str(),  &w, &h, NULL, SOIL_LOAD_RGB );
+        image = SOIL_load_image(
+                faces[5].c_str(),  &w, &h, NULL, SOIL_LOAD_RGB );
         check_SOIL_error( image, faces[5] );
-        glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image );
+        glTexImage2D(
+                GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, w, h, 0,
+                GL_RGB, GL_UNSIGNED_BYTE, image );
         SOIL_free_image_data( image );
 
         image = NULL; w = 0; h = 0;

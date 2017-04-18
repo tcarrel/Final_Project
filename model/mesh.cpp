@@ -132,9 +132,9 @@ namespace Model
     /** For now, this will be responsible for sending all the draw calls to the
      * gpu.  Later, this will be responsible only for creating command packets
      * and sending those to the command buffer.
-     * @param vp The view-projection matrix.
-     * @param trans The translation matrix to be passed into the shader as a
-     * uniform.
+     * @param model The model matrix.
+     * @param view The view matrix.
+     * @param proj The projection matrix / frustum.
      */
     void Mesh::draw(
             const glm::mat4& model,
