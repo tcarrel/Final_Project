@@ -14,12 +14,14 @@
 #include "world_loader.h"
 
 #include "../scene_graph.h"
+#include "../sg_setup.h"
 #include "../mesh.h"
 
 #include "../../shaders.h"
 #include "../../shader_program.h"
 #include "../../helper_functions.h"
 
+#include "../../app/window.h"
 
 namespace Model
 {
@@ -36,10 +38,12 @@ namespace Model
 
 
 
-        World_Loader::World_Loader( Scene_Graph* sg ) : file_(NULL)
-        {
-            sg_ = sg;
-        }
+        /**  Sets up the world loader.
+         * @param w The current window.
+         */
+        World_Loader::World_Loader( App::Window* w ) :
+            window_( w ), file_( NULL )
+        {}
 
 
 
@@ -162,6 +166,7 @@ namespace Model
         bool World_Loader::operator()(
                 const std::string&  p,
                 const std::string&  level_filename,
+                Scene_Graph*&       scene,
                 bool                coloring = false )
         {
             std::string path = p + "/";
@@ -193,6 +198,9 @@ namespace Model
 
             GLfloat floats[3];
             floats[0] = floats[1] = floats[2] = 0.0f;
+
+            scene_graph_setup();
+            scene = sg_;
 
             //            obj_ld_.trace( "_obj.trace" );
             while( !( getline(*file_, filename, ',').eof() ) )
@@ -270,6 +278,8 @@ namespace Model
 
 
 
+        /** Loads and compiles a shader program.
+         */
         void World_Loader::load_shader( void )
         {
             string fname;
@@ -306,6 +316,8 @@ namespace Model
 
 
 
+        /** Loads a skybox.
+         */
         void World_Loader::load_skybox( void )
         {
             string r, l, u, d, b, f;
@@ -317,6 +329,90 @@ namespace Model
             getline( *file_, f );
 
             sg_->add_skybox( r, l, u, d, b, f );
+        }
+
+
+
+
+
+        /** Loads the initial settings for a scene graph.
+         */
+        void World_Loader::scene_graph_setup( void )
+        {
+            SG_Setup setup;
+            bool is_pers;
+
+            GLfloat x = 0, y = 0, z = 0;
+            //Initail position.
+            *file_ >> x;
+            file_->ignore();
+            *file_ >> y;
+            file_->ignore();
+            *file_ >> z;
+            setup.position( x, y, z );
+
+            //Eye position.
+            *file_ >> x;
+            file_->ignore();
+            *file_ >> y;
+            file_->ignore();
+            *file_ >> z;
+            setup.eye_position( x, y, z );
+
+            //Lookat.
+            *file_ >> x;
+            file_->ignore();
+            *file_ >> y;
+            file_->ignore();
+            *file_ >> z;
+            setup.target( x, y, z );
+
+            //Up direction.
+            *file_ >> x;
+            file_->ignore();
+            *file_ >> y;
+            file_->ignore();
+            *file_ >> z;
+            setup.up_dir( x, y, z );
+
+            //Perspective or Orthographic
+            *file_ >> is_pers;
+            file_->ignore();
+            if( is_pers )
+            {
+                GLfloat fov, near, far;
+                
+                *file_ >> fov;
+                file_->ignore();
+                *file_ >> near;
+                file_->ignore();
+                *file_ >> far;
+
+                setup.perspective( fov, near, far, window_->aspect() );
+            }
+            else
+            {
+                GLfloat left, right, up, down, back, front;
+
+                *file_ >> left;
+                file_->ignore();
+                *file_ >> right;
+                file_->ignore();
+                *file_ >> up;
+                file_->ignore();
+                *file_ >> down;
+                file_->ignore();
+                *file_ >> back;
+                file_->ignore();
+                *file_ >> front;
+
+                setup.orthographic( left, right, up, down, back, front );
+            }
+            file_->ignore();
+
+            setup.window( window_ );
+
+            sg_ = Scene_Graph::ctor( &setup );
         }
 
     } //OBJ namespace.

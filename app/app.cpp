@@ -66,22 +66,18 @@ namespace App
 #endif
             parse_args();
 
-            Model::SG_Setup* sg = new Model::SG_Setup;
+            Model::OBJ::World_Loader loader( window_ );
 
-            sg->position(        0.0f,  0.0f,  0.0f );
-            sg->eye_position(    1.7f,  .75f, -1.7f );
-            sg->target(          0.0f,  0.0f,  0.0f );
-            sg->up_dir(          0.0f,  1.0f,  0.0f );
-            sg->perspective(    45.0f,  1.0f, 30.0f, window_->aspect() );
-            sg->window(         window_ );
+            loader( "resource", "load_list", world_, false );
 
-            world_ = Model::Scene_Graph::ctor( sg );
-            Model::OBJ::World_Loader loader( world_ );
-
-            delete sg;
-            sg = NULL;
-
-            loader( "resource", "load_list", false );
+            if( !world_ )
+            {
+                fprintf(
+                        stderr,
+                        "Failed to initialize scene graph."
+                       );
+                exit(1);
+            }
         }
         else
         {

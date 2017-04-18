@@ -30,9 +30,15 @@
 
 class Shader;
 
+namespace App
+{
+    class Window;
+}
+
 namespace Model
 {    
     class Mesh;
+    class SG_Setup;
     class Scene_Graph;
 
     namespace OBJ
@@ -40,12 +46,13 @@ namespace Model
         class World_Loader
         {
             public:
-                World_Loader( Scene_Graph* );
+                World_Loader( App::Window* );
                 ~World_Loader( void );
 
                 bool operator()(
                         const std::string&,
                         const std::string&,
+                        Scene_Graph*&,
                         bool );
 
                 void get_errors( std::string*, unsigned* );
@@ -55,12 +62,15 @@ namespace Model
                 void    add_error_msg(      unsigned,   const   std::string& );
                 string* error_num_to_msg(   unsigned,   const   std::string& );
 
+                void    scene_graph_setup( void );
+
                 void    load_shader(        void );
                 void    load_skybox(        void );
 
                 OBJ_File                            obj_ld_;
                 static Scene_Graph*                 sg_;
 
+                App::Window*                        window_;
                 Shader*                             cur_shader_;
 
                 //Error handling.

@@ -150,29 +150,29 @@ namespace Model
      * If perspective is already set, this will overwrite those settings.
      * @param l The distance to the left plane from the center of the view.
      * @param r The distance to the right plane from the center of the view.
-     * @param b The distance to the bottom plane from the center of the view.
-     * @param t The distance to the top plane from the center of the view.
-     * @param n The distance to the near plane from the center of the view.
+     * @param d The distance to the bottom plane from the center of the view.
+     * @param u The distance to the top plane from the center of the view.
+     * @param b The distance to the near plane from the center of the view.
      * @param f The distance to the far plane from the center of the view.
      */
     void SG_Setup::orthographic(
-            GLfloat l,
             GLfloat r,
+            GLfloat l,
+            GLfloat u,
+            GLfloat d,
             GLfloat b,
-            GLfloat t,
-            GLfloat n,
             GLfloat f )
     {
         assert( l != r );
-        assert( b != t );
-        assert( f != n );
+        assert( d != u );
+        assert( f != b );
 
         this->is_perspective    =   ORTHOGRAPHIC;
         this->ortho_left        =   l;
         this->ortho_right       =   r;
-        this->ortho_bottom      =   b;
-        this->ortho_top         =   t;
-        this->near              =   n;
+        this->ortho_bottom      =   d;
+        this->ortho_top         =   u;
+        this->near              =   b;
         this->far               =   f;
     }
 

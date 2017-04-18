@@ -52,7 +52,7 @@ namespace Model
 
     /**  Instantiates and returns the Scene_Graph object if it has not already
      * been created or simply returns it if it has been created.
-     * \param args A point to the SG_Setup used to initialize the graph.  NULL
+     * @param args A point to the SG_Setup used to initialize the graph.  NULL
      * can be passed in if an already created Scene_Graph is known to exist,
      * however, an exception will be thrown if NULL is passed in and no
      * Scene_Graph has yet to be created.
@@ -93,7 +93,7 @@ namespace Model
 
 
     /** Private Ctor.
-     * \param su pointer to a setup struct. Must not be NULL.
+     * @param su pointer to a setup struct. Must not be NULL.
      */
     Scene_Graph::Scene_Graph( SG_Setup* su ) :
         skybox_( NULL ),
@@ -105,7 +105,6 @@ namespace Model
         window_ = su->win;
         assert( window_ );
 
-//        pos_  = glm::vec4( su->model_x, su->model_y, su->model_z, 1.0f );
         pos_ = glm::vec4( 1 );
 
         view_   = glm::lookAt(
@@ -184,7 +183,8 @@ namespace Model
 
 
     /** Adds models to be the children of the root node of the Scene_Graph.
-     * @param mdl A pointer to an array of pointers to models.
+     * @param mdl A pointer to an array of pointers to models that will be
+     * added to the graph.
      * @param qty The number of models to be added.
      */
     void Scene_Graph::add_models( Model** mdl, unsigned qty )
