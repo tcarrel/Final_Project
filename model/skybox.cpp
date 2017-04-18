@@ -15,6 +15,8 @@
 #include<cstdio>
 #include<climits>
 
+#define TEX_ GL_TEXTURE0
+
 namespace Model
 {
     Skybox::Skybox(
@@ -100,7 +102,7 @@ namespace Model
             -1.0f, -1.0f,  1.0f,
             1.0f, -1.0f,  1.0f
         };
-        GLuint num_verts = 3 * 6 * 6;
+//        GLuint num_verts = 3 * 6 * 6;
 
         glGenVertexArrays( 1, &vao_ );
         glBindVertexArray( vao_ );
@@ -109,8 +111,8 @@ namespace Model
         glBindBuffer( GL_ARRAY_BUFFER, vbo_ );
         glBufferData(
                 GL_ARRAY_BUFFER,
-                sizeof(GLfloat) * num_verts,
-                vertices,
+                sizeof(vertices),
+                &vertices,
                 GL_STATIC_DRAW
                 );
 
@@ -128,55 +130,45 @@ namespace Model
 
     void Skybox::load_textures( std::string* faces )
     {
-        GLenum type = GL_TEXTURE_CUBE_MAP;
+        const GLenum type = GL_TEXTURE_CUBE_MAP;
+
+            int w   =   0,
+                h   =   0,
+                width   =   0,
+                height  =   0;
+
+            unsigned char* image = NULL;
 
         glGenTextures(1, &texture_handle_);
         glBindTexture( type, texture_handle_ );
-        glActiveTexture( GL_TEXTURE1 );
+        glActiveTexture( TEX_ );
 
-        for( GLuint i = 0; i < 6; i++ )
-        {
-            int width   =   0,
-                height  =   0;
+        //Unrolled loop
+        image = SOIL_load_image( faces[0].c_str(),  &w, &h, NULL, SOIL_LOAD_RGB );
+        glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image );
+        SOIL_free_image_data( image );
 
-            unsigned char* image = SOIL_load_image(
-                    faces[i].c_str(),
-                    &width,
-                    &height,
-                    NULL,
-                    SOIL_LOAD_RGB );
+        image = SOIL_load_image( faces[1].c_str(),  &w, &h, NULL, SOIL_LOAD_RGB );
+        glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image );
+        SOIL_free_image_data( image );
 
-            if( image )
-            {
-                fprintf(
-                        stderr,
-                        "Texture image loaded:\n  Filename\t< %s >\n"
-                        "  Size\t\t< %i x %i >\n",
-                        faces[i].c_str(), width, height );
-            }
-            else
-            {
-                fprintf(
-                        stderr,
-                        "Image load error <%s>:\n%s\n",
-                        faces[i].c_str(),
-                        SOIL_last_result() );
-            }
+        image = SOIL_load_image( faces[2].c_str(),  &w, &h, NULL, SOIL_LOAD_RGB );
+        glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image );
+        SOIL_free_image_data( image );
 
-            glTexImage2D(
-                    GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
-                    0,
-                    GL_RGB,
-                    width,
-                    height,
-                    0,
-                    GL_RGB,
-                    GL_UNSIGNED_BYTE,
-                    image
-                    );
+        image = SOIL_load_image( faces[3].c_str(),  &w, &h, NULL, SOIL_LOAD_RGB );
+        glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image );
+        SOIL_free_image_data( image );
 
-            SOIL_free_image_data( image );
-        }
+        image = SOIL_load_image( faces[4].c_str(),  &w, &h, NULL, SOIL_LOAD_RGB );
+        glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image );
+        SOIL_free_image_data( image );
+
+        image = SOIL_load_image( faces[6].c_str(),  &w, &h, NULL, SOIL_LOAD_RGB );
+        glTexImage2D( GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image );
+        SOIL_free_image_data( image );
+        
+        image = NULL; w = 0; h = 0;
 
         //Specify image parameters.
         glTexParameteri( type, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
@@ -184,7 +176,7 @@ namespace Model
         glTexParameteri( type, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
         glTexParameteri( type, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
         glTexParameteri( type, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE );
-        glBindTexture( GL_TEXTURE_CUBE_MAP, 0 );
+        glBindTexture( type, 0 );
     }
 
 
@@ -192,27 +184,24 @@ namespace Model
 
     void Skybox::render( const glm::mat4& view, const glm::mat4& proj )
     {
+        glDepthFunc( GL_LEQUAL );
         program_handle_->use_program();
-        program_handle_->set_uniform( "projection", proj );
         //  Remove the translation components of the view matrix before sending
         //it to the GPU.
-        program_handle_->set_uniform( "view", glm::mat4( glm::mat3( view ) ) );
-
-        glDisable( GL_CULL_FACE );
+        glm::mat4 v = glm::mat4( glm::mat3( view ) );
+        program_handle_->set_uniform( "view", v );
+        program_handle_->set_uniform( "projection", proj );
 
         glBindVertexArray( vao_ );
+        glActiveTexture( TEX_ );
+        program_handle_->set_uniform( "sky", 0 );
         glBindTexture( GL_TEXTURE_CUBE_MAP, texture_handle_ );
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray( 0 );
-
-        glEnable( GL_CULL_FACE );
+        glDepthFunc( GL_LESS );
     }
 
 
 } //Model namespace.
 
-
-
-
-/*
-*/
+#undef TEX_

@@ -207,7 +207,7 @@ void Shader::set_uniform( const char* name, const glm::mat4& m )
     //    fprintf( stderr, "Set Uniformm: %s\n", glm::to_string( m ).c_str() );
     GLint loc = get_uniform_location(name);
     //    fprintf( stderr, "Uniform loc: %s, %i\n\n", name, loc );
-    glUniformMatrix4fv( loc, 1, GL_FALSE, &m[0][0] );
+    glUniformMatrix4fv( loc, 1, GL_FALSE, glm::value_ptr(m) );
 }
 
 
@@ -220,7 +220,7 @@ void Shader::set_uniform( const char* name, const glm::mat4& m )
 void Shader::set_uniform( const char* name, const glm::mat3& m )
 {
     GLint loc = get_uniform_location(name);
-    glUniformMatrix3fv( loc, 1, GL_FALSE, &m[0][0] );
+    glUniformMatrix3fv( loc, 1, GL_FALSE, glm::value_ptr(m) );
 }
 
 

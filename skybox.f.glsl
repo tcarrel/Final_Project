@@ -1,12 +1,12 @@
 #version 450 core
 in  vec3 tex_coords;
 
-out vec4 Color;
+uniform samplerCube sky;
 
-uniform samplerCube skybox;
+out vec4 Color;
 
 void main()
 {
-  Color = texture(skybox, tex_coords);
+  Color = texture(sky, tex_coords);
 }
 
