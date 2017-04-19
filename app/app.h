@@ -67,6 +67,8 @@ namespace App
 
             int                         argc_;
             std::vector<std::string*>   argv_;
+
+            bool wireframe_;
     };
 
 } //App namespace.

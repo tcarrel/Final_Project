@@ -232,11 +232,19 @@ namespace App
                 SDL_GL_CONTEXT_PROFILE_CORE );
         SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1);
 
-        SDL_GL_SetAttribute( SDL_GL_RED_SIZE,       5 );
-        SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE,     5 );
-        SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE,      5 );
-        SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE,     16 );
+        //Coloring
+        SDL_GL_SetAttribute( SDL_GL_RED_SIZE,       8 );
+        SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE,     8 );
+        SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE,      8 );
+        SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE,     8 );
+
+        //Buffers
+        SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE,     24 );
         SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER,   1 );
+
+        //MSAA
+        SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 1 );
+        SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, 4 );
 
         SDL_GL_MakeCurrent( window_, gl_ );
 
@@ -291,7 +299,7 @@ namespace App
 
         set_poly();
         glEnable( GL_CULL_FACE );
-        glEnable( GL_DEPTH_TEST );
+        glEnable( GL_DEPTH_TEST );//| GL_MULTISAMPLE );
         glCullFace( GL_BACK );
 
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );

@@ -50,7 +50,8 @@ namespace App
         shader_( NULL ),
         input_( window_ ),
         world_( NULL ),
-        mesh_( NULL )
+        mesh_( NULL ),
+        wireframe_( false )
     {
         argv_.swap( argv );
         start_up();
@@ -77,6 +78,11 @@ namespace App
                         "Failed to initialize scene graph."
                        );
                 exit(1);
+            }
+
+            if( wireframe_ )
+            {
+                world_->set_wireframe();
             }
         }
         else
@@ -105,10 +111,14 @@ namespace App
     int Application::run( void )
     {
         assert( world_ != NULL );
-        world_->render();
 
         while( input_.process() )
-        {}
+        {
+            world_->render();
+        }
+
+        delete world_;
+        world_ = NULL;
 
         return 0;
     }
@@ -162,6 +172,7 @@ namespace App
                         "\"%s\" ",
                         argv_[i]->c_str() );
                 window_->set_wireframe_front();
+                wireframe_ = true;
             }
             else if( *argv_[i] == "--wf=1" )
             {
@@ -170,6 +181,7 @@ namespace App
                         "\"%s\" ",
                         argv_[i]->c_str() );
                 window_->set_wireframe_front();
+                wireframe_ = true;
             }
             else if( *argv_[i] == "--wf=on" )
             {
@@ -178,6 +190,7 @@ namespace App
                         "\"%s\" ",
                         argv_[i]->c_str() );
                 window_->set_wireframe_front();
+                wireframe_ = true;
             }
 
             //Render as wireframe with back facing edges shown.
@@ -188,6 +201,7 @@ namespace App
                         "\"%s\" ",
                         argv_[i]->c_str() );
                 window_->set_wireframe_full();
+                wireframe_ = true;
             }
             else if( *argv_[i] == "--wf=full" )
             {
@@ -196,6 +210,7 @@ namespace App
                         "\"%s\" ",
                         argv_[i]->c_str() );
                 window_->set_wireframe_full();
+                wireframe_ = true;
             }
 
 
