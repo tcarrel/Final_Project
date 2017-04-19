@@ -50,7 +50,11 @@ namespace Model
         children_( NULL ),
         name_( name ),
         qty_in_use_( 1 )
-    {}
+    {
+#ifdef DEBUG
+        draw_message_shown_ = false;
+#endif
+    }
 
 
 
@@ -156,11 +160,18 @@ namespace Model
         shader_->set_uniform( "model", model );
         shader_->set_uniform( "view", view );
         shader_->set_uniform( "projection", proj );
-        fprintf(
-                stderr,
-                "Name: %s\tscale: %f\n",
-                name_.c_str(),
-                scale_factor_ );
+
+#ifdef DEBUG
+        if( !draw_message_shown_ )
+        {
+            fprintf(
+                    stderr,
+                    "Name: %s\tscale: %f\n",
+                    name_.c_str(),
+                    scale_factor_ );
+            draw_message_shown_ = true;
+        }
+#endif
 
         shader_->set_uniform( "_sf", scale_factor_ );
 
@@ -206,7 +217,7 @@ namespace Model
         {
             return;
         }
-//        vertices_->center();
+        //        vertices_->center();
         vertices_->scale( scale_factor_ );
 
         glGenVertexArrays( 1, &vao_ );

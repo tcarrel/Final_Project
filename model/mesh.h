@@ -141,6 +141,10 @@ namespace Model
              */
             GLuint          qty_in_use_;
 
+#  ifdef DEBUG
+            bool            draw_message_shown_;
+#  endif
+
             /** See the Shader dtor for why it is necessary this be private.
              */
             ~Mesh( void );

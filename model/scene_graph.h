@@ -75,6 +75,8 @@ namespace Model
                     const string&
                     );
 
+            void set_wireframe( void );
+
             ~Scene_Graph( void );
 
         private:
@@ -107,6 +109,8 @@ namespace Model
             GLboolean   dirty_;
 
             App::Window* window_;
+
+            GLuint      frame_count_;
 
             /** Generic ctor is disabled.
             */

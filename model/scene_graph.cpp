@@ -98,7 +98,8 @@ namespace Model
     Scene_Graph::Scene_Graph( SG_Setup* su ) :
         skybox_( NULL ),
         model_qty_( 0 ),
-        models_( NULL )
+        models_( NULL ),
+        frame_count_( 0 )
     {
         assert( su != NULL );
 
@@ -171,6 +172,8 @@ namespace Model
     */
     Scene_Graph::~Scene_Graph( void )
     {
+        fprintf( stdout, "%i frames rendered.", frame_count_ );
+
         for( GLuint i = 0; i < model_qty_; i++ )
         {
             delete models_[i];
@@ -216,6 +219,7 @@ namespace Model
      */
     void Scene_Graph::draw( void )
     {
+        glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
         for( GLuint i = 0; i < model_qty_; i++ )
         {
@@ -228,6 +232,7 @@ namespace Model
         }
 
         window_->swap();
+        ++frame_count_;
     }
 
 
@@ -255,5 +260,16 @@ namespace Model
         skybox_ = new Skybox( l, r, u, d, b, f );
     }
 
+
+
+
+    void Scene_Graph::set_wireframe( void )
+    {
+        if( !skybox_ )
+        {
+            return;
+        }
+        skybox_->set_wireframe();
+    }
 
 } //Model namespace.
