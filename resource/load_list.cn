@@ -1,6 +1,6 @@
 7
 0,0,0
-1.7,0.75,-1.7
+1.0,0.75,-1.7
 0,0,0
 0,1,0
 1,45,1,30
@@ -8,5 +8,5 @@
 simple.v.glsl
 simple.f.glsl
 *SKYBOX*,right.jpg,left.jpg,top.jpg,bottom.jpg,back.jpg,front.jpg
-utah_teapot.obj,1,0,0,0
+cube.obj,1,0,0,0
 
