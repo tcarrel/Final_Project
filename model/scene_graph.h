@@ -26,6 +26,10 @@
 #include "SG_except.h"
 #include "../constants.h"
 
+#include<chrono>
+using std::chrono::high_resolution_clock;
+using std::chrono::duration_cast;
+using std::chrono::duration;
 
 #ifndef  _SCENE_GRAPH_H_
 # define _SCENE_GRAPH_H
@@ -98,7 +102,11 @@ namespace Model
 
             Model**     models_;  ///< The children of the root node of the
             ///< Scene_Graph.
+
             glm::vec4   pos_;     ///< The world xform.
+
+            glm::vec3   view_eye_, view_tgt_, view_up_;
+
             glm::mat4   view_;    ///< The view matrix for the world.
             glm::mat4   frustum_; ///< The projection matrix for the world.
 
@@ -111,6 +119,9 @@ namespace Model
             App::Window* window_;
 
             GLuint      frame_count_;
+
+            const uint64_t uS_PER_FRAME_ = 8333;
+            high_resolution_clock::time_point previous_time_;
 
             /** Generic ctor is disabled.
             */

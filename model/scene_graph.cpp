@@ -17,6 +17,11 @@
 
 #include "../app/window.h"
 
+#include<cmath>
+
+
+#define DEG_TO_RAD(x) ((x * 3.14159265358979f) / 180.0f)
+
 
 //#define SCENE_GRAPH_DEBUG
 
@@ -27,7 +32,7 @@
 namespace Model
 {
 
-    Scene_Graph* Scene_Graph::__instance__ = NULL;
+    Scene_Graph*    Scene_Graph::__instance__ = NULL;
 
 
 
@@ -108,23 +113,20 @@ namespace Model
 
         pos_ = glm::vec4( 1 );
 
-        view_   = glm::lookAt(
-                glm::vec3(
-                    su->look_at_eye_x,
-                    su->look_at_eye_y,
-                    su->look_at_eye_z
-                    ),
-                glm::vec3(
-                    su->look_at_tgt_x,
-                    su->look_at_tgt_y,
-                    su->look_at_tgt_z
-                    ),
-                glm::vec3(
+        view_eye_ = glm::vec3(
+                su->look_at_eye_x,
+                su->look_at_eye_y,
+                su->look_at_eye_z );
+        view_tgt_ = glm::vec3(
+                su->look_at_tgt_x,
+                su->look_at_tgt_y,
+                su->look_at_tgt_z );
+        view_up_  = glm::vec3(
                     su->look_at_up_x,
                     su->look_at_up_y,
-                    su->look_at_up_z
-                    )
-                );
+                    su->look_at_up_z );
+
+        view_   = glm::lookAt( view_eye_, view_tgt_, view_up_ );
 
         if( su->is_perspective == PERSPECTIVE )
         {
@@ -219,6 +221,33 @@ namespace Model
      */
     void Scene_Graph::draw( void )
     {
+        if( frame_count_ > 0 )
+        {
+            high_resolution_clock::time_point now  = std::chrono::high_resolution_clock::now();
+            duration<double> span = std::chrono::duration_cast<std::chrono::microseconds>(now - previous_time_);
+
+            GLfloat fraction = span.count();
+            GLfloat deg_to_rad = DEG_TO_RAD(1.0f);
+
+            GLfloat angle = 2.5f * deg_to_rad * fraction;
+
+            /*
+            GLfloat x       =   view_eye_.x,
+                    z       =   view_eye_.z;
+            GLfloat theta   =   DEG_TO_RAD(2.5f),
+                    cs      =   cos( theta ),
+                    sn      =   sin( theta );
+            view_eye_.x = (x * cs) - (z * sn);
+            view_eye_.z = (x * sn) + (z * sn);
+            */
+            view_ = glm::rotate( view_, angle, glm::vec3(0, 1, 0) );
+            previous_time_ = now;
+        }
+        else
+        {
+            previous_time_ = high_resolution_clock::now();
+        }
+
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
         for( GLuint i = 0; i < model_qty_; i++ )
@@ -232,7 +261,8 @@ namespace Model
         }
 
         window_->swap();
-        ++frame_count_;
+
+        frame_count_++;
     }
 
 
@@ -241,22 +271,22 @@ namespace Model
 
 
     void Scene_Graph::add_skybox(
-                    const string& l,
-                    const string& r,
-                    const string& u,
-                    const string& d,
-                    const string& b,
-                    const string& f )
+            const string& l,
+            const string& r,
+            const string& u,
+            const string& d,
+            const string& b,
+            const string& f )
     {
         /*
-        fprintf( stderr,
-                "Skybox set with:\n"
-                "  left\t=\"%s\"\n  right\t=\"%s\"\n  top\t=\"%s\"\n"
-                "  bottom\t=\"%s\"\n  back\t=\"%s\"\n  front\t=\"%s\"\n\n",
-                l.c_str(), r.c_str(), u.c_str(),
-                d.c_str(), b.c_str(), f.c_str()
-               );
-               */
+           fprintf( stderr,
+           "Skybox set with:\n"
+           "  left\t=\"%s\"\n  right\t=\"%s\"\n  top\t=\"%s\"\n"
+           "  bottom\t=\"%s\"\n  back\t=\"%s\"\n  front\t=\"%s\"\n\n",
+           l.c_str(), r.c_str(), u.c_str(),
+           d.c_str(), b.c_str(), f.c_str()
+           );
+           */
         skybox_ = new Skybox( l, r, u, d, b, f );
     }
 
