@@ -37,6 +37,8 @@ namespace Model
 
             void render( const glm::mat4&, const glm::mat4& );
 
+            void set_wireframe( void );
+
         private:
             void load_textures( std::string* );
 
@@ -44,6 +46,8 @@ namespace Model
             GLuint  texture_handle_;
             GLuint  vao_;
             GLuint  vbo_;
+
+            GLuint  wf_;
     };
 } //Model namespace.
 

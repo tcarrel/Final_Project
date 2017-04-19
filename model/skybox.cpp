@@ -36,7 +36,8 @@ namespace Model
             const std::string& bot,
             const std::string& bac,
             const std::string& fro ) :
-        program_handle_( new Shader )
+        program_handle_( new Shader ),
+        wf_( 0 )
     {
         const std::string path = "resource/skybox/";
 
@@ -49,8 +50,8 @@ namespace Model
         faces[5] = path + fro;
 
         program_handle_->add_code( get_shader( "SKYBOX_v" ) );
+//        program_handle_->add_code( get_shader( "SKYBOX_g" ) );
         program_handle_->add_code( get_shader( "SKYBOX_f" ) );
-        fprintf( stderr, "Compiling Cubemap shaders.\n" );
 
         if( program_handle_->compile() == ERROR )
         {
@@ -65,7 +66,6 @@ namespace Model
             fprintf( stderr,
                     "Cubemap shaders compiled successfully.\n" );
         }
-
 
         //Hard-coded vertices are sufficient.
         GLfloat vertices[] =
@@ -217,20 +217,33 @@ namespace Model
     void Skybox::render( const glm::mat4& view, const glm::mat4& proj )
     {
         glDepthFunc( GL_LEQUAL );
+//        glDisable( GL_CULL_FACE );
+//        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
         program_handle_->use_program();
         //  Remove the translation components of the view matrix before sending
         //it to the GPU.
-        //        glm::mat4 v = glm::mat4( glm::mat3( view ) );
         program_handle_->set_uniform( "view", glm::mat4( glm::mat3( view ) ) );
         program_handle_->set_uniform( "projection", proj );
+        program_handle_->set_uniform( "wireframe", wf_ );
 
         glBindVertexArray( vao_ );
         glActiveTexture( TEX_ );
         program_handle_->set_uniform( "sky", 0 );
         glBindTexture( GL_TEXTURE_CUBE_MAP, texture_handle_ );
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        //glDrawArrays(GL_POINTS, 0, 1);
+        glDrawArrays( GL_TRIANGLES, 0, 36 );
         glBindVertexArray( 0 );
+
+        //glEnable( GL_CULL_FACE );
         glDepthFunc( GL_LESS );
+    }
+
+
+
+
+    void Skybox::set_wireframe( void )
+    {
+        wf_ = 1;
     }
 
 
