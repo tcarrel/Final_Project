@@ -19,6 +19,8 @@
 
 #include "../model/scene_graph.h"
 
+#include<string>
+
 #define GLM_INCLUDED //From window.h
 #include "../helper_functions.h"
 #undef  GLM_INCLUDED
@@ -26,6 +28,15 @@
 
 namespace App
 {
+
+
+    void unrecognized_command( const string& st )
+    {
+                fprintf(
+                        stderr,
+                        "Argument < %s > not recognized, ignoring.\n",
+                        st.c_str() );
+    }
 
     /**  Generic Ctor.
      *   Creates the window object for the game and initializes it.
@@ -51,7 +62,8 @@ namespace App
         input_( window_ ),
         world_( NULL ),
         mesh_( NULL ),
-        wireframe_( false )
+        wireframe_( false ),
+        deg_per_sec_( NULL )
     {
         argv_.swap( argv );
         start_up();
@@ -83,6 +95,17 @@ namespace App
             if( wireframe_ )
             {
                 world_->set_wireframe();
+            }
+
+            if( deg_per_sec_ )
+            {
+                world_->set_dps( *deg_per_sec_ );
+                fprintf(
+                        stderr,
+                        "Rotation speed set to %f degrees per second.\n",
+                        *deg_per_sec_ );
+                delete deg_per_sec_;
+                deg_per_sec_ = NULL;
             }
         }
         else
@@ -164,6 +187,16 @@ namespace App
                 command_line_help();
             }
 
+            if( (*argv_[i])[0] != '-' && (*argv_[i])[1] != '-' )
+            {
+                unrecognized_command( *argv_[i] );
+
+                delete argv_[i];
+                argv_[i] = NULL;
+
+                continue;
+            }
+
             //Render as wireframe.
             else if( *argv_[i] == "--wf" )
             {
@@ -232,6 +265,18 @@ namespace App
                 window_->set_wireframe_off();
             }
 
+            //Begin more complicated parsing.
+            auto equal_sign = argv_[i]->find_first_of("=");
+            if( equal_sign != std::string::npos )
+            {                
+                string val  = argv_[i]->substr( equal_sign + 1 ),
+                       comm = argv_[i]->substr( 0, equal_sign + 1 );
+                if( comm == "--dps=" )
+                {
+                    deg_per_sec_ = new float( stof(val) );
+                }
+            }
+
             //No longer needed after this.
             delete argv_[i];
             argv_[i] = NULL;
@@ -239,7 +284,7 @@ namespace App
 
 #ifdef CLEAR_ARGS
         //  Command line args are no longer needed in memory because at this
-        //point all necessary changes have been made to account for them,
+        //point all necessary changes should have been made to account for them,
         //however, if they are still needed by the main program, compiler
         //-D CLEAR_ARGS can be used during compilation to keep them persistent
         //after they've been processed.

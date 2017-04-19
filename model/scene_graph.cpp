@@ -104,7 +104,8 @@ namespace Model
         skybox_( NULL ),
         model_qty_( 0 ),
         models_( NULL ),
-        frame_count_( 0 )
+        frame_count_( 0 ),
+        degrees_per_second_( 10.0f )
     {
         assert( su != NULL );
 
@@ -221,31 +222,37 @@ namespace Model
      */
     void Scene_Graph::draw( void )
     {
-        if( frame_count_ > 0 )
+        if( degrees_per_second_ != 0.0f )
         {
-            high_resolution_clock::time_point now  = std::chrono::high_resolution_clock::now();
-            duration<double> span = std::chrono::duration_cast<std::chrono::microseconds>(now - previous_time_);
+            if( frame_count_ > 0 )
+            {
+                high_resolution_clock::time_point now  =
+                    std::chrono::high_resolution_clock::now();
+                duration<double> span =
+                    std::chrono::duration_cast<std::chrono::microseconds>(
+                            now - previous_time_ );
 
-            GLfloat fraction = span.count();
-            GLfloat deg_to_rad = DEG_TO_RAD(1.0f);
+                GLfloat fraction = span.count();
+                GLfloat deg_to_rad = DEG_TO_RAD(1.0f);
 
-            GLfloat angle = 2.5f * deg_to_rad * fraction;
+                GLfloat angle = degrees_per_second_ * deg_to_rad * fraction;
 
-            /*
-            GLfloat x       =   view_eye_.x,
-                    z       =   view_eye_.z;
-            GLfloat theta   =   DEG_TO_RAD(2.5f),
-                    cs      =   cos( theta ),
-                    sn      =   sin( theta );
-            view_eye_.x = (x * cs) - (z * sn);
-            view_eye_.z = (x * sn) + (z * sn);
-            */
-            view_ = glm::rotate( view_, angle, glm::vec3(0, 1, 0) );
-            previous_time_ = now;
-        }
-        else
-        {
-            previous_time_ = high_resolution_clock::now();
+                /*
+                   GLfloat x       =   view_eye_.x,
+                   z       =   view_eye_.z;
+                   GLfloat theta   =   DEG_TO_RAD(2.5f),
+                   cs      =   cos( theta ),
+                   sn      =   sin( theta );
+                   view_eye_.x = (x * cs) - (z * sn);
+                   view_eye_.z = (x * sn) + (z * sn);
+                   */
+                view_ = glm::rotate( view_, angle, glm::vec3(0, 1, 0) );
+                previous_time_ = now;
+            }
+            else
+            {
+                previous_time_ = high_resolution_clock::now();
+            }
         }
 
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );

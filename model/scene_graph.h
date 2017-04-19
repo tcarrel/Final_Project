@@ -80,6 +80,8 @@ namespace Model
                     );
 
             void set_wireframe( void );
+            void set_dps( const GLfloat& dps )
+            { degrees_per_second_ = dps; }
 
             ~Scene_Graph( void );
 
@@ -120,8 +122,8 @@ namespace Model
 
             GLuint      frame_count_;
 
-            const uint64_t uS_PER_FRAME_ = 8333;
             high_resolution_clock::time_point previous_time_;
+            GLfloat degrees_per_second_;
 
             /** Generic ctor is disabled.
             */

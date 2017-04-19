@@ -68,7 +68,8 @@ namespace App
             int                         argc_;
             std::vector<std::string*>   argv_;
 
-            bool wireframe_;
+            bool    wireframe_;
+            float*  deg_per_sec_;
     };
 
 } //App namespace.
