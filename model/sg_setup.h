@@ -38,7 +38,6 @@ namespace Model
         public:
             SG_Setup( void );
 
-            void position(      GLfloat,    GLfloat,    GLfloat );
             void eye_position(  GLfloat,    GLfloat,    GLfloat );
             void target(        GLfloat,    GLfloat,    GLfloat );
             void up_dir(        GLfloat,    GLfloat,    GLfloat );

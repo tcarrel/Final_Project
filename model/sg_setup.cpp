@@ -42,26 +42,6 @@ namespace Model
 
 
 
-
-
-
-
-    /**  Helper function for the scene graph setup struct.
-     * Sets the position.
-     * @param x The x-coordinate.
-     * @param y The y-coordinate.
-     * @param z The z-coordinate.
-     */
-    void SG_Setup::position( GLfloat x, GLfloat y, GLfloat z )
-    {
-        this->model_x = x;
-        this->model_y = y;
-        this->model_z = z;
-    }
-
-
-
-
     /**  Helper function for the scene graph setup struct.
      * Sets the eye position.
      * @param x The x-coordinate.

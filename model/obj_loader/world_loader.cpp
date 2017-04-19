@@ -343,6 +343,7 @@ namespace Model
             bool is_pers;
 
             GLfloat x = 0, y = 0, z = 0;
+            /*
             //Initail position.
             *file_ >> x;
             file_->ignore();
@@ -350,6 +351,7 @@ namespace Model
             file_->ignore();
             *file_ >> z;
             setup.position( x, y, z );
+            */
 
             //Eye position.
             *file_ >> x;
