@@ -12,7 +12,6 @@ uniform samplerCube sky;
 // different amounts.  A future improvement may be to use reflection and
 // refraction maps from these values.
 uniform vec4 refractive_index = vec4( 1.52, 1.52, 1.52, 1.52 );
-uniform vec4 reflect_amt      = vec4(  0.5,  0.5,  0.5,  0.5 );
 
 void main()
 {
@@ -23,5 +22,9 @@ void main()
   vec4 reflect_color = texture( sky, L );
   vec4 refract_color = texture( sky, R );
 
-  color  = mix( refract_color, reflect_color, reflect_amt );
+  //Compute fresnel reflectivity
+  float fresnel =
+    pow(1.0 - clamp( dot( I , normalize( Normal ) ), 0.0, 1.0 ), 4.0);
+
+  color  = mix( refract_color, reflect_color, fresnel );
 }
