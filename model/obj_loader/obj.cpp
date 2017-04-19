@@ -27,6 +27,7 @@ using std::stringstream;
 #include<cstdlib>
 #include<cctype>
 #include<cfloat>
+#include<cmath>
 
 #include<glm/ext.hpp>
 
@@ -273,12 +274,25 @@ namespace Model
                 if( !color_by_ )
                 {
                     vert = vertices_[index->v];
-                    color = glm::vec4(
-                            normals_[index->n].x,
-                            normals_[index->n].y,
-                            normals_[index->n].z,
-                            1.0f
-                            );
+                    float x, y, z;
+                    x = normals_[index->n].x;
+                    y = normals_[index->n].y;
+                    z = normals_[index->n].z;
+                    
+                    x = (x < 0.0f) ? 0.0f : x;
+                    x = (x > 1.0f) ? 1.0f : x;
+                    y = (y < 0.0f) ? 0.0f : y;
+                    y = (y > 1.0f) ? 1.0f : y;
+                    z = (z < 0.0f) ? 0.0f : z;
+                    z = (z > 1.0f) ? 1.0f : z;
+                    /*
+                    factor  = x * x;
+                    factor += y * y;
+                    factor += z * z;
+                    factor = sqrt(factor);
+                    */
+
+                    color = glm::vec4( x, y, z, 1.0f );
                 }
                 else
                 {
