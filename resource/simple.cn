@@ -1,0 +1,12 @@
+7
+0,0,0
+1.0,0.75,-1.7
+0,0,0
+0,1,0
+1,45,1,30
+*SHADERS*,2
+simple.v.glsl
+simple.f.glsl
+*SKYBOX*,right.jpg,left.jpg,top.jpg,bottom.jpg,back.jpg,front.jpg
+cube.obj,1,0,0,0
+

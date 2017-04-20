@@ -28,6 +28,7 @@
 
 #include "obj.h"
 
+
 class Shader;
 
 namespace App
@@ -60,12 +61,16 @@ namespace Model
             private:
 
                 void    add_error_msg(      unsigned,   const   std::string& );
-                string* error_num_to_msg(   unsigned,   const   std::string& );
+                std::string* error_num_to_msg(   unsigned,   const   std::string& );
 
                 void    scene_graph_setup( void );
 
-                void    load_shader(        void );
-                void    load_skybox(        void );
+                void    load_object( const std::string&, bool );
+                void    load_shader( void );
+                void    load_skybox( void );
+
+                inline void print_option( const char& c )
+                { fprintf( stderr, "Option: %c\n", c ); }
 
                 OBJ_File                            obj_ld_;
                 static Scene_Graph*                 sg_;

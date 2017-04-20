@@ -25,6 +25,7 @@
 
 namespace Model
 {
+
     namespace OBJ
     {
 
@@ -174,6 +175,8 @@ namespace Model
             int qty = 0;
             std::string  filename = "";
 
+            char input_type = 0;
+
             fprintf(
                     stdout,
                     "Begin loading level\t%s\n",
@@ -196,74 +199,57 @@ namespace Model
 
             fprintf( stdout, " Number of models in level:\t%i\n", qty );
 
-            GLfloat floats[3];
-            floats[0] = floats[1] = floats[2] = 0.0f;
-
             scene_graph_setup();
             scene = sg_;
 
             //            obj_ld_.trace( "_obj.trace" );
-            while( !( getline(*file_, filename, ',').eof() ) )
+            while( !( *file_ >> input_type).eof() )
             {
-                if( filename[0] == '#' )
+                print_option( input_type );
+                switch( input_type )
                 {
-                    while( file_->peek() != '\n' )
+                    case '#': // Comment
+                        getline( *file_, filename );
+                        filename = "";
+                        break;
+                    case 'P': // shader (P)rogram
+                        load_shader();
+                        break;
+                    case 'S': // (S)kybox
+                        load_skybox();
+                        break;
+                    case 'O': // (O)bject file.
+                        load_object( path, coloring );
+                        break;
+                    default:
+                        fprintf( stderr, "Unknown\n" );
+                        break;
+                }
+                continue;
+
+                /*
+                if( filename[0] == '*' )
+                {
+                    string cmd, tail;
+                    get_command( cmd, tail );
+
+                    if( cmd == SHADER_CMD )
                     {
-                        file_->ignore();
+                        int count = stoi( filename.substr( paren + 1 );
+                        fprintf( stderr, "Load shaders.\n" );
+                        load_shader( count );
+                        continue;
                     }
-                    file_->ignore();
-                    continue; // Comment
+
+                    if( filename == "*SKYBOX*" )
+                    {
+                        fprintf( stderr, "Load skybox.\n" );
+                        load_skybox();
+                        continue;
+                    }
                 }
+                */
 
-                if( filename == "*SHADERS*" )
-                {
-                    fprintf( stderr, "Load shaders.\n" );
-                    load_shader();
-                    continue;
-                }
-
-                if( filename == "*SKYBOX*" )
-                {
-                    fprintf( stderr, "Load skybox.\n" );
-                    load_skybox();
-                    continue;
-                }
-
-                filename = path + filename;
-                *file_ >> floats[0];
-                file_->ignore();
-
-                fprintf(
-                        stderr,
-                        "filename:\t%s\nscale:\t\t%f\n",
-                        filename.c_str(),
-                        floats[0] );
-
-                Model* mdl = new Model;
-                Mesh*  msh = obj_ld_.load_file(
-                        filename,
-                        cur_shader_,
-                        coloring,
-                        floats[0] );
-
-                for( int i = 0; i < 3; i++ )
-                {
-                    *file_ >> floats[i];
-                    file_->ignore();
-                }
-
-                fprintf( 
-                        stderr,
-                        "position = ( %f, %f, %f )\n",
-                        floats[0], floats[1], floats[2]
-                       );
-                mdl->set_position( floats[0], floats[1], floats[2] );
-
-                mdl->add( msh );
-
-                sg_->add_models( &mdl, 1 );
-
-                obj_ld_.reset();
             }
             obj_ld_.stop_trace();
 
@@ -279,7 +265,7 @@ namespace Model
 
 
         /** Loads and compiles a shader program.
-         */
+        */
         void World_Loader::load_shader( void )
         {
             string fname;
@@ -290,7 +276,15 @@ namespace Model
 
             for( int i = 0; i < qty; i++ )
             {
-                getline( *file_, fname );
+                if( i < (qty - 1) )
+                {
+                    getline( *file_, fname, ',' );
+                }
+                else
+                {
+                    getline( *file_, fname );
+                }
+
                 if( fname[0] == '#' )
                 {
                     fname = "";
@@ -316,8 +310,61 @@ namespace Model
 
 
 
+
+
+        /** Loads an .obj file.
+        */
+        void World_Loader::load_object( const std::string& path, bool coloring )
+        {
+            std::string filename;
+            GLfloat floats[3];
+            floats[0] = floats[1] = floats[2] = 0.0f;
+
+            getline( *file_, filename, ',' );
+
+            filename = path + filename;
+            *file_ >> floats[0];
+            file_->ignore();
+
+            fprintf(
+                    stderr,
+                    "filename:\t%s\nscale:\t\t%f\n",
+                    filename.c_str(),
+                    floats[0] );
+
+            Model* mdl = new Model;
+            Mesh*  msh = obj_ld_.load_file(
+                    filename,
+                    cur_shader_,
+                    coloring,
+                    floats[0] );
+
+            for( int i = 0; i < 3; i++ )
+            {
+                *file_ >> floats[i];
+                file_->ignore();
+            }
+
+            fprintf( 
+                    stderr,
+                    "position = ( %f, %f, %f )\n",
+                    floats[0], floats[1], floats[2]
+                   );
+            mdl->set_position( floats[0], floats[1], floats[2] );
+
+            mdl->add( msh );
+
+            sg_->add_models( &mdl, 1 );
+
+            obj_ld_.reset();
+        }
+
+
+
+
+
         /** Loads a skybox.
-         */
+        */
         void World_Loader::load_skybox( void )
         {
             string r, l, u, d, b, f;
@@ -336,7 +383,7 @@ namespace Model
 
 
         /** Loads the initial settings for a scene graph.
-         */
+        */
         void World_Loader::scene_graph_setup( void )
         {
             SG_Setup setup;
@@ -345,13 +392,13 @@ namespace Model
             GLfloat x = 0, y = 0, z = 0;
             /*
             //Initail position.
-            *file_ >> x;
-            file_->ignore();
-            *file_ >> y;
-            file_->ignore();
-            *file_ >> z;
-            setup.position( x, y, z );
-            */
+             *file_ >> x;
+             file_->ignore();
+             *file_ >> y;
+             file_->ignore();
+             *file_ >> z;
+             setup.position( x, y, z );
+             */
 
             //Eye position.
             *file_ >> x;
@@ -383,7 +430,7 @@ namespace Model
             if( is_pers )
             {
                 GLfloat fov, near, far;
-                
+
                 *file_ >> fov;
                 file_->ignore();
                 *file_ >> near;
@@ -416,6 +463,18 @@ namespace Model
 
             sg_ = Scene_Graph::ctor( &setup );
         }
+
+
+
+        /*
+           void World_Loader::get_command( std::string& cmd, std::string& tail )
+           {
+           size_t paren = 1 + cmd.find_first_of( '(' );
+
+           tail = cmd.substr( paren );
+           cmd = cmd.substr( 0, paren );
+           }
+           */
 
     } //OBJ namespace.
 
