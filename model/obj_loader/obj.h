@@ -19,17 +19,13 @@ using std::vector;
 using std::map;
 
 
-
-
 # include<glm/glm.hpp>
 
+# include "../model.h"
+# include "OBJ_except.h"
 
-#include "OBJ_except.h"
-//#include "model_list.h"
-#include "../model.h"
 
-#include "../../tracking_list.h"
-
+template<typename> class Tracking_List;
 class Shader;
 
 namespace Model
@@ -42,6 +38,7 @@ namespace Model
     namespace OBJ
     {
         class Model_list;
+        class OBJ_Exception;
 
         /** This class takes a wavefront .obj file and loads it into a
          * Vertex_Array object.

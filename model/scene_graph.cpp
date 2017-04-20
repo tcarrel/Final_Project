@@ -10,7 +10,6 @@
 
 #include "scene_graph.h"
 #include "sg_setup.h"
-#include "SG_except.h"
 #include "model.h"
 #include "mesh.h"
 #include "skybox.h"
@@ -187,6 +186,8 @@ namespace Model
 
 
 
+    //   I haven't been able to figure out why, but the Doxygen tags just for
+    // this function do not seem to work.
 
     /** Adds models to be the children of the root node of the Scene_Graph.
      * @param mdl A pointer to an array of pointers to models that will be

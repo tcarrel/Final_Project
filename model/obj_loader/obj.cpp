@@ -16,6 +16,8 @@
 #include "../../colors.h"
 #include "../../shader_program.h"
 
+#include "../../tracking_list.h"
+
 #include<iostream>
 using std::istream;
 using std::endl;

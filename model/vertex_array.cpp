@@ -9,6 +9,7 @@
 
 
 #include "vertex_array.h"
+#include "vertex.h"
 
 #include<glm/ext.hpp>
 #include<cfloat>
@@ -209,6 +210,12 @@ namespace Model
             data_[i].pos.y -= offsets[AXIS_Y];
             data_[i].pos.z -= offsets[AXIS_Z];
         }
+    }
+    
+
+    Vertex& Vertex_Array::operator[]( const unsigned& i )
+    { 
+        return *(data_ + i);
     }
 
 } //Model namespace.

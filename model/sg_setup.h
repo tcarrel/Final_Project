@@ -18,7 +18,6 @@
 #include "../constants.h"
 #include "../app/window.h"
 
-
 namespace Model
 {
 

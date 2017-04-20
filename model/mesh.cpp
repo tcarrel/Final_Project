@@ -12,8 +12,6 @@
 #include "../app/window.h"
 #include "../colors.h"
 
-#include "obj_loader/obj.h"
-
 #include<stdio.h>
 #include<glm/ext.hpp>
 

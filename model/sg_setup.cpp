@@ -9,8 +9,6 @@
  */
 
 #include "sg_setup.h"
-#include "scene_graph.h"
-
 
 
 namespace Model

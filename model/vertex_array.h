@@ -20,13 +20,15 @@
 
 #include<stdarg.h>
 
-#include "vertex.h"
+//#include "vertex.h"
 
 #ifndef  _VERTEX_ARRAY_H_
 # define _VERTEX_ARRAY_H_
 
 namespace Model
 {
+
+    struct Vertex;
 
     /**
      * An array that can be grown as needed.
@@ -53,8 +55,7 @@ namespace Model
             /** Element access.
              * \param i The index to be access.
              */
-            Vertex& operator[]( unsigned i )
-            { return *(data_ + i); }
+            Vertex& operator[]( const unsigned& );
 
             /**
              * Exposes the array used to store data,
