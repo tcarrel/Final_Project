@@ -99,21 +99,25 @@ $(MAIN): $(OBJ_FILES) $(ERROR_DIR) Makefile
 		$(SHADER_HEADER) $(APP_ERROR_DIR)
 	$(TIME) $(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
-.app.o: $(APP_DIR)/app.cpp $(APP_DIR)/app.h constants.h $(APP_DIR)/window.h \
+.app.o: $(APP_DIR)/app.cpp $(APP_DIR)/app.h $(APP_DIR)/window.h \
 		$(SHADER_HEADER) $(MODEL_DIR)/scene_graph.h $(MODEL_DIR)/model.h \
+		$(APP_ERROR_DIR) $(OBJ_PATH)/obj.h $(OBJ_PATH)/world_loader.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
+.window.o: $(APP_DIR)/window.cpp $(APP_DIR)/window.h helper_functions.h \
 		$(APP_ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
-.window.o: $(APP_DIR)/window.cpp $(APP_DIR)/window.h constants.h \
-		$(APP_ERROR_DIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+$(APP_DIR)/app.h: constants.h shader_program.h $(INPUT_DIR)/input_handler.h
+
+$(APP_DIR)/window.h: constants.h shader_program.h
 
 $(APP_ERROR_DIR): $(ERROR_DIR)
 	mkdir -p $@
 
 # compile the global namespace
-.shader_program.o: shader_program.cpp shader_program.h constants.h \
-		GLSL_except.h helper_functions.h $(SHADER_HEADER) $(ERROR_DIR)
+.shader_program.o: shader_program.cpp shader_program.h helper_functions.h \
+		$(SHADER_HEADER) $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .helper_functions.o: helper_functions.cpp
@@ -122,50 +126,68 @@ $(APP_ERROR_DIR): $(ERROR_DIR)
 .colors.o: colors.cpp colors.h random.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
+constants.h: colors.h
+
+shader_program.h: constants.h GLSL_except.h $(SHADER_HEADER) \
+		helper_functions.h tracking_list.h
+
+helper_functions.h: $(SHADER_HEADER)
+
 $(ERROR_DIR):
 	mkdir -p $@
 
 # compile Model namespace
-.model.o: $(MODEL_DIR)/model.cpp $(MODEL_DIR)/mesh.h \
-		$(MODEL_DIR)/model.h constants.h shader_program.h \
-		$(MODEL_DIR)/vertex.h $(MODEL_DIR)/Render_except.h \
+.model.o: $(MODEL_DIR)/model.cpp $(MODEL_DIR)/model.h $(MODEL_DIR)/mesh.h \
 		$(MODEL_ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
-.mesh.o: $(MODEL_DIR)/mesh.cpp $(MODEL_DIR)/mesh.h \
-		$(MODEL_DIR)/vertex.h helper_functions.h $(MODEL_ERROR_DIR)
+.mesh.o: $(MODEL_DIR)/mesh.cpp $(MODEL_DIR)/mesh.h shader_program.h colors.h \
+		helper_functions.h $(APP_DIR)/window.h $(MODEL_ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .scene_graph.o: $(MODEL_DIR)/scene_graph.cpp $(MODEL_DIR)/scene_graph.h \
-		$(MODEL_DIR)/sg_setup.h $(MODEL_DIR)/SG_except.h \
-		$(MODEL_DIR)/model.h $(APP_DIR)/window.h $(MODEL_ERROR_DIR)
+		$(MODEL_DIR)/sg_setup.h $(MODEL_DIR)/model.h \
+		$(MODEL_DIR)/mesh.h $(MODEL_DIR)/skybox.h $(APP_DIR)/window.h \
+		$(MODEL_ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .sg_setup.o: $(MODEL_DIR)/sg_setup.cpp $(MODEL_DIR)/sg_setup.h \
-		$(MODEL_DIR)/scene_graph.h $(APP_DIR)/window.h $(MODEL_ERROR_DIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
-
-.SG_except.o: $(MODEL_DIR)/SG_except.cpp $(MODEL_DIR)/SG_except.h \
-		$(MODEL_ERROR_DIR)
+		$(MODEL_DIR)/scene_graph.h $(MODEL_ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .vertex_array.o: $(MODEL_DIR)/vertex_array.cpp $(MODEL_DIR)/vertex_array.h \
 		$(MODEL_DIR)/vertex.h $(MODEL_ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
-.skybox.o: $(MODEL_DIR)/skybox.cpp $(MODEL_DIR)/skybox.h $(MODEL_ERROR_DIR)
+.skybox.o: $(MODEL_DIR)/skybox.cpp $(MODEL_DIR)/skybox.h shader_program.h \
+		$(SHADER_HEADER) helper_functions.h $(MODEL_ERROR_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
+.SG_except.o: $(MODEL_DIR)/SG_except.cpp $(MODEL_DIR)/SG_except.h \
+		$(MODEL_ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .Render_except.o: $(MODEL_DIR)/Render_except.cpp $(MODEL_DIR)/Render_except.h \
 		$(MODEL_ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
+$(MODEL_DIR)/mesh.h: $(MODEL_DIR)/vertex_array.h $(MODEL_DIR)/SG_except.h \
+		constants.h
+
+$(MDOEL_DIR)/model.h: $(MODEL_DIR)/Render_except.h constants.h shader_program.h
+
+$(MODEL_DIR)/scene_graph.h: $(MODEL_DIR)/SG_except.h constants.h
+
+$(MODEL_DIR)/sg_setup.h: constants.h $(APP_DIR)/window.h
+
 $(MODEL_ERROR_DIR): $(ERROR_DIR)
 	mkdir -p $@
 
 # compile Model::OBJ namespace
-.obj.o: $(OBJ_PATH)/obj.cpp $(OBJ_PATH)/obj.h helper_functions.h \
-		$(MODEL_DIR)/mesh.h tracking_list.h $(OBJ_ERROR_DIR)
+.obj.o: $(OBJ_PATH)/obj.cpp $(OBJ_PATH)/obj.h $(OBJ_PATH)/OBJ_except.h \
+		$(MODEL_DIR)/vertex_array.h $(MODEL_DIR)/vertex.h $(MODEL_DIR)/mesh.h \
+		colors.h shader_program.h helper_functions.h tracking_list.h \
+		$(OBJ_ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .OBJ_except.o: $(OBJ_PATH)/OBJ_except.cpp $(OBJ_PATH)/OBJ_except.h \
@@ -173,9 +195,14 @@ $(MODEL_ERROR_DIR): $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .world_loader.o: $(OBJ_PATH)/world_loader.cpp $(OBJ_PATH)/world_loader.h \
-		$(OBJ_PATH)/obj.h shader_program.h helper_functions.h \
+		$(MODEL_DIR)/scene_graph.h $(MODEL_DIR)/sg_setup.h $(MODEL_DIR)/mesh.h \
+		$(SHADER_HEADER) shader_program.h helper_functions.h $(APP_DIR)/window.h \
 		$(OBJ_ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
+$(OBJ_PATH)/obj.h: $(OBJ_PATH)/OBJ_except.h $(MODEL_DIR)/model.h 
+
+$(OBJ_PATH)/world_loader.h: $(OBJ_PATH)/obj.h
 
 $(OBJ_ERROR_DIR): $(ERROR_DIR) $(MODEL_ERROR_DIR)
 	mkdir -p $@
