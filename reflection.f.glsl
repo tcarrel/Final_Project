@@ -3,7 +3,7 @@
 in vec3 Normal;
 in vec3 Position;
 
-out vec3 color;
+out vec4 color;
 
 uniform vec3 cam_pos;
 uniform samplerCube sky;
