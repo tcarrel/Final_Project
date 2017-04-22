@@ -54,7 +54,8 @@ OBJ_FILES = .entry_point.o .app.o .window.o .GLSL_except.o .shader_program.o \
 			.scene_graph.o .sg_setup.o .helper_functions.o .obj.o \
             .OBJ_except.o .colors.o .null_command.o $(SHADER_OBJ) \
 			.texture_2D.o .texture_base.o .world_loader.o \
-			.Render_except.o .skybox.o
+			.Render_except.o .skybox.o .World_loader_exception_class.o \
+			.g-buffer.o
 GLSL_FILES := $(shell ls *.glsl)
 GCCERREXT = gccerr
 
@@ -141,13 +142,15 @@ $(ERROR_DIR):
 		$(MODEL_ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
-.mesh.o: $(MODEL_DIR)/mesh.cpp $(MODEL_DIR)/mesh.h shader_program.h colors.h \
-		helper_functions.h $(APP_DIR)/window.h $(MODEL_ERROR_DIR)
+.mesh.o: $(MODEL_DIR)/mesh.cpp $(MODEL_DIR)/mesh.h $(MODEL_DIR)/vertex.h \
+		shader_program.h colors.h helper_functions.h $(APP_DIR)/window.h \
+		$(MODEL_ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .scene_graph.o: $(MODEL_DIR)/scene_graph.cpp $(MODEL_DIR)/scene_graph.h \
 		$(MODEL_DIR)/sg_setup.h $(MODEL_DIR)/model.h \
-		$(MODEL_DIR)/mesh.h $(MODEL_DIR)/skybox.h $(APP_DIR)/window.h \
+		$(MODEL_DIR)/mesh.h $(MODEL_DIR)/skybox.h shader_program.h \
+		$(SHADER_HEADER) helper_functions.h $(APP_DIR)/window.h \
 		$(MODEL_ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
@@ -165,6 +168,10 @@ $(ERROR_DIR):
 
 .SG_except.o: $(MODEL_DIR)/SG_except.cpp $(MODEL_DIR)/SG_except.h \
 		$(MODEL_ERROR_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
+.g-buffer.o: $(MODEL_DIR)/g-buffer.cpp $(MODEL_DIR)/g-buffer.h \
+		$(APP_DIR)/window.h $(MODEL_ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .Render_except.o: $(MODEL_DIR)/Render_except.cpp $(MODEL_DIR)/Render_except.h \
@@ -197,7 +204,11 @@ $(MODEL_ERROR_DIR): $(ERROR_DIR)
 .world_loader.o: $(OBJ_PATH)/world_loader.cpp $(OBJ_PATH)/world_loader.h \
 		$(MODEL_DIR)/scene_graph.h $(MODEL_DIR)/sg_setup.h $(MODEL_DIR)/mesh.h \
 		$(SHADER_HEADER) shader_program.h helper_functions.h $(APP_DIR)/window.h \
-		$(OBJ_ERROR_DIR)
+		$(OBJ_PATH)/World_except.h $(OBJ_ERROR_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
+.World_loader_exception_class.o: $(OBJ_PATH)/World_except.cpp \
+		$(OBJ_PATH)/World_except.h $(OBJ_ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 $(OBJ_PATH)/obj.h: $(OBJ_PATH)/OBJ_except.h $(MODEL_DIR)/model.h 
