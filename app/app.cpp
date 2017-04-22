@@ -34,7 +34,8 @@ namespace App
     {
                 fprintf(
                         stderr,
-                        "Argument < %s > not recognized, ignoring.\n",
+                        "%s Argument < %s > not recognized, ignoring.\n",
+                        red( "WARNING:" ).c_str(),
                         st.c_str() );
     }
 
@@ -57,7 +58,7 @@ namespace App
      * @param argv argv taken from the command line.
      */
     Application::Application( std::vector<std::string*>& argv ) :
-        window_( new Window( to_vec_color( Color::GUNMETAL ) ) ),
+        window_( new Window( to_vec_color( Color::BLACK ) ) ),
         shader_( NULL ),
         input_( window_ ),
         world_( NULL ),

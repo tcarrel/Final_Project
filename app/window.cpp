@@ -142,6 +142,12 @@ namespace App
 
 
 
+    void Window::set_gl_attribs( void )
+    {
+    }
+
+
+
     /**  Initialize window once 
     */
     void Window::init(void)
@@ -299,7 +305,8 @@ namespace App
 
         set_poly();
         glEnable( GL_CULL_FACE );
-        glEnable( GL_DEPTH_TEST );//| GL_MULTISAMPLE );
+        glEnable( GL_DEPTH_TEST );
+        glEnable( GL_MULTISAMPLE );
         glCullFace( GL_BACK );
 
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );

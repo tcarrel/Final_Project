@@ -77,6 +77,7 @@ namespace App
             Window( float, float, float );
 
             void init_gl( void );
+            void set_gl_attribs( void );
 
             const GLfloat   clear_color_[4]; ///< The clear color for OpenGL.
             bool            is_good_; ///< Window condition.
