@@ -40,7 +40,7 @@ class Shader
     public:
         Shader( void );
         
-        bool compile( void ) throw(GLSL_Program_Exception);
+        bool compile( const string& ) throw(GLSL_Program_Exception);
 
         /** Returns whether or not the shader program is ready for use.
          */
@@ -51,8 +51,9 @@ class Shader
         inline const GLuint& get( void ) { return program_; }
         bool operator==( Shader& );
         void print( void ); 
+        void add_code( const std::string& ) throw( GLSL_Program_Exception );
         void add_code( SHADER_TYPE_NAME* );
-        void use_program( void ) throw( GLSL_Program_Exception);
+        void use_program( void ) throw( GLSL_Program_Exception );
         
 
         void bind_attrib_location( GLuint, const char* );
@@ -88,11 +89,12 @@ class Shader
         // Not sure this will work, but I need to prevent implicit deletion.
         ~Shader(void );
 
-        void compile_shader( GLchar*, Shaders, GLuint* )
+        void compile_shader( GLchar*, Shaders, GLuint*, GLint, const string& )
             throw( GLSL_Program_Exception );
         void link( void ) throw( GLSL_Program_Exception ); ///< Called by
                                                            ///< compile().
         int type_id( Shaders );
+        int my_id( Shaders );
         GLint get_uniform_location( const char* );
 
         struct 
@@ -115,6 +117,16 @@ class Shader
             GLuint  compute     = 0;
         } ids_; ///< Store the ids of the individual shaders.  This may be used
                 ///< later for some additional optimization.
+
+        struct
+        {
+            GLint  vertex      = 0;
+            GLint  tcs         = 0;
+            GLint  tev         = 0;
+            GLint  geometry    = 0;
+            GLint  fragment    = 0;
+            GLint  compute     = 0;
+        } lengths_;
 
         struct 
         {
@@ -139,12 +151,15 @@ class Shader
 
         GLuint                      qty_in_use_;
 
+        static GLuint               id_source_;
+
         std::map<std::string, int>  uniform_locations_;
         Tracking_List<Shader>       tracker_;
 
         //Prevent external copying.
         Shader(            const Shader& ) { };
         Shader& operator=( const Shader& ) { return *this; }
+        inline GLuint new_id( void ){ return id_source_--; }
 };  // Shader class.
 
 extern const char* get_type_string( GLenum );

@@ -39,6 +39,11 @@ namespace Model
 
             void set_wireframe( void );
 
+            void get_reflect_data( GLuint*, GLenum* );
+
+            inline GLuint get_tex_handle( void )
+            { return texture_handle_; }
+
         private:
             void load_textures( std::string* );
 

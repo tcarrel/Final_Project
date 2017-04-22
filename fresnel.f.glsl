@@ -15,20 +15,18 @@ uniform float refractive_index = 1.52;
 
 void main()
 {
-	vec3 I = normalize( Position - cam_pos );
-	vec3 L = reflect( I, normalize(Normal) );
-	vec3 R = refract( I, normalize(Normal), 1.0 / refractive_index );
+  vec3 I = normalize( Position - cam_pos );
+  vec3 L = reflect( I, normalize(Normal) );
+  vec3 R = refract( I, normalize(Normal), 1.0 / refractive_index );
 
-	vec4 reflect_color = texture( sky, L );
-	vec4 refract_color = texture( sky, R );
+  vec4 reflect_color = texture( sky, L );
+  vec4 refract_color = texture( sky, R );
 
-	//Compute fresnel reflectivity
-	float F =
-		pow(1.0 - clamp( dot( I , normalize( Normal ) ), 0.0, 1.0 ), 4.0);
+  //Compute fresnel reflectivity
+  float F =
+    pow(1.0 - clamp( dot( I , normalize( Normal ) ), 0.0, 1.0 ), 4.0);
 
-	vec4 fresnel = vec4( F, F, F, F );
+  vec4 fresnel = vec4( F, F, F, F );
 
-	vec3 C = vec3( mix( refract_color, reflect_color, fresnel ) );
-
-	color = vec4( C, 1.0 );
+  color = vec4( vec3( mix( refract_color, reflect_color, fresnel ) ), 1.0 );
 }

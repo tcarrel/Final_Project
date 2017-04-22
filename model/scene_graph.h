@@ -34,6 +34,8 @@ using std::chrono::duration;
 #ifndef  _SCENE_GRAPH_H_
 # define _SCENE_GRAPH_H
 
+class Shader;
+
 namespace App
 {
     class Window;
@@ -83,6 +85,15 @@ namespace Model
             void set_dps( const GLfloat& dps )
             { degrees_per_second_ = dps; }
 
+            inline Skybox* get_skybox_ptr( void )
+            { return skybox_; }
+            inline Shader* get_mirror_prog( void )
+            { return mirror_; }
+            inline Shader* get_refract_prog( void )
+            { return transparent_; }
+            inline Shader* get_fresnel_prog( void )
+            { return fresnel_; }
+
             ~Scene_Graph( void );
 
         private:
@@ -99,6 +110,10 @@ namespace Model
             static Scene_Graph* __instance__;
 
             Skybox*     skybox_;
+
+            Shader*     mirror_;
+            Shader*     fresnel_;
+            Shader*     transparent_;
             
             GLuint      model_qty_; ///< Size of the model array.
 

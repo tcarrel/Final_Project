@@ -42,6 +42,7 @@ namespace Model
     {
         class OBJ_File;
     }
+    class Skybox;
 
     /**
      * Manages mesh data and calls draw functions.
@@ -53,11 +54,13 @@ namespace Model
             Mesh( const string&, GLenum );
 
             void set_shader( Shader* );
+            void set_reflect( Shader*, Skybox* );
 
             void draw(
                     const glm::mat4&,
                     const glm::mat4&,
-                    const glm::mat4& )
+                    const glm::mat4&,
+                    const glm::vec3& )
                 throw( Scene_Graph_Exception );
 
             void add_child( Mesh* );
@@ -144,12 +147,37 @@ namespace Model
 #  ifdef DEBUG
             bool            draw_message_shown_;
 #  endif
+            bool            is_reflective_;
+            bool            is_refractive_;
+            Skybox*         skybox_;
+
 
             /** See the Shader dtor for why it is necessary this be private.
              */
             ~Mesh( void );
             void print_info( string );
             void init_gpu_buffers( void );
+
+            void regular_draw(
+                    const glm::mat4&,
+                    const glm::mat4&,
+                    const glm::mat4& );
+            void reflect_draw(
+                    const glm::mat4&,
+                    const glm::mat4&,
+                    const glm::mat4&,
+                    const glm::vec3&
+                    );
+            /*
+            void transparent_draw(
+                    const glm::mat4&,
+                    const glm::mat4&,
+                    const glm::mat4& );
+            void fresnel_draw(
+                    const glm::mat4&,
+                    const glm::mat4&,
+                    const glm::mat4& );
+            */
     };
 
 } //Model namespace.

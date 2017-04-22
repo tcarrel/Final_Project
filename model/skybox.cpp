@@ -49,11 +49,15 @@ namespace Model
         faces[4] = path + bac;
         faces[5] = path + fro;
 
+        /*
         program_handle_->add_code( get_shader( "SKYBOX_v" ) );
 //        program_handle_->add_code( get_shader( "SKYBOX_g" ) );
         program_handle_->add_code( get_shader( "SKYBOX_f" ) );
+        */
+        program_handle_->add_code( "skybox.v.glsl" );
+        program_handle_->add_code( "skybox.f.glsl" );
 
-        if( program_handle_->compile() == ERROR )
+        if( program_handle_->compile( "Skybox" ) == ERROR )
         {
             fprintf(
                     stderr,
@@ -115,9 +119,10 @@ namespace Model
 //        GLuint num_verts = 3 * 6 * 6;
 
         glGenVertexArrays( 1, &vao_ );
+        glGenBuffers( 1, &vbo_ );
+
         glBindVertexArray( vao_ );
 
-        glGenBuffers( 1, &vbo_ );
         glBindBuffer( GL_ARRAY_BUFFER, vbo_ );
         glBufferData(
                 GL_ARRAY_BUFFER,
@@ -217,8 +222,6 @@ namespace Model
     void Skybox::render( const glm::mat4& view, const glm::mat4& proj )
     {
         glDepthFunc( GL_LEQUAL );
-//        glDisable( GL_CULL_FACE );
-//        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
         program_handle_->use_program();
         //  Remove the translation components of the view matrix before sending
         //it to the GPU.
@@ -227,12 +230,11 @@ namespace Model
         program_handle_->set_uniform( "wireframe", wf_ );
 
         glBindVertexArray( vao_ );
-        glActiveTexture( TEX_ );
+//        glActiveTexture( TEX_ );
         program_handle_->set_uniform( "sky", 0 );
         glBindTexture( GL_TEXTURE_CUBE_MAP, texture_handle_ );
-        //glDrawArrays(GL_POINTS, 0, 1);
         glDrawArrays( GL_TRIANGLES, 0, 36 );
-        glBindVertexArray( 0 );
+        //glBindVertexArray( 0 );
 
         //glEnable( GL_CULL_FACE );
         glDepthFunc( GL_LESS );
@@ -247,6 +249,13 @@ namespace Model
     }
 
 
+
+
+    void Skybox::get_reflect_data( GLuint* tex, GLenum* tex_unit )
+    {
+        *tex        =   texture_handle_;
+        *tex_unit   =   TEX_;
+    }
 } //Model namespace.
 
 #undef TEX_

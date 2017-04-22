@@ -22,9 +22,11 @@ namespace Model
     struct Vertex
     {
         glm::vec3 pos; ///< The coordinate of the vertex.
-//        glm::vec2 uv;  ///< Texture coordinates.
         glm::vec4 color; ///< Vertex color, temporary. Later, normals.
 
+        glm::vec3 normal; ///< Normal vectors for lighting.
+//        glm::vec2 uv;  ///< Texture coordinates.
+//
         /* To be re-included later.
         glm::vec2 texture_coords;
         glm::vec2 phong_coord;
@@ -51,8 +53,8 @@ namespace Model
          * \param p The vertex position.
          * \param c The vertex color.
          */
-        Vertex( const glm::vec3& p, const glm::vec4& c ) :
-            pos(p), color(c)
+        Vertex( const glm::vec3& p, const glm::vec4& c, const glm::vec3& n ) :
+            pos(p), color(c), normal(n)
         {}
 
         /** Ctor.
@@ -60,8 +62,8 @@ namespace Model
          * \param c The vertex color, this will later be change to the vertex
          * normal.
          */
-        Vertex( const glm::vec3& p, const glm::vec3& c ) :
-            pos(p), color( glm::vec4( c.x, c.y, c.z, 1.0f ) )
+        Vertex( const glm::vec3& p, const glm::vec3& c, const glm::vec3& n ) :
+            pos(p), color( glm::vec4( c.x, c.y, c.z, 1.0f ) ), normal(n)
         {}
 
 
@@ -82,16 +84,21 @@ namespace Model
                 float r,
                 float g,
                 float b,
-                float a
+                float a,
+
+                float nx,
+                float ny,
+                float nz
                 ) :
             pos( glm::vec3( x, y, z ) ),
-            color( glm::vec4( r, g, b, a ) )
+            color( glm::vec4( r, g, b, a ) ),
+            normal( glm::vec3( nx, ny, nz ) )
         {}
 
         /** Generic ctor, inits the vertex to (0, 0, 0).
          */
         Vertex( void ) :
-            Vertex( 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f )
+            Vertex( 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f )
         {}
 
 
@@ -102,6 +109,7 @@ namespace Model
         {
             this->pos   =   b.pos;
             this->color =   b.color;
+            this->normal=   b.normal;
         }
 
 
@@ -112,6 +120,7 @@ namespace Model
         {
             this->pos   =   rhs.pos;
             this->color =   rhs.color;
+            this->normal=   rhs.normal;
             return *this;
         }
     };

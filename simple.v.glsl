@@ -3,6 +3,7 @@
 
 layout (location = 0) in vec3 vert_position;
 layout (location = 1) in vec4 vert_color;
+layout (location = 2) in vec3 vert_normal;
 
 //Model-View matrix.
 uniform mat4 model;
@@ -17,3 +18,4 @@ void main()
   gl_Position = projection * view * model * vec4( vert_position, 1.0 );
   Color = vert_color;
 }
+

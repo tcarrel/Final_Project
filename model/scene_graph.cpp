@@ -14,7 +14,12 @@
 #include "mesh.h"
 #include "skybox.h"
 
+#include "../shader_program.h"
+
 #include "../app/window.h"
+
+#include "../shaders.h"
+#include "../helper_functions.h"
 
 #include<cmath>
 
@@ -101,6 +106,9 @@ namespace Model
      */
     Scene_Graph::Scene_Graph( SG_Setup* su ) :
         skybox_( NULL ),
+        mirror_( NULL ),
+        fresnel_( NULL ),
+        transparent_( NULL ),
         model_qty_( 0 ),
         models_( NULL ),
         frame_count_( 0 ),
@@ -181,6 +189,30 @@ namespace Model
             delete models_[i];
         }
         delete [] models_;
+        
+        if( skybox_ )
+        {
+            delete skybox_;
+            skybox_ = NULL;
+        }
+
+        if( mirror_ )
+        {
+            mirror_->delete_this();
+            mirror_ = NULL;
+        }
+
+        if( transparent_ )
+        {
+            transparent_->delete_this();
+            transparent_ = NULL;
+        }
+
+        if( fresnel_ )
+        {
+            fresnel_->delete_this();
+            fresnel_ = NULL;
+        }
     }
 
 
@@ -238,15 +270,22 @@ namespace Model
 
                 GLfloat angle = degrees_per_second_ * deg_to_rad * fraction;
 
+                GLfloat x   = view_eye_.x,
+                        z   = view_eye_.z,
+                        cs  = cos( angle ),
+                        sn  = sin( angle );
                 /*
                    GLfloat x       =   view_eye_.x,
-                   z       =   view_eye_.z;
+                   z               =   view_eye_.z;
                    GLfloat theta   =   DEG_TO_RAD(2.5f),
-                   cs      =   cos( theta ),
-                   sn      =   sin( theta );
-                   view_eye_.x = (x * cs) - (z * sn);
-                   view_eye_.z = (x * sn) + (z * sn);
+                   cs              =   cos( theta ),
+                   sn              =   sin( theta );
+                   view_eye_.x     = (x * cs) - (z * sn);
+                   view_eye_.z     = (x * sn) + (z * cs);
                    */
+                
+                view_eye_.x = (x * cs) - (z * sn);
+                view_eye_.z = (x * sn) + (z * cs);
                 view_ = glm::rotate( view_, angle, glm::vec3(0, 1, 0) );
                 previous_time_ = now;
             }
@@ -260,7 +299,7 @@ namespace Model
 
         for( GLuint i = 0; i < model_qty_; i++ )
         {
-            models_[i]->render( view_, frustum_ );
+            models_[i]->render( view_, frustum_, view_eye_ );
         }
 
         if( skybox_ )
@@ -276,6 +315,16 @@ namespace Model
 
 
 
+    inline void skybox_msg( const string& sh )
+    {
+        fprintf( stderr, "Compiling %s shaders.\n", sh.c_str() );
+    }
+    inline void skybox_err( const string& sh )
+    {
+        fprintf( stderr, "%s could not compile %s shader.\n",
+                bright_red( "Error" ).c_str(),
+                sh.c_str() );
+    }
 
 
     void Scene_Graph::add_skybox(
@@ -286,16 +335,40 @@ namespace Model
             const string& b,
             const string& f )
     {
-        /*
-           fprintf( stderr,
-           "Skybox set with:\n"
-           "  left\t=\"%s\"\n  right\t=\"%s\"\n  top\t=\"%s\"\n"
-           "  bottom\t=\"%s\"\n  back\t=\"%s\"\n  front\t=\"%s\"\n\n",
-           l.c_str(), r.c_str(), u.c_str(),
-           d.c_str(), b.c_str(), f.c_str()
-           );
-           */
         skybox_ = new Skybox( l, r, u, d, b, f );
+        fprintf(
+                stderr,
+                "Skybox loaded, generating reflection and refraction.\n" );
+        //Setup reflection shader.
+        mirror_ = new Shader;
+        mirror_->add_code( "raytrace.v.glsl" );
+        mirror_->add_code( "reflection.f.glsl" );
+        skybox_msg( "reflectivity" );
+        if( mirror_->compile( "SG( mirror_ )" ) == ERROR )
+        {
+            skybox_err( "reflectivity" );
+        }
+
+        //Setup refractivity shader.
+        transparent_ = new Shader;
+        transparent_->add_code( "raytrace.v.glsl" );
+        transparent_->add_code( "refraction.f.glsl" );
+        skybox_msg( "refraction" );
+        if( transparent_->compile( "SG( transparent_ )" ) == ERROR )
+        {
+            skybox_err( "refraction" );
+        }
+
+
+        //Setup fresnel shader.
+        fresnel_ = new Shader;
+        fresnel_->add_code( "raytrace.v.glsl" );
+        fresnel_->add_code( "fresnel.f.glsl" );
+        skybox_msg( "fresnel" );
+        if( fresnel_->compile( "SG( fresnel_ )" )  == ERROR )
+        {
+            skybox_err( "fresnel" );
+        }
     }
 
 

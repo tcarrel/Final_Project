@@ -35,6 +35,7 @@ namespace Model
 {
     class Mesh;
     class Render_Exception;
+    class Skybox;
 
     /**
      * The class for a single model, eventually these will be able to contain
@@ -50,13 +51,17 @@ namespace Model
 
             void update( const glm::mat4&, bool ); ///< Will need heavy
                                                    ///< modification later.
-            void render( const glm::mat4&, const glm::mat4& )
+            void render(
+                    const glm::mat4&,
+                    const glm::mat4&,
+                    const glm::vec3& )
                 throw(Render_Exception);
 
             void add( Mesh* );
             void add( Model* );
 
             void set_position( GLfloat&, GLfloat&, GLfloat& );
+            void set_reflect( Shader*, Skybox* );
         private:
 
             Mesh*                       mesh_;

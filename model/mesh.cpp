@@ -6,11 +6,13 @@
  */
 
 
-#include "mesh.h"
-
 #include "../shader_program.h"
 #include "../app/window.h"
 #include "../colors.h"
+
+#include "mesh.h"
+#include "skybox.h"
+#include "vertex.h"
 
 #include<stdio.h>
 #include<glm/ext.hpp>
@@ -31,9 +33,9 @@ namespace Model
 
     /**
      * Ctor.
-     * \param name Each loaded mesh will be given a unique name that can be
+     * @param name Each loaded mesh will be given a unique name that can be
      * used later to identify them.
-     * \param m The rendering mode to be used for this mesh.
+     * @param m The rendering mode to be used for this mesh.
      */
     Mesh::Mesh( const std::string& name, GLenum m = GL_TRIANGLES ) :
         vertices_( new Vertex_Array ),
@@ -47,7 +49,9 @@ namespace Model
         child_qty_( 0 ),
         children_( NULL ),
         name_( name ),
-        qty_in_use_( 1 )
+        qty_in_use_( 1 ),
+        is_reflective_( false ),
+        is_refractive_( false )
     {
 #ifdef DEBUG
         draw_message_shown_ = false;
@@ -139,9 +143,10 @@ namespace Model
      * @param proj The projection matrix / frustum.
      */
     void Mesh::draw(
-            const glm::mat4& model,
-            const glm::mat4& view,
-            const glm::mat4& proj ) throw( Scene_Graph_Exception )
+            const glm::mat4& m,
+            const glm::mat4& v,
+            const glm::mat4& p,
+            const glm::vec3& c ) throw( Scene_Graph_Exception )
     {
 
         if( !shader_ )
@@ -153,11 +158,49 @@ namespace Model
 
         shader_->use_program();
 
-        glBindVertexArray( vao_ );
+        if( is_reflective_ && is_refractive_ )
+        {
 
-        shader_->set_uniform( "model", model );
-        shader_->set_uniform( "view", view );
-        shader_->set_uniform( "projection", proj );
+            return;
+        }
+
+        if( is_reflective_ )
+        {
+            reflect_draw( m, v, p, c );
+            return;
+        }
+
+        if( is_refractive_ )
+        {
+            return;
+        }
+
+        regular_draw( m, v, p );
+        return;
+        ///////////////////
+        /*
+
+        shader_->set_uniform( "model", m );
+        shader_->set_uniform( "view", v );
+        shader_->set_uniform( "projection", p );
+        if( is_reflective_ && is_refractive_ )
+        {
+        }
+        else if( is_reflective_ )
+        {
+            shader_->set_uniform( "cam_pos", c );
+//            shader_->set_uniform( "sky", tex_handle_ );
+
+            glBindVertexArray( vao_ );
+//            glBindTexture( GL_TEXTURE_CUBE_MAP, tex_handle_ );
+        }
+        else if( is_refractive_ )
+        {
+        }
+        else
+        {
+            glBindVertexArray( vao_ );
+        }
 
 #ifdef DEBUG
         if( !draw_message_shown_ )
@@ -171,19 +214,69 @@ namespace Model
         }
 #endif
 
-        shader_->set_uniform( "_sf", scale_factor_ );
+        glDrawArrays( mode_, 0, qty_ );
+
+        for( GLuint i = 0; i < child_qty_; i++ )
+        {
+            children_[i]->draw( m, v, p, c );
+        }
+
+        return;
+        */
+    }
+
+
+
+
+    void Mesh::regular_draw(
+            const glm::mat4& m,
+            const glm::mat4& v,
+            const glm::mat4& p
+            )
+    {
+        shader_->set_uniform( "model", m );
+        shader_->set_uniform( "view", v );
+        shader_->set_uniform( "projection", p );
+
+        glBindVertexArray( vao_ );
 
         glDrawArrays( mode_, 0, qty_ );
 
         for( GLuint i = 0; i < child_qty_; i++ )
         {
-            children_[i]->draw( model, view, proj );
+            children_[i]->regular_draw( m, v, p );
+        }
+    }
+
+
+
+
+    void Mesh::reflect_draw(
+            const glm::mat4& m,
+            const glm::mat4& v,
+            const glm::mat4& p,
+            const glm::vec3& c
+            )
+    {
+        shader_->set_uniform( "model", m );
+        shader_->set_uniform( "view", v );
+        shader_->set_uniform( "proj", p );
+        shader_->set_uniform( "cam_pos", c );
+
+        glBindVertexArray( vao_ );
+        glBindTexture( GL_TEXTURE_CUBE_MAP, skybox_->get_tex_handle() );
+
+        glDrawArrays( mode_, 0, qty_ );
+
+        for( GLuint i = 0; i < child_qty_; i++ )
+        {
+            children_[i]->reflect_draw( m, v, p, c );
         }
     }
 
 
     /**  Set the default shader program to be used when rendering this mesh.
-     * \param p A pointer to the Shader object that will be used.
+     * @param p A pointer to the Shader object that will be used.
      */
     void Mesh::set_shader( Shader* p )
     {
@@ -194,6 +287,38 @@ namespace Model
         }
     }
 
+
+
+
+
+    /**  Set the object as reflective.
+     * @param s The shader for reflection.
+     */
+    void Mesh::set_reflect( Shader* shader, Skybox* skybox )
+    {
+        if( shader_ )
+        {
+            shader_->delete_this();
+        }
+        if( shader_ == shader )
+        {
+            return;
+        }
+
+        fprintf(
+                stderr,
+                "Mesh %s, render mode set to reflective.\n" ,
+                name_.c_str()
+               );
+
+        shader_ = shader->get_ptr();
+        skybox_ = skybox;
+        is_reflective_ = true;
+        for( GLuint i = 0; i < child_qty_; i++ )
+        {
+            children_[i]->set_reflect( shader, skybox );
+        }
+    }
 
 
 
@@ -211,12 +336,23 @@ namespace Model
                 vertices_->size()
                );
 #endif
+
         if( verts_sent_to_gpu_ )
         {
             return;
         }
         //        vertices_->center();
         vertices_->scale( scale_factor_ );
+
+        fprintf(
+                stderr,
+                "Vertex size = %li\nvec3 size = %li\nvec4 size = %li\nGLfloat size = %li\n",
+                sizeof(Vertex),
+                sizeof(glm::vec3),
+                sizeof(glm::vec4),
+                sizeof(GLfloat) );
+
+        GLsizei stride = sizeof(Vertex);
 
         glGenVertexArrays( 1, &vao_ );
         glBindVertexArray( vao_ );
@@ -236,7 +372,7 @@ namespace Model
                 3,
                 GL_FLOAT,
                 GL_FALSE,
-                sizeof(Vertex),
+                stride,
                 (void*) 0
                 );
         glEnableVertexAttribArray( 1 );
@@ -245,8 +381,17 @@ namespace Model
                 4,
                 GL_FLOAT,
                 GL_FALSE,
-                sizeof(Vertex),
-                (void*) (3 * sizeof(GLfloat))
+                stride,
+                (void*) sizeof(glm::vec3)
+                );
+        glEnableVertexAttribArray( 2 );
+        glVertexAttribPointer(
+                2,
+                3,
+                GL_FLOAT,
+                GL_FALSE,
+                stride,
+                (void*) (sizeof(glm::vec3) + sizeof(glm::vec4))
                 );
 
         verts_sent_to_gpu_ = true;
@@ -258,7 +403,7 @@ namespace Model
 
 
     /** Add a child mesh.
-     * \param child The mesh to be added.
+     * @param child The mesh to be added.
      */
     void Mesh::add_child( Mesh* child )
     {
@@ -348,5 +493,6 @@ namespace Model
             children_[i]->print_info( spacing + "  " );
         }
     }
+
 } //Model namespace.
 

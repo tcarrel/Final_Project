@@ -71,7 +71,8 @@ namespace Model
     */
     void Model::render(
             const glm::mat4& view,
-            const glm::mat4& proj ) throw(Render_Exception)
+            const glm::mat4& proj,
+            const glm::vec3& cam ) throw(Render_Exception)
     {
         if( mesh_ )
         {
@@ -84,12 +85,12 @@ namespace Model
                         iter++
                    )
                 {
-                    (*iter)->render( view, proj );
+                    (*iter)->render( view, proj, cam );
                 }
             }
             if( mesh_ )
             {
-                mesh_->draw( translation_, view, proj );
+                mesh_->draw( translation_, view, proj, cam );
             }
             return;
         }
@@ -138,6 +139,25 @@ namespace Model
             children_ = new std::forward_list<Model*>;
         }
         children_->push_front(m);
+    }
+
+
+
+
+
+    void Model::set_reflect( Shader* sh, Skybox* sk )
+    {
+        if( children_ )
+        {
+            for(
+                    auto iter = children_->begin();
+                    iter != children_->end();
+                    iter++ )
+            {
+                (*iter)->set_reflect( sh, sk );
+            }
+        }
+        mesh_->set_reflect( sh, sk );
     }
 
 

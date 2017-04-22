@@ -1,4 +1,6 @@
+
 #version 450 core
+
 layout (location = 0) in vec3 position;
 
 uniform mat4 projection;
@@ -10,9 +12,8 @@ out uint wf;
 
 void main()
 {
-//	gl_Position = vec4( 0.0, 0.0, 0.0, 0.0 );
-	vec4 pos    = projection * view * vec4(position, 1.0);
-	gl_Position = pos.xyww;
-	tex_coords  = position;
-	wf          = wireframe;
+  vec4 pos    = projection * view * vec4(position, 1.0);
+  gl_Position = pos.xyww;
+  tex_coords  = position;
+  wf          = wireframe;
 }

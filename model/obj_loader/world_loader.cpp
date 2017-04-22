@@ -43,7 +43,7 @@ namespace Model
          * @param w The current window.
          */
         World_Loader::World_Loader( App::Window* w ) :
-            window_( w ), file_( NULL )
+            window_( w ), file_( NULL ), skybox_is_loaded_( false )
         {}
 
 
@@ -210,45 +210,25 @@ namespace Model
                 {
                     case '#': // Comment
                         getline( *file_, filename );
+                        fprintf( stderr, "(Comment) %s\n", filename.c_str() );
                         filename = "";
                         break;
                     case 'P': // shader (P)rogram
+                        fprintf( stderr, "Shader\n" );
                         load_shader();
                         break;
                     case 'S': // (S)kybox
+                        fprintf( stderr, "Skybox\n" );
                         load_skybox();
                         break;
                     case 'O': // (O)bject file.
+                        fprintf( stderr, "Object File\n" );
                         load_object( path, coloring );
                         break;
                     default:
                         fprintf( stderr, "Unknown\n" );
                         break;
                 }
-                continue;
-
-                /*
-                if( filename[0] == '*' )
-                {
-                    string cmd, tail;
-                    get_command( cmd, tail );
-
-                    if( cmd == SHADER_CMD )
-                    {
-                        int count = stoi( filename.substr( paren + 1 );
-                        fprintf( stderr, "Load shaders.\n" );
-                        load_shader( count );
-                        continue;
-                    }
-
-                    if( filename == "*SKYBOX*" )
-                    {
-                        fprintf( stderr, "Load skybox.\n" );
-                        load_skybox();
-                        continue;
-                    }
-                }
-                */
 
             }
             obj_ld_.stop_trace();
@@ -272,7 +252,6 @@ namespace Model
             cur_shader_ = new Shader;
             int qty;
             *file_ >> qty;
-            file_->ignore();
 
             for( int i = 0; i < qty; i++ )
             {
@@ -291,14 +270,16 @@ namespace Model
                     continue; // Comment
                 }
 
+                /*
                 string shdr_name = shader_filename_to_struct_name( fname );
                 fprintf( stderr, "#%i %s\n", i, shdr_name.c_str() );
 
                 cur_shader_->add_code(
                         get_shader( shdr_name ) );
-
+                        */
+                cur_shader_->add_code( fname );
             }
-            if( cur_shader_->compile() == ERROR )
+            if( cur_shader_->compile( "World_Loader" ) == ERROR )
             {
                 fprintf(
                         stderr,
@@ -314,10 +295,13 @@ namespace Model
 
         /** Loads an .obj file.
         */
-        void World_Loader::load_object( const std::string& path, bool coloring )
+        void World_Loader::load_object(
+                const std::string& path,
+                bool coloring ) throw( World_Exception )
         {
             std::string filename;
             GLfloat floats[3];
+            GLchar option = '^';
             floats[0] = floats[1] = floats[2] = 0.0f;
 
             getline( *file_, filename, ',' );
@@ -342,7 +326,10 @@ namespace Model
             for( int i = 0; i < 3; i++ )
             {
                 *file_ >> floats[i];
-                file_->ignore();
+                if( i < 2 )
+                {
+                    file_->ignore();
+                }
             }
 
             fprintf( 
@@ -353,6 +340,33 @@ namespace Model
             mdl->set_position( floats[0], floats[1], floats[2] );
 
             mdl->add( msh );
+
+            if( file_->peek() != '\n' )
+            {
+                file_->ignore();
+                *file_ >> option;
+                fprintf( stderr, "Char=%c\n", option );
+                switch( option )
+                {
+                    case 'M': //Mirrored
+                        //fallthrough.
+                    case 'm':
+                        mdl->set_reflect(
+                                sg_->get_mirror_prog(),
+                                sg_->get_skybox_ptr() );
+                        break;
+                    case 'T': //Transparent
+                        //fallthrough
+                    case 't':
+                        break;
+                    case 'F': //Fresnel
+                        //fallthrough
+                    case 'f':
+                        break;
+                    default:
+                        fprintf( stderr, "Invalid render mode.\n" );
+                }
+            }
 
             sg_->add_models( &mdl, 1 );
 
@@ -376,6 +390,7 @@ namespace Model
             getline( *file_, f );
 
             sg_->add_skybox( r, l, u, d, b, f );
+            skybox_is_loaded_ = true;
         }
 
 
@@ -390,15 +405,6 @@ namespace Model
             bool is_pers;
 
             GLfloat x = 0, y = 0, z = 0;
-            /*
-            //Initail position.
-             *file_ >> x;
-             file_->ignore();
-             *file_ >> y;
-             file_->ignore();
-             *file_ >> z;
-             setup.position( x, y, z );
-             */
 
             //Eye position.
             *file_ >> x;

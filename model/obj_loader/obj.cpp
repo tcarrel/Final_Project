@@ -271,11 +271,10 @@ namespace Model
                 {
                     *trace_ << val[0] << "/" << val[1] << "/" << val[2] << "\n";
                 }
-                glm::vec3 vert;
+                glm::vec3 vert = vertices_[index->v];
                 glm::vec4 color;
                 if( !color_by_ )
                 {
-                    vert = vertices_[index->v];
                     float x, y, z;
                     x = normals_[index->n].x;
                     y = normals_[index->n].y;
@@ -298,9 +297,9 @@ namespace Model
                 }
                 else
                 {
-                    vert = vertices_[index->v];
                     color= to_vec_color( Color::random_color() | 0xFF );
                 }
+                glm::vec3 normal = normals_[index->n];
 
                 if( trace_ )
                 {
@@ -309,7 +308,7 @@ namespace Model
                         << "\tcolor: " << glm::to_string( color ) << endl;
                 }
 
-                cur_va_->add( Vertex( vert, color ) );
+                cur_va_->add( Vertex( vert, color, normal ) );
 
 
 

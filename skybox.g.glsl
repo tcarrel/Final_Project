@@ -91,6 +91,6 @@ void main()
 	tex_coords = vec3( -1.0,  1.0,  1.0 );
 	EmitVertex();
 
-	EndPrimitive();	
+	EndPrimitive();
 }
 

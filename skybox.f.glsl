@@ -1,6 +1,8 @@
+
 #version 450 core
+
 in  vec3 tex_coords;
-flat in  uint wf;
+flat in uint wf;
 
 uniform samplerCube sky;
 

@@ -28,6 +28,8 @@
 
 #include "obj.h"
 
+#include "World_except.h"
+
 
 class Shader;
 
@@ -44,6 +46,8 @@ namespace Model
 
     namespace OBJ
     {
+        class World_Exception;
+
         class World_Loader
         {
             public:
@@ -65,12 +69,12 @@ namespace Model
 
                 void    scene_graph_setup( void );
 
-                void    load_object( const std::string&, bool );
+                void    load_object( const std::string&, bool ) throw(World_Exception);
                 void    load_shader( void );
                 void    load_skybox( void );
 
                 inline void print_option( const char& c )
-                { fprintf( stderr, "Option: %c\n", c ); }
+                { fprintf( stderr, "Option: %c ", c ); }
 
                 OBJ_File                            obj_ld_;
                 static Scene_Graph*                 sg_;
@@ -80,7 +84,11 @@ namespace Model
 
                 //Error handling.
                 static std::vector<std::string*>*   error_msgs_;
+
+
                 std::ifstream*                      file_;
+
+                bool                                skybox_is_loaded_;
         };
 
     } // OBJ namespace.

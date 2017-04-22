@@ -15,11 +15,16 @@
 #include "shader_program.h"
 #include "helper_functions.h"
 
+#include<fstream>
 #include<sstream>
 #include<climits>
 
+#include<sys/stat.h>
 
 #include<glm/ext.hpp>
+#include<glm/gtc/type_ptr.hpp>
+
+#define DEBUG_SHADER_PROG
 
 //helper functions
 
@@ -61,7 +66,7 @@ string get_shader_type_string( Shaders s )
  */
 Shader* Shader::current_program_ = NULL;
 
-
+GLuint Shader::id_source_ = UINT_MAX;
 
 
 
@@ -521,6 +526,156 @@ void Shader::print_active_uniform_blocks( void )
 
 
 
+bool file_exists( const std::string& filename )
+{
+    struct stat info;
+    int ret = -1;
+
+    ret = stat(filename.c_str(), &info);
+    return ret == 0;
+}
+
+
+char get_type_from_file( const std::string& filename )
+{
+    size_t i = filename.find_first_of( '.' );
+    return filename[i + 1];
+}
+
+
+/**  Load from file.
+ * @param filename The filename.
+ */
+void Shader::add_code(
+        const std::string& filename ) throw (GLSL_Program_Exception)
+{
+    if( !file_exists( filename ) )
+    {
+        throw( GLSL_Program_Exception(
+                    "File <" + filename + "> does not exist." ) );
+    }
+
+    std::ifstream file( filename.c_str() );
+    if( !file )
+    {
+        throw( GLSL_Program_Exception(
+                    "Could not open file <" + filename + ">" ) );
+    }
+
+    std::stringstream text;
+    text << file.rdbuf();
+    file.close();
+
+    std::string code( text.str() );
+
+    unsigned line   = 1;
+    unsigned offset = 0;
+    for( unsigned i = 0; i < code.length(); i++ )
+    {
+        if( code[i] == '\n' )
+        {
+            ++line;
+            offset = 0;
+            continue;
+        }
+
+        if( code[i] < 0x20 )
+        {
+            std::string msg = "Invalid character (ASCII = ";
+            msg += numtoa( (int) code[i] );
+            msg += ") found at line ";
+            msg += numtoa( line );
+            msg += ", char ";
+            msg += numtoa( offset );
+            msg += ".";
+            throw( GLSL_Program_Exception( msg ) );
+        }
+
+        ++offset;
+    }
+
+    GLchar* local_copy = NULL;
+
+    GLint len  = code.length();
+    char letter = get_type_from_file( filename );
+
+    switch( letter )
+    {
+        case 'v': //Vertex
+            fprintf(
+                    stderr,
+                    "Load %s shader from file %s.\n",
+                    "vertex", filename.c_str() );
+            code_.vertex = new GLchar[len];
+            local_copy = code_.vertex;
+            lengths_.vertex = len;
+            ids_.vertex = new_id();
+            break;
+        case 't': //Tesselation Control
+            fprintf(
+                    stderr,
+                    "Load %s shader from file %s.\n",
+                    "tesselation control", filename.c_str() );
+            code_.tcs = new GLchar[len];
+            local_copy = code_.tcs;
+            lengths_.tcs = len;
+            ids_.tcs = new_id();
+            break;
+        case 'e': //Tesselation Evaluation
+            fprintf(
+                    stderr,
+                    "Load %s shader from file %s.\n",
+                    "tesselation evaluation", filename.c_str() );
+            code_.tev = new GLchar[len];
+            local_copy = code_.tev;
+            lengths_.tev = len;
+            ids_.tev = new_id();
+            break;
+        case 'g': //Geometry
+            fprintf(
+                    stderr,
+                    "Load %s shader from file %s.\n",
+                    "geometry", filename.c_str() );
+            code_.geometry = new GLchar[len];
+            local_copy = code_.geometry;
+            lengths_.geometry = len;
+            ids_.geometry = new_id();
+            break;
+        case 'f': //Fragment
+            fprintf(
+                    stderr,
+                    "Load %s shader from file %s.\n",
+                    "fragment", filename.c_str() );
+            code_.fragment = new GLchar[len];
+            local_copy = code_.fragment;
+            lengths_.fragment = len;
+            ids_.fragment = new_id();
+            break;
+        case 'c': //Compute
+            fprintf(
+                    stderr,
+                    "Load %s shader from file %s.\n",
+                    "compute", filename.c_str() );
+            code_.compute = new GLchar[len];
+            local_copy = code_.compute;
+            lengths_.compute = len;
+            ids_.compute = new_id();
+            break;
+        default:
+            throw( GLSL_Program_Exception(
+                        "Filename <" + filename + "> is malformed." ) );
+    }
+
+    for( int i = 0; i < len; i++ )
+    {
+        local_copy[i] = code[i];
+    }
+}
+
+
+
+
+
 
 
 /**  Add pointers to the code for the current shader program.  Since shader
@@ -536,39 +691,54 @@ void Shader::add_code( SHADER_TYPE_NAME* code )
 #ifdef DEBUG_SHADER_PROG
     fprintf(
             stderr,
-            "%s\n\n",
-            *code
+            "Shader (%s)\n%s\n\n",
+            code->name.c_str(),
+            code->code.c_str()
            );
 #endif
     char type = code->name[code->name.length() - 1];
+    ///NEW STUFF
+    GLchar* text = new GLchar[code->code.length()];
+    for( unsigned i = 0; i < code->code.length(); i++ )
+    {
+        text[i] = code->code[i];
+    }
+    ///
 
     switch( type )
     {
         case 'v': //VERTEX_SHADER:
-            code_.vertex    = code->code;
+//            code_.vertex    = code->code;
+            code_.vertex    = text;
             ids_.vertex     = code->id;
-            return;
+            break;
         case 't': //TCS_SHADER:
-            code_.tcs       = code->code;
+//            code_.tcs       = code->code;
+            code_.tcs       = text;
             ids_.tcs        = code->id;
-            return;
+            break;
         case 'e': //TEV_SHADER:
-            code_.tev       = code->code;
+//            code_.tev       = code->code;
+            code_.tev       = text;
             ids_.tev        = code->id;
-            return;
+            break;
         case 'g': //GEOMETRY_SHADER:
-            code_.geometry  = code->code;
+//            code_.geometry  = code->code;
+            code_.geometry  = text;
             ids_.geometry   = code->id;
-            return;
+            break;
         case 'f': //FRAGMENT_SHADER:
-            code_.fragment  = code->code;
+//            code_.fragment  = code->code;
+            code_.fragment  = text;
             ids_.fragment   = code->id;
-            return;
+            break;
         case 'c': //COMPUTE_SHADER:
-            code_.compute   = code->code;
+//            code_.compute   = code->code;
+            code_.compute   = text;
             ids_.compute    = code->id;
-            return;
+            break;
     }
+    text = NULL;
 }
 
 
@@ -577,7 +747,7 @@ void Shader::add_code( SHADER_TYPE_NAME* code )
 /**    Performs final compilation of the shader code on the GPU.  This must be
  *   done by the user, since it is unknown what shaders will be loaded.
  */
-bool Shader::compile( void ) throw( GLSL_Program_Exception )
+bool Shader::compile( const string& from ) throw( GLSL_Program_Exception )
 {
     Shader* temp = tracker_.get( id_str() );
     if( temp )
@@ -600,11 +770,36 @@ bool Shader::compile( void ) throw( GLSL_Program_Exception )
         return ERROR;
     }
 
-    compile_shader( code_.vertex,   VERTEX_SHADER,      &shaders_.vertex );
-    compile_shader( code_.tcs,      TCS_SHADER,         &shaders_.tcs );
-    compile_shader( code_.tev,      TEV_SHADER,         &shaders_.tev );
-    compile_shader( code_.geometry, GEOMETRY_SHADER,    &shaders_.geometry );
-    compile_shader( code_.fragment, FRAGMENT_SHADER,    &shaders_.fragment );
+    compile_shader(
+            code_.vertex,
+            VERTEX_SHADER,
+            &shaders_.vertex,
+            lengths_.vertex,
+            from );
+    compile_shader(
+            code_.tcs,
+            TCS_SHADER,
+            &shaders_.tcs,
+            lengths_.tcs,
+            from );
+    compile_shader(
+            code_.tev,
+            TEV_SHADER,
+            &shaders_.tev,
+            lengths_.tev,
+            from );
+    compile_shader(
+            code_.geometry,
+            GEOMETRY_SHADER,
+            &shaders_.geometry,
+            lengths_.geometry,
+            from );
+    compile_shader(
+            code_.fragment,
+            FRAGMENT_SHADER,
+            &shaders_.fragment,
+            lengths_.fragment,
+            from );
 
     link();
 
@@ -637,7 +832,9 @@ bool Shader::compile( void ) throw( GLSL_Program_Exception )
 void Shader::compile_shader(
         GLchar* source,
         Shaders type,
-        GLuint* handle )
+        GLuint* handle,
+        GLint   code_length,
+        const string& from )
 throw( GLSL_Program_Exception )
 {
 
@@ -657,7 +854,7 @@ throw( GLSL_Program_Exception )
     }
 
     *handle = glCreateShader( type );
-    glShaderSource( *handle, 1, &source, NULL );
+    glShaderSource( *handle, 1, &source, &code_length );
     glCompileShader( *handle );
 
     int result;
@@ -677,15 +874,39 @@ throw( GLSL_Program_Exception )
             delete [] log;
         }
 
+        string idnum = numtoa( my_id(type) );
         string msg;
         msg =
-            get_shader_type_string( type ) + " shader with id=" + 
-            numtoa( type_id( type ) ) + " compilation failed.\n" + log_text;
+            from + " " + get_shader_type_string( type ) + " shader with type_id=" + 
+            numtoa( type_id( type ) ) + " and id=" + idnum + 
+            " compilation failed.\n" + log_text;
 
         throw GLSL_Program_Exception( msg );
     }
 
     glAttachShader( program_, *handle );
+}
+
+
+int Shader::my_id( Shaders t )
+{
+    switch( t )
+    {
+        case VERTEX_SHADER:
+            return ids_.vertex;
+        case TCS_SHADER:
+            return ids_.tcs;
+        case TEV_SHADER:
+            return ids_.tev;
+        case GEOMETRY_SHADER:
+            return ids_.geometry;
+        case FRAGMENT_SHADER:
+            return ids_.fragment;
+        case COMPUTE_SHADER:
+            return ids_.compute;
+        default:
+            return 999;
+    }
 }
 
 
@@ -872,7 +1093,7 @@ int  Shader::type_id( Shaders t )
         case COMPUTE_SHADER:
             return shaders_.compute;
         default:
-            return INT_MAX;
+            return 101010;
     }
 }
 
