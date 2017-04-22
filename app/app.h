@@ -70,6 +70,8 @@ namespace App
 
             bool    wireframe_;
             float*  deg_per_sec_;
+
+            string* level_filename_;
     };
 
 } //App namespace.

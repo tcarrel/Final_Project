@@ -58,13 +58,14 @@ namespace App
      * @param argv argv taken from the command line.
      */
     Application::Application( std::vector<std::string*>& argv ) :
-        window_( new Window( to_vec_color( Color::BLACK ) ) ),
+        window_( new Window( to_vec_color( Color::COPPER_ROSE ) ) ),
         shader_( NULL ),
         input_( window_ ),
         world_( NULL ),
         mesh_( NULL ),
         wireframe_( false ),
-        deg_per_sec_( NULL )
+        deg_per_sec_( NULL ),
+        level_filename_( NULL )
     {
         argv_.swap( argv );
         start_up();
@@ -82,7 +83,14 @@ namespace App
 
             Model::OBJ::World_Loader loader( window_ );
 
-            loader( "resource", "load_list", world_, false );
+            if( level_filename_ )
+            {
+                loader( "resource", *level_filename_, world_, false );
+            }
+            else
+            {
+                loader( "resource", world_, false );
+            }
 
             if( !world_ )
             {
@@ -181,91 +189,106 @@ namespace App
     void Application::parse_args( void )
     {
 
-        for( unsigned i = 1; i < argv_.size(); i++ )
+        for( auto iter = argv_.begin() + 1; iter != argv_.end(); iter++ )
         {
-            if( *argv_[i] == "--help" )
+            string arg = **iter;
+
+            if( arg == "--help" )
             {
                 command_line_help();
             }
 
-            if( (*argv_[i])[0] != '-' && (*argv_[i])[1] != '-' )
+            if( arg[0] != '-' && arg[1] != '-' )
             {
-                unrecognized_command( *argv_[i] );
+                unrecognized_command( arg );
 
-                delete argv_[i];
-                argv_[i] = NULL;
+                delete *iter;
+                *iter = NULL;
 
                 continue;
             }
 
             //Render as wireframe.
-            else if( *argv_[i] == "--wf" )
+            else if( arg == "--wf" )
             {
                 fprintf(
                         stderr,
                         "\"%s\" ",
-                        argv_[i]->c_str() );
+                        arg.c_str() );
                 window_->set_wireframe_front();
                 wireframe_ = true;
             }
-            else if( *argv_[i] == "--wf=1" )
+            else if( arg == "--wf=1" )
             {
                 fprintf(
                         stderr,
                         "\"%s\" ",
-                        argv_[i]->c_str() );
+                        arg.c_str() );
                 window_->set_wireframe_front();
                 wireframe_ = true;
             }
-            else if( *argv_[i] == "--wf=on" )
+            else if( arg == "--wf=on" )
             {
                 fprintf(
                         stderr,
                         "\"%s\" ",
-                        argv_[i]->c_str() );
+                        arg.c_str() );
                 window_->set_wireframe_front();
                 wireframe_ = true;
             }
 
             //Render as wireframe with back facing edges shown.
-            else if( *argv_[i] == "--wf=2" )
+            else if( arg == "--wf=2" )
             {
                 fprintf(
                         stderr,
                         "\"%s\" ",
-                        argv_[i]->c_str() );
+                        arg.c_str() );
                 window_->set_wireframe_full();
                 wireframe_ = true;
             }
-            else if( *argv_[i] == "--wf=full" )
+            else if( arg == "--wf=full" )
             {
                 fprintf(
                         stderr,
                         "\"%s\" ",
-                        argv_[i]->c_str() );
+                        arg.c_str() );
                 window_->set_wireframe_full();
                 wireframe_ = true;
             }
 
 
             //Normal rendering mode.
-            else if( *argv_[i] == "--wf=0" )
+            else if( arg == "--wf=0" )
             {
                 fprintf(
                         stderr,
                         "\"%s\" ",
-                        argv_[i]->c_str() );
+                        arg.c_str() );
                 window_->set_wireframe_off();
             }
-            else if( *argv_[i] == "--wf=off" )
+            else if( arg == "--wf=off" )
             {
                 fprintf(
                         stderr,
                         "\"%s\" ",
-                        argv_[i]->c_str() );
+                        arg.c_str() );
                 window_->set_wireframe_off();
             }
 
+            if( arg == "--dps" )
+            {
+                deg_per_sec_ = new float( stof(**(iter + 1)) );
+                argv_.erase(iter + 1);
+            }
+
+            if( arg == "--level" )
+            {
+                level_filename_ = new string( **( iter + 1 ) );
+                argv_.erase(iter + 1);
+            }
+
+            /*
             //Begin more complicated parsing.
             auto equal_sign = argv_[i]->find_first_of("=");
             if( equal_sign != std::string::npos )
@@ -277,10 +300,11 @@ namespace App
                     deg_per_sec_ = new float( stof(val) );
                 }
             }
+            */
 
             //No longer needed after this.
-            delete argv_[i];
-            argv_[i] = NULL;
+            delete *iter;
+            *iter = NULL;
         }
 
 #ifdef CLEAR_ARGS
@@ -318,6 +342,7 @@ namespace App
         printf( "\t--wf=0\t\tDefault rendering mode.  This is the default rend"
                 "ering mode.\n" );
         printf( "\t--wf=off\n\n" );
+
         fflush( stdout );
 
         exit(0);

@@ -170,7 +170,8 @@ namespace Model
                 const std::string&  p,
                 const std::string&  level_filename,
                 Scene_Graph*&       scene,
-                bool                coloring = false )
+                bool                coloring = false
+                )
         {
             std::string path = p + "/";
 

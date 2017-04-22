@@ -54,6 +54,12 @@ namespace Model
                 World_Loader( App::Window* );
                 ~World_Loader( void );
 
+                inline bool operator()(
+                        const std::string& p,
+                        Scene_Graph*& sg,
+                        bool b )
+                { return this->operator()( p, "DEFAULT", sg, b ); }
+
                 bool operator()(
                         const std::string&,
                         const std::string&,
