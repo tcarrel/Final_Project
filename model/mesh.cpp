@@ -51,7 +51,9 @@ namespace Model
         name_( name ),
         qty_in_use_( 1 ),
         is_reflective_( false ),
-        is_refractive_( false )
+        is_refractive_( false ),
+        skybox_( NULL ),
+        refractivity_ratio_( 1.0f )
     {
 #ifdef DEBUG
         draw_message_shown_ = false;
@@ -138,9 +140,10 @@ namespace Model
     /** For now, this will be responsible for sending all the draw calls to the
      * gpu.  Later, this will be responsible only for creating command packets
      * and sending those to the command buffer.
-     * @param model The model matrix.
-     * @param view The view matrix.
-     * @param proj The projection matrix / frustum.
+     * @param m The model matrix.
+     * @param v The view matrix.
+     * @param p The projection matrix / frustum.
+     * @param c The camera position vector.
      */
     void Mesh::draw(
             const glm::mat4& m,
@@ -166,111 +169,121 @@ namespace Model
 
         if( is_reflective_ )
         {
-            reflect_draw( m, v, p, c );
+            reflect_draw( m, v, p, c, false );
             return;
         }
 
         if( is_refractive_ )
         {
+            transparent_draw( m, v, p, c, false );
             return;
         }
 
-        regular_draw( m, v, p );
+        regular_draw( m, v, p, false );
         return;
-        ///////////////////
-        /*
-
-        shader_->set_uniform( "model", m );
-        shader_->set_uniform( "view", v );
-        shader_->set_uniform( "projection", p );
-        if( is_reflective_ && is_refractive_ )
-        {
-        }
-        else if( is_reflective_ )
-        {
-            shader_->set_uniform( "cam_pos", c );
-//            shader_->set_uniform( "sky", tex_handle_ );
-
-            glBindVertexArray( vao_ );
-//            glBindTexture( GL_TEXTURE_CUBE_MAP, tex_handle_ );
-        }
-        else if( is_refractive_ )
-        {
-        }
-        else
-        {
-            glBindVertexArray( vao_ );
-        }
-
-#ifdef DEBUG
-        if( !draw_message_shown_ )
-        {
-            fprintf(
-                    stderr,
-                    "Name: %s\tscale: %f\n",
-                    name_.c_str(),
-                    scale_factor_ );
-            draw_message_shown_ = true;
-        }
-#endif
-
-        glDrawArrays( mode_, 0, qty_ );
-
-        for( GLuint i = 0; i < child_qty_; i++ )
-        {
-            children_[i]->draw( m, v, p, c );
-        }
-
-        return;
-        */
     }
 
 
 
 
+    /**  Use normal rendering method.
+     * @param m The model matrix.
+     * @param v The view matrix.
+     * @param p The projection matrix / frustum.
+     * @param uniforms_set Have the uniforms been updated yet?
+     */
     void Mesh::regular_draw(
             const glm::mat4& m,
             const glm::mat4& v,
-            const glm::mat4& p
-            )
+            const glm::mat4& p,
+            bool  uniforms_set )
     {
-        shader_->set_uniform( "model", m );
-        shader_->set_uniform( "view", v );
-        shader_->set_uniform( "projection", p );
+        if( !uniforms_set )
+        {
+            shader_->set_uniform( "model", m );
+            shader_->set_uniform( "view", v );
+            shader_->set_uniform( "projection", p );
+        }
 
         glBindVertexArray( vao_ );
-
         glDrawArrays( mode_, 0, qty_ );
 
         for( GLuint i = 0; i < child_qty_; i++ )
         {
-            children_[i]->regular_draw( m, v, p );
+            children_[i]->regular_draw( m, v, p, true );
         }
     }
 
 
 
 
+
+    /**  Use refractive rendering method.
+     * @param m The model matrix.
+     * @param v The view matrix.
+     * @param p The projection matrix / frustum.
+     * @param c The camera position vector.
+     * @param uniforms_set Have the uniforms been updated yet?
+     */
+    void Mesh::transparent_draw(
+            const glm::mat4& m,
+            const glm::mat4& v,
+            const glm::mat4& p,
+            const glm::vec3& c,
+            bool  uniforms_set )
+    {
+        if( !uniforms_set )
+        {
+            shader_->set_uniform( "model", m );
+            shader_->set_uniform( "view", v );
+            shader_->set_uniform( "proj", p );
+            shader_->set_uniform( "cam_pos", c );
+            shader_->set_uniform( "refractive_ratio", refractivity_ratio_ );
+        }
+
+        glBindVertexArray( vao_ );
+        glBindTexture( GL_TEXTURE_CUBE_MAP, skybox_->get_tex_handle() );
+        glDrawArrays( mode_, 0, qty_ );
+
+        for( GLuint i = 0; i < child_qty_; i++ )
+        {
+            children_[i]->transparent_draw( m, v, p, c, true );
+        }
+    }
+
+
+
+
+
+    /**  Use reflective rendering method.
+     * @param m The model matrix.
+     * @param v The view matrix.
+     * @param p The projection matrix / frustum.
+     * @param c The camera position vector.
+     * @param uniforms_set Have the uniforms been updated yet?
+     */
     void Mesh::reflect_draw(
             const glm::mat4& m,
             const glm::mat4& v,
             const glm::mat4& p,
-            const glm::vec3& c
-            )
+            const glm::vec3& c,
+            bool  uniforms_set )
     {
-        shader_->set_uniform( "model", m );
-        shader_->set_uniform( "view", v );
-        shader_->set_uniform( "proj", p );
-        shader_->set_uniform( "cam_pos", c );
+        if( !uniforms_set )
+        {
+            shader_->set_uniform( "model", m );
+            shader_->set_uniform( "view", v );
+            shader_->set_uniform( "proj", p );
+            shader_->set_uniform( "cam_pos", c );
+        }
 
         glBindVertexArray( vao_ );
         glBindTexture( GL_TEXTURE_CUBE_MAP, skybox_->get_tex_handle() );
-
         glDrawArrays( mode_, 0, qty_ );
 
         for( GLuint i = 0; i < child_qty_; i++ )
         {
-            children_[i]->reflect_draw( m, v, p, c );
+            children_[i]->reflect_draw( m, v, p, c, true );
         }
     }
 
@@ -292,7 +305,8 @@ namespace Model
 
 
     /**  Set the object as reflective.
-     * @param s The shader for reflection.
+     * @param shader Pointer to the shader for reflection.
+     * @param skybox Pointer to the skybox.
      */
     void Mesh::set_reflect( Shader* shader, Skybox* skybox )
     {
@@ -311,12 +325,51 @@ namespace Model
                 name_.c_str()
                );
 
-        shader_ = shader->get_ptr();
-        skybox_ = skybox;
-        is_reflective_ = true;
+        shader_         =   shader->get_ptr();
+        skybox_         =   skybox;
+        is_reflective_  =   true;
+        is_refractive_  =   false;
         for( GLuint i = 0; i < child_qty_; i++ )
         {
             children_[i]->set_reflect( shader, skybox );
+        }
+    }
+
+
+
+
+
+    /**  Set the object as refractive.
+     * @param shader Pointer to the shader for refraction.
+     * @param skybox Pointer to the skybox.
+     * @param rr The ratio of refractivity.
+     */
+    void Mesh::set_refract( Shader* shader, Skybox* skybox, const GLfloat& rr )
+    {
+        if( shader_ )
+        {
+            shader_->delete_this();
+        }
+        if( shader_ == shader )
+        {
+            return;
+        }
+
+        fprintf(
+                stderr,
+                "Mesh %s, render mode set to reflective.\n" ,
+                name_.c_str()
+               );
+
+        shader_                 =   shader->get_ptr();
+        skybox_                 =   skybox;
+        is_refractive_          =   true;
+        is_reflective_          =   false;
+        refractivity_ratio_     =   rr;
+
+        for( GLuint i = 0; i < child_qty_; i++ )
+        {
+            children_[i]->set_refract( shader, skybox, rr );
         }
     }
 

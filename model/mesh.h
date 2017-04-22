@@ -55,6 +55,7 @@ namespace Model
 
             void set_shader( Shader* );
             void set_reflect( Shader*, Skybox* );
+            void set_refract( Shader*, Skybox*, const GLfloat& );
 
             void draw(
                     const glm::mat4&,
@@ -150,6 +151,7 @@ namespace Model
             bool            is_reflective_;
             bool            is_refractive_;
             Skybox*         skybox_;
+            GLfloat         refractivity_ratio_;
 
 
             /** See the Shader dtor for why it is necessary this be private.
@@ -161,22 +163,28 @@ namespace Model
             void regular_draw(
                     const glm::mat4&,
                     const glm::mat4&,
-                    const glm::mat4& );
+                    const glm::mat4&,
+                    bool );
             void reflect_draw(
                     const glm::mat4&,
                     const glm::mat4&,
                     const glm::mat4&,
-                    const glm::vec3&
+                    const glm::vec3&,
+                    bool
                     );
-            /*
             void transparent_draw(
                     const glm::mat4&,
                     const glm::mat4&,
-                    const glm::mat4& );
+                    const glm::mat4&,
+                    const glm::vec3&,
+                    bool );
+            /*
             void fresnel_draw(
                     const glm::mat4&,
                     const glm::mat4&,
-                    const glm::mat4& );
+                    const glm::mat4&,
+                    const glm::vec3&,
+                    bool );
             */
     };
 

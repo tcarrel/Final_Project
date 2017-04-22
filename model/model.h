@@ -62,6 +62,7 @@ namespace Model
 
             void set_position( GLfloat&, GLfloat&, GLfloat& );
             void set_reflect( Shader*, Skybox* );
+            void set_refract( Shader*, Skybox*, const GLfloat& );
         private:
 
             Mesh*                       mesh_;

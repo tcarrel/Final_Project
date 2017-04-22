@@ -116,7 +116,6 @@ namespace Model
             -1.0f, -1.0f,  1.0f,
             1.0f, -1.0f,  1.0f
         };
-//        GLuint num_verts = 3 * 6 * 6;
 
         glGenVertexArrays( 1, &vao_ );
         glGenBuffers( 1, &vbo_ );

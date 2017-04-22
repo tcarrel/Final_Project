@@ -7,11 +7,14 @@
 
 #include<string>
 #include<sstream>
+using std::stringstream;
 #include<fstream>
 #include<cctype>
 #include<glm/glm.hpp>
 
 #include<SOIL/SOIL.h>
+
+#include "helper_functions.h"
 
 /**
  *  Converts a hex integer to a vec4 color.
@@ -40,9 +43,9 @@ glm::vec4 to_vec_color( uint32_t color )
 /**  Converts and integer to a string.
  * @param i The integer.
  */
-std::string numtoa( const uint32_t& i )
+string numtoa( const uint32_t& i )
 {
-    std::stringstream S;
+    stringstream S;
     S << i;
     return S.str();
 }
@@ -55,7 +58,7 @@ std::string numtoa( const uint32_t& i )
 /**  Skip whitespace at the beginning of a stream.
  * @param in The stream to remove whitespace from.
  */
-void skip_whitespace( std::istream& in )
+void skip_whitespace( istream& in )
 {
     while( isspace( in.peek() ) )
     {
@@ -81,9 +84,9 @@ void skip_whitespace( std::istream& in )
  * @param fname The filename.
  * @return The internally used shader name.
  */
-std::string shader_filename_to_struct_name( const std::string& fname )
+string shader_filename_to_struct_name( const string& fname )
 {
-    std::string name = fname.substr( 0, fname.find_first_of('.') ) + "_";
+    string name = fname.substr( 0, fname.find_first_of('.') ) + "_";
 
     for( unsigned i = 0; i < name.length(); i++ )
     {
@@ -106,10 +109,12 @@ std::string shader_filename_to_struct_name( const std::string& fname )
  * @return An unsigned int that has the same binary representation as the
  * float that had been passed in.
  */
+/*
 inline unsigned get_bits( const float& f )
 {
     return *((int*) &f);
 }
+*/
 
 
 
@@ -120,7 +125,7 @@ inline unsigned get_bits( const float& f )
  * @param image The raw image data.
  * @param file The filename of the image.
  */
-void check_SOIL_error( unsigned char* image, const std::string& file )
+void check_SOIL_error( unsigned char* image, const string& file )
 {
     if( image )
     {
@@ -136,3 +141,55 @@ void check_SOIL_error( unsigned char* image, const std::string& file )
 }
 
 
+
+
+
+
+/** Get the refractive index (n) of common materials.
+ * @param material The name of the material being requested.  No error
+ * checking is done, so this should be all caps.
+ * @return The refractive index of the material.
+ */
+float get_refractive_index( const string& material )
+{
+    if( material == "AIR" )
+    {
+        return 1.0f;
+    }
+
+    if( material == "WATER" )
+    {
+        return 1.33f;
+    }
+
+    if( material == "ICE" )
+    {
+        return 1.309f;
+    }
+
+    if( material == "GLASS" )
+    {
+        return 1.52f;
+    }
+
+    if( material == "DIAMOND" )
+    {
+        return 2.42f;
+    }
+
+    return 1.00f;
+}
+
+
+
+
+/** Get the ratio of refractivity.
+ * @param from The name of the material the object is meant to be 'submerged'
+ * in.
+ * @param to The name of the material the object is meant to be made of.
+ * @return from/to
+ */
+float get_refraction_ratio( const string& from, const string& to )
+{
+    return get_refractive_index( from ) / get_refractive_index( to );
+}

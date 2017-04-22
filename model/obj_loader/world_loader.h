@@ -64,12 +64,17 @@ namespace Model
 
             private:
 
-                void    add_error_msg(      unsigned,   const   std::string& );
-                std::string* error_num_to_msg(   unsigned,   const   std::string& );
+                void add_error_msg(
+                        unsigned,
+                        const std::string& );
+                std::string* error_num_to_msg(
+                        unsigned,
+                        const std::string& );
 
                 void    scene_graph_setup( void );
 
-                void    load_object( const std::string&, bool ) throw(World_Exception);
+                void    load_object( const std::string&, bool )
+                    throw(World_Exception);
                 void    load_shader( void );
                 void    load_skybox( void );
 

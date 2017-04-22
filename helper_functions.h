@@ -7,7 +7,10 @@
  */
 
 #include<fstream>
+using std::istream;
+
 #include<string>
+using std::string;
 
 #include "shaders.h"
 
@@ -18,20 +21,22 @@
  extern         glm::vec4           to_vec_color( uint32_t );
 #endif
 
-extern          std::string         numtoa( const uint32_t& );
-extern          void                skip_whitespace( std::istream& );
+extern          string         numtoa( const uint32_t& );
+extern          void                skip_whitespace( istream& );
 
 //Other
-extern          SHADER_TYPE_NAME*   get_shdr( const std::string& );
-extern          std::string         shader_filename_to_struct_name(
-        const std::string& );
+extern          SHADER_TYPE_NAME*   get_shdr( const string& );
+extern          string         shader_filename_to_struct_name(
+        const string& );
 
-extern          int                 get_bits( const float& );
+//extern          int                 get_bits( const float& );
 
 extern          void                check_SOIL_error( unsigned char*,
-        const std::string& );
+        const string& );
 
 
+extern          float get_refractive_index( const string& );
+extern          float get_refraction_ratio( const string&, const string& );
 
 
 
@@ -45,7 +50,7 @@ extern          void                check_SOIL_error( unsigned char*,
 /**  Return the provided text in bright red.
  * @param text The text to be changed.
  */
-inline std::string bright_red( const std::string& text )
+inline string bright_red( const string& text )
 {
     return "\033[1;31m" + text + "\033[0m";
 }
@@ -56,7 +61,7 @@ inline std::string bright_red( const std::string& text )
 /**  Return the provided text in red.
  * @param text The text to be changed.
  */
-inline std::string red( const std::string& text )
+inline string red( const string& text )
 {
     return "\033[0;31m" + text + "\033[0m";
 }
@@ -67,7 +72,7 @@ inline std::string red( const std::string& text )
 /**  Return the provided text in bold.
  * @param text The text to be changed.
  */
-inline std::string bold( const std::string& text )
+inline string bold( const string& text )
 {
     return "\033[1m" + text + "\033[0m";
 }

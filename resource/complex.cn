@@ -1,0 +1,15 @@
+7
+5.0,0.75,0
+0,0,0
+0,1,0
+1,45,1,30
+P2simple.v.glsl,simple.f.glsl
+Sright.jpg,left.jpg,top.jpg,bottom.jpg,back.jpg,front.jpg
+Ocube.obj,1,-1,0,0
+Otwisted.obj,1,0,0,0
+OF22.obj,1,1,0,0
+Otorus.obj,1,0,0,1
+Obunny.obj,1,0,0,-1
+Omonkey.obj,1,1,0,-1
+Outah_teapot.obj,1,0,0,0
+

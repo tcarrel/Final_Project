@@ -145,6 +145,10 @@ namespace Model
 
 
 
+    /**  Sets reflective environment mapping method.
+     * @param sh A pointer to the Shader for reflection mapping.
+     * @param sk A pointer to the Skybox for the scene.
+     */
     void Model::set_reflect( Shader* sh, Skybox* sk )
     {
         if( children_ )
@@ -158,6 +162,31 @@ namespace Model
             }
         }
         mesh_->set_reflect( sh, sk );
+    }
+
+
+
+
+
+    /**  Sets the refractive environment mapping method.
+     * @param sh A pointer to the Shader for refraction mapping.
+     * @param sk A pointer to the Skybox for the scene.
+     * @param rr The ratio of the refractive indices of the interface between
+     * both materials.
+     */
+    void Model::set_refract( Shader* sh, Skybox* sk, const GLfloat& rr )
+    {
+        if( children_ )
+        {
+            for(
+                    auto iter = children_->begin();
+                    iter != children_->end();
+                    iter++ )
+            {
+                (*iter)->set_refract( sh, sk, rr );
+            }
+        }
+        mesh_->set_refract( sh, sk, rr );
     }
 
 

@@ -23,6 +23,8 @@
 
 #include "../../app/window.h"
 
+#include<cctype>
+
 namespace Model
 {
 
@@ -270,13 +272,6 @@ namespace Model
                     continue; // Comment
                 }
 
-                /*
-                string shdr_name = shader_filename_to_struct_name( fname );
-                fprintf( stderr, "#%i %s\n", i, shdr_name.c_str() );
-
-                cur_shader_->add_code(
-                        get_shader( shdr_name ) );
-                        */
                 cur_shader_->add_code( fname );
             }
             if( cur_shader_->compile( "World_Loader" ) == ERROR )
@@ -351,13 +346,34 @@ namespace Model
                     case 'M': //Mirrored
                         //fallthrough.
                     case 'm':
-                        mdl->set_reflect(
-                                sg_->get_mirror_prog(),
-                                sg_->get_skybox_ptr() );
+                        {
+                            mdl->set_reflect(
+                                    sg_->get_mirror_prog(),
+                                    sg_->get_skybox_ptr() );
+                        }
                         break;
                     case 'T': //Transparent
                         //fallthrough
                     case 't':
+                        {
+                            GLfloat refr; //Index of refraction;
+                            if( isdigit( file_->peek() ) )
+                            {
+                                *file_ >> refr;
+                            }
+                            else
+                            {
+                                string out, in;
+                                getline( *file_, out, ',' );
+                                *file_ >> in;
+                                refr = get_refraction_ratio( out, in );
+                            }
+                            mdl->set_refract(
+                                    sg_->get_refract_prog(),
+                                    sg_->get_skybox_ptr(),
+                                    refr
+                                    );
+                        }
                         break;
                     case 'F': //Fresnel
                         //fallthrough

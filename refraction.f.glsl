@@ -8,12 +8,12 @@ out vec4 color;
 uniform vec3 cam_pos;
 uniform samplerCube sky;
 
-uniform float refractive_index = 1.52;
+//Default to the value for glass to water.
+uniform float refractive_ratio = 1.0 / 1.52;
 
 void main()
 {
-  float enter = 1.0 / refractive_index;
   vec3 I = normalize( Position - cam_pos );
-  vec3 R = refract( I, normalize(Normal), enter );
+  vec3 R = refract( I, normalize(Normal), refractive_ratio );
   color  = texture( sky, R );
 }

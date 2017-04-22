@@ -87,7 +87,6 @@ enum Shaders
 };
 
 
-
 /** Used for setting up the Scene_Graph.
  */
 # define PERSPECTIVE true
