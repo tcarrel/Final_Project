@@ -58,20 +58,36 @@ namespace App
      * @param argv argv taken from the command line.
      */
     Application::Application( std::vector<std::string*>& argv ) :
-        window_( new Window( to_vec_color( Color::COPPER_ROSE ) ) ),
+        window_( NULL ),
         shader_( NULL ),
-        input_( window_ ),
+        input_( NULL ),
         world_( NULL ),
         mesh_( NULL ),
-        wireframe_( false ),
+        wireframe_( 0 ),
         deg_per_sec_( NULL ),
         level_filename_( NULL )
     {
         argv_.swap( argv );
+        parse_args();
+        window_ = new Window( to_vec_color( Color::COPPER_ROSE ) );
+        input_  = new Input::Input_Handler( window_ );
+
         start_up();
 
         if( window_->ready() )
         {
+
+            switch( wireframe_ )
+            {
+                case 1:
+                    window_->set_wireframe_front();
+                    break;
+                case 2:
+                    window_->set_wireframe_full();
+                    break;
+                default:
+                    ;
+            }
 
 #ifdef DEBUG
             fprintf(
@@ -79,7 +95,6 @@ namespace App
                     "Window created successfully.\nAspect Ratio\t=\t%f\n",
                     window_->aspect() );
 #endif
-            parse_args();
 
             Model::OBJ::World_Loader loader( window_ );
 
@@ -144,7 +159,7 @@ namespace App
     {
         assert( world_ != NULL );
 
-        while( input_.process() )
+        while( input_->process() )
         {
             world_->render();
         }
@@ -215,8 +230,7 @@ namespace App
                         stderr,
                         "\"%s\" ",
                         arg.c_str() );
-                window_->set_wireframe_front();
-                wireframe_ = true;
+                wireframe_ = 1;
             }
             else if( arg == "--wf=1" )
             {
@@ -224,8 +238,7 @@ namespace App
                         stderr,
                         "\"%s\" ",
                         arg.c_str() );
-                window_->set_wireframe_front();
-                wireframe_ = true;
+                wireframe_ = 1;
             }
             else if( arg == "--wf=on" )
             {
@@ -233,8 +246,7 @@ namespace App
                         stderr,
                         "\"%s\" ",
                         arg.c_str() );
-                window_->set_wireframe_front();
-                wireframe_ = true;
+                wireframe_ = 1;
             }
 
             //Render as wireframe with back facing edges shown.
@@ -244,8 +256,7 @@ namespace App
                         stderr,
                         "\"%s\" ",
                         arg.c_str() );
-                window_->set_wireframe_full();
-                wireframe_ = true;
+                wireframe_ = 2;
             }
             else if( arg == "--wf=full" )
             {
@@ -253,8 +264,7 @@ namespace App
                         stderr,
                         "\"%s\" ",
                         arg.c_str() );
-                window_->set_wireframe_full();
-                wireframe_ = true;
+                wireframe_ = 2;
             }
 
 
@@ -265,7 +275,7 @@ namespace App
                         stderr,
                         "\"%s\" ",
                         arg.c_str() );
-                window_->set_wireframe_off();
+                wireframe_ = 0;
             }
             else if( arg == "--wf=off" )
             {
@@ -273,7 +283,7 @@ namespace App
                         stderr,
                         "\"%s\" ",
                         arg.c_str() );
-                window_->set_wireframe_off();
+                wireframe_ = 0;
             }
 
             if( arg == "--dps" )
@@ -293,12 +303,12 @@ namespace App
             auto equal_sign = argv_[i]->find_first_of("=");
             if( equal_sign != std::string::npos )
             {                
-                string val  = argv_[i]->substr( equal_sign + 1 ),
-                       comm = argv_[i]->substr( 0, equal_sign + 1 );
-                if( comm == "--dps=" )
-                {
-                    deg_per_sec_ = new float( stof(val) );
-                }
+            string val  = argv_[i]->substr( equal_sign + 1 ),
+            comm = argv_[i]->substr( 0, equal_sign + 1 );
+            if( comm == "--dps=" )
+            {
+            deg_per_sec_ = new float( stof(val) );
+            }
             }
             */
 
@@ -331,17 +341,28 @@ namespace App
         const std::string& CMD = *argv_[0];
 
         printf( bold("Command line options for %s:\n\n").c_str(), CMD.c_str() );
-        printf( "\t--help\t\tShow this message.\n\n" );
-        printf( "\t--wf\t\tSet partial wireframe rendering mode.  Only the edg"
+
+        printf( "\t--help\t\t\tShow this message.\n\n" );
+
+        printf( "\t--wf\t\t\tSet partial wireframe rendering mode.  Only the edg"
                 "es of\n");
-        printf( "\t--wf=1\t\tfront facing polygons will be rendered.\n" );
+        printf( "\t--wf=1\t\t\tfront facing polygons will be rendered.\n" );
         printf( "\t--wf=on\n\n" );
-        printf( "\t--wf=2\t\tSet full wireframe rendering mode.  All faces wil"
+
+        printf( "\t--wf=2\t\t\tSet full wireframe rendering mode.  All faces wil"
                 "l be\n");
-        printf( "\t--wf=full\trendered.\n\n" );
-        printf( "\t--wf=0\t\tDefault rendering mode.  This is the default rend"
+        printf( "\t--wf=full\t\trendered.\n\n" );
+
+        printf( "\t--wf=0\t\t\tDefault rendering mode.  This is the default rend"
                 "ering mode.\n" );
         printf( "\t--wf=off\n\n" );
+
+        printf( "\t--dps [float]\t\tSets the degrees per second of camera "
+                "orbit.\n" );
+        printf( "\t\t\t\tThe default is value is 10.0 degrees per second."
+                "\n\n" );
+
+        printf( "\t--level [filename]\tLoads \"level\" [filename].\n\n" );
 
         fflush( stdout );
 

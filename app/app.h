@@ -58,9 +58,9 @@ namespace App
             Window*  window_; ///< The window object that the game will be
                               ///< displayed in.
 
-            Shader* shader_;
-            Input::Input_Handler input_;
-            Model::Scene_Graph* world_;
+            Shader*                 shader_;
+            Input::Input_Handler*   input_;
+            Model::Scene_Graph*     world_;
 
 
             Model::Mesh* mesh_;
@@ -68,7 +68,7 @@ namespace App
             int                         argc_;
             std::vector<std::string*>   argv_;
 
-            bool    wireframe_;
+            int     wireframe_;
             float*  deg_per_sec_;
 
             string* level_filename_;
