@@ -35,7 +35,7 @@ namespace Input
     class Input_Handler
     {
         public:
-            Input_Handler( App::Window* );
+            Input_Handler( App::Window*, bool* );
             ~Input_Handler( void );
 
             bool process( void );

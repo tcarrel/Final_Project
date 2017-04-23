@@ -53,7 +53,8 @@ namespace Model
         is_reflective_( false ),
         is_refractive_( false ),
         skybox_( NULL ),
-        refractivity_ratio_( 1.0f )
+        refractivity_ratio_( 1.0f ),
+        r_0_( 0.52f / 2.52f )
     {
 #ifdef DEBUG
         draw_message_shown_ = false;
@@ -63,6 +64,9 @@ namespace Model
 
 
 
+    /** To be called when all necessary data for this mesh have been loaded.
+     * All data will be sent to the gpu and deleted from local memory.
+     */
     void Mesh::done( void )
     {
         if( !verts_sent_to_gpu_ )
@@ -81,6 +85,9 @@ namespace Model
 
 
 
+
+    /** A diy smart pointer.
+     */
     Mesh* Mesh::get_ptr( void )
     {
         qty_in_use_++;
@@ -91,6 +98,8 @@ namespace Model
 
 
 
+    /** Calls the dtor for this object.
+     */
     bool Mesh::delete_this( void )
     {
         --qty_in_use_;
@@ -101,6 +110,7 @@ namespace Model
         delete this;
         return true;
     }
+
 
 
 
@@ -163,7 +173,7 @@ namespace Model
 
         if( is_reflective_ && is_refractive_ )
         {
-
+            fresnel_draw( m, v, p, c, false );
             return;
         }
 
@@ -240,7 +250,6 @@ namespace Model
             shader_->set_uniform( "cam_pos", c );
             shader_->set_uniform( "refractive_ratio", refractivity_ratio_ );
         }
-
         glBindVertexArray( vao_ );
         glBindTexture( GL_TEXTURE_CUBE_MAP, skybox_->get_tex_handle() );
         glDrawArrays( mode_, 0, qty_ );
@@ -250,6 +259,45 @@ namespace Model
             children_[i]->transparent_draw( m, v, p, c, true );
         }
     }
+
+
+
+
+
+
+    /**  Use refractive rendering method.
+     * @param m The model matrix.
+     * @param v The view matrix.
+     * @param p The projection matrix / frustum.
+     * @param c The camera position vector.
+     * @param uniforms_set Have the uniforms been updated yet?
+     */
+    void Mesh::fresnel_draw(
+            const glm::mat4& m,
+            const glm::mat4& v,
+            const glm::mat4& p,
+            const glm::vec3& c,
+            bool  uniforms_set )
+    {
+        if( !uniforms_set )
+        {
+            shader_->set_uniform( "model", m );
+            shader_->set_uniform( "view", v );
+            shader_->set_uniform( "proj", p );
+            shader_->set_uniform( "cam_pos", c );
+            shader_->set_uniform( "refractive_ratio", refractivity_ratio_ );
+            shader_->set_uniform( "r_0", r_0_ );
+        }
+        glBindVertexArray( vao_ );
+        glBindTexture( GL_TEXTURE_CUBE_MAP, skybox_->get_tex_handle() );
+        glDrawArrays( mode_, 0, qty_ );
+        
+        for( GLuint i = 0; i < child_qty_; i++ )
+        {
+            children_[i]->transparent_draw( m, v, p, c, true );
+        }
+    }
+
 
 
 
@@ -286,6 +334,9 @@ namespace Model
             children_[i]->reflect_draw( m, v, p, c, true );
         }
     }
+
+
+
 
 
     /**  Set the default shader program to be used when rendering this mesh.
@@ -357,7 +408,7 @@ namespace Model
 
         fprintf(
                 stderr,
-                "Mesh %s, render mode set to reflective.\n" ,
+                "Mesh %s, render mode set to refractive.\n" ,
                 name_.c_str()
                );
 
@@ -370,6 +421,49 @@ namespace Model
         for( GLuint i = 0; i < child_qty_; i++ )
         {
             children_[i]->set_refract( shader, skybox, rr );
+        }
+    }
+
+
+
+
+
+    /**  Set the object as fresnel-refractive.
+     * @param shader Pointer to the shader for fresnel refraction.
+     * @param skybox Pointer to the skybox.
+     * @param rr The ratio of refractivity.
+     */
+    void Mesh::set_fresnel(
+            Shader* shader,
+            Skybox* skybox,
+            const GLfloat& refr,
+            const GLfloat& refl )
+    {
+        if( shader_ )
+        {
+            shader_->delete_this();
+        }
+        if( shader_ == shader )
+        {
+            return;
+        }
+
+        fprintf(
+                stderr,
+                "Mesh %s, render mode set to fresnel-based refraction.\n" ,
+                name_.c_str()
+               );
+
+        shader_                 =   shader->get_ptr();
+        skybox_                 =   skybox;
+        is_refractive_          =   true;
+        is_reflective_          =   true;
+        refractivity_ratio_     =   refr;
+        r_0_                    =   refl;
+
+        for( GLuint i = 0; i < child_qty_; i++ )
+        {
+            children_[i]->set_fresnel( shader, skybox, refr, refl );
         }
     }
 

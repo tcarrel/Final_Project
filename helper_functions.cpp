@@ -154,7 +154,7 @@ float get_refractive_index( const string& material )
 {
     if( material == "AIR" )
     {
-        return 1.0f;
+        return 1.000277f;
     }
 
     if( material == "WATER" )
@@ -174,9 +174,21 @@ float get_refractive_index( const string& material )
 
     if( material == "DIAMOND" )
     {
-        return 2.42f;
+        return 2.417f;
     }
 
+    if( material == "OIL" )
+    {
+        return 1.518f;
+    }
+
+    if( material == "GERMANIUM" )
+    {
+        return 4.05f;
+    }
+
+
+    //Vacuum
     return 1.00f;
 }
 

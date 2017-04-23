@@ -193,6 +193,35 @@ namespace Model
 
 
 
+    /**  Sets the fresnel-refraction environment mapping method.
+     * @param sh A pointer to the Shader for fresnel-refraction mapping.
+     * @param sk A pointer to the Skybox for the scene.
+     * @param refr The ratio of the refractive indices of the interface between
+     * both materials.
+     * @param refl The reflective coefficient.
+     */
+    void Model::set_fresnel(
+            Shader* sh,
+            Skybox* sk,
+            const GLfloat& refr,
+            const GLfloat& refl )
+    {
+        if( children_ )
+        {
+            for(
+                    auto iter = children_->begin();
+                    iter != children_->end();
+                    iter++ )
+            {
+                (*iter)->set_fresnel( sh, sk, refr, refl );
+            }
+        }
+        mesh_->set_fresnel( sh, sk, refr, refl );
+    }
+
+
+
+
     /**  Sets the position vector.
      * @param x The x-coordinate.
      * @param y The y-coordinate.

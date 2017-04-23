@@ -94,6 +94,12 @@ namespace Model
             inline Shader* get_fresnel_prog( void )
             { return fresnel_; }
 
+            void get_frame_rate_data( GLuint& count, GLfloat& rate )
+            {
+                count = frame_count_;
+                rate  = 1.0 / avg_seconds_per_frame_;
+            }
+
             ~Scene_Graph( void );
 
         private:
@@ -139,6 +145,8 @@ namespace Model
 
             high_resolution_clock::time_point previous_time_;
             GLfloat degrees_per_second_;
+            GLfloat avg_seconds_per_frame_;
+
 
             /** Generic ctor is disabled.
             */

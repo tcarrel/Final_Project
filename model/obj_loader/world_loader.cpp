@@ -186,7 +186,7 @@ namespace Model
                     level_filename.c_str() );
 
             file_ = new std::ifstream;
-            file_->open( (path + level_filename + ".cn").c_str() );
+            file_->open( (path + level_filename).c_str() );
 
             while( file_->peek() == '#' )
             {
@@ -372,13 +372,39 @@ namespace Model
                             mdl->set_refract(
                                     sg_->get_refract_prog(),
                                     sg_->get_skybox_ptr(),
-                                    refr
-                                    );
+                                    refr );
                         }
                         break;
                     case 'F': //Fresnel
                         //fallthrough
                     case 'f':
+                        {
+                            //Indices of reflection.
+                            GLfloat n1, n0; 
+                            if( isdigit( file_->peek() ) )
+                            {
+                                *file_ >> n0;
+                                file_->ignore();
+                                *file_ >> n1;
+                                mdl->set_fresnel(
+                                        sg_->get_fresnel_prog(),
+                                        sg_->get_skybox_ptr(),
+                                        n0, n1 );
+                            }
+                            else
+                            {
+                                string out, in;
+                                getline( *file_, out, ',' );
+                                *file_ >> in;
+                                n0 = get_refractive_index( out );
+                                n1 = get_refractive_index( in );
+                                mdl->set_fresnel(
+                                        sg_->get_fresnel_prog(),
+                                        sg_->get_skybox_ptr(),
+                                        n0 / n1,
+                                        (n0 - n1) / (n0 + n1 ) );
+                            }
+                        }
                         break;
                     default:
                         fprintf( stderr, "Invalid render mode.\n" );

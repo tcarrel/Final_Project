@@ -65,12 +65,13 @@ namespace App
         mesh_( NULL ),
         wireframe_( 0 ),
         deg_per_sec_( NULL ),
-        level_filename_( NULL )
+        level_filename_( NULL ),
+        quit_( false )
     {
         argv_.swap( argv );
         parse_args();
         window_ = new Window( to_vec_color( Color::COPPER_ROSE ) );
-        input_  = new Input::Input_Handler( window_ );
+        input_  = new Input::Input_Handler( window_, &quit_ );
 
         start_up();
 
@@ -159,10 +160,27 @@ namespace App
     {
         assert( world_ != NULL );
 
-        while( input_->process() )
+        while( !quit_ )
         {
             world_->render();
+            input_->process();
         }
+
+        unsigned frames;
+        float    rate;
+        world_->get_frame_rate_data( frames, rate );
+
+        printf(
+                red( "%i frames rendered." ).c_str(),
+                frames );
+        printf(
+                red("Average frame rate was %f frames/second.\n").c_str(),
+                rate );
+        fflush( stdout );
+        fflush( stderr );
+
+
+
 
         delete world_;
         world_ = NULL;

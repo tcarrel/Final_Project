@@ -48,6 +48,7 @@ namespace App
             ~Application(void );
 
             int run( void ); 
+
         private:
 
             void parse_args( void );
@@ -72,6 +73,8 @@ namespace App
             float*  deg_per_sec_;
 
             string* level_filename_;
+
+            bool    quit_;
     };
 
 } //App namespace.

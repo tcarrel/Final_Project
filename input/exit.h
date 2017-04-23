@@ -25,14 +25,19 @@ namespace Input
     class Exit_Command : public Command
     {
         public:
+            Exit_Command( bool* q )
+            { quit_ = q; } 
+
             void execute( void* )
             { execute(); }
 
             void execute( void )
-            { exit(0); }
+            { *quit_ = true; }
 
         private:
             static const Commands_Enum TYPE = EXIT_COMMAND;
+
+            bool* quit_;
     };
 
 }

@@ -93,6 +93,9 @@ namespace Model
                      );
             }
 
+            std::chrono::high_resolution_clock::time_point start;
+            start = std::chrono::high_resolution_clock::now();
+
             while( !eof() )
             {
                 ++line_;
@@ -138,6 +141,21 @@ namespace Model
             delete [] max_;
             delete [] min_;
             max_ = min_ = NULL;
+
+            std::chrono::high_resolution_clock::time_point end;
+            end = std::chrono::high_resolution_clock::now();
+
+            //Calculate load time.
+            std::chrono::duration<double> time;
+            time =
+                std::chrono::duration_cast<
+                std::chrono::duration<double>>(end - start);
+
+            fprintf(
+                    stderr,
+                    "Loading <%s> took %f seconds.\n",
+                    filename_->c_str(),
+                    time.count() );
         }
 
 

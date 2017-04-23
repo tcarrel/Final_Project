@@ -112,7 +112,8 @@ namespace Model
         model_qty_( 0 ),
         models_( NULL ),
         frame_count_( 0 ),
-        degrees_per_second_( 10.0f )
+        degrees_per_second_( 10.0f ),
+        avg_seconds_per_frame_( 0.0f )
     {
         assert( su != NULL );
 
@@ -182,8 +183,6 @@ namespace Model
     */
     Scene_Graph::~Scene_Graph( void )
     {
-        fprintf( stdout, "%i frames rendered.", frame_count_ );
-
         for( GLuint i = 0; i < model_qty_; i++ )
         {
             delete models_[i];
@@ -266,6 +265,10 @@ namespace Model
                             now - previous_time_ );
 
                 GLfloat fraction = span.count();
+                avg_seconds_per_frame_ =
+                    (avg_seconds_per_frame_ + span.count()) / 2;
+
+
                 GLfloat deg_to_rad = DEG_TO_RAD(1.0f);
 
                 GLfloat angle = degrees_per_second_ * deg_to_rad * fraction;

@@ -58,7 +58,7 @@ namespace Model
                         const std::string& p,
                         Scene_Graph*& sg,
                         bool b )
-                { return this->operator()( p, "DEFAULT", sg, b ); }
+                { return this->operator()( p, "DEFAULT.cn", sg, b ); }
 
                 bool operator()(
                         const std::string&,

@@ -19,7 +19,7 @@ namespace Input
     /** Ctor.
      * \param w The window that the app is running in.
      */
-    Input_Handler::Input_Handler( App::Window* w )
+    Input_Handler::Input_Handler( App::Window* w, bool* q )
     {
         uint32_t init = SDL_WasInit( SDL_INIT_EVERYTHING );
         if( !(init & SDL_INIT_EVENTS) )
@@ -45,7 +45,7 @@ namespace Input
 
         com_[ WINDOW_SHOW_COMMAND ] = new Window_Redraw( w );
         com_[ SCREENSHOT_COMMAND ] = new Screenshot_Command( w );
-        com_[ EXIT_COMMAND ] = new Exit_Command;
+        com_[ EXIT_COMMAND ] = new Exit_Command( q );
 
     }
 

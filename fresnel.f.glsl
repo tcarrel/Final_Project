@@ -9,24 +9,28 @@ uniform vec3 cam_pos;
 uniform samplerCube sky;
 
 //   It is possible to have materials where different colors reflect/refract
-// different amounts.  A future improvement may be to use reflection and
-// refraction maps from these values.
-uniform float refractive_index = 1.52;
+// (wavelengths) have different amounts.  A future improvement may be to use
+// vec3 for these values, or even better, use per-color refraction maps from
+// these values.
+uniform float refraction_ratio = 1.0 / 1.52;
+//  Reflection coefficient
+uniform float r_0 = (1.0 - 1.52) / (1.52 + 1.0);
 
 void main()
 {
+//Get color due to reflection.
+  vec3 N = normalize( Normal );
   vec3 I = normalize( Position - cam_pos );
-  vec3 L = reflect( I, normalize(Normal) );
-  vec3 R = refract( I, normalize(Normal), 1.0 / refractive_index );
+  vec3 L = reflect( I, N );
+
+//Calculate R(theta)
+  float r_theta = r_0 + ( 1 - r_0 ) * pow( clamp(dot( N, I ), 0.0, 1.0), 5 );
+  vec4  fresnel = vec4( r_theta, r_theta, r_theta, 1 );
+
+  vec3 R = refract( I, N, refraction_ratio );
 
   vec4 reflect_color = texture( sky, L );
   vec4 refract_color = texture( sky, R );
-
-  //Compute fresnel reflectivity
-  float F =
-    pow(1.0 - clamp( dot( I , normalize( Normal ) ), 0.0, 1.0 ), 4.0);
-
-  vec4 fresnel = vec4( F, F, F, F );
 
   color = vec4( vec3( mix( refract_color, reflect_color, fresnel ) ), 1.0 );
 }
