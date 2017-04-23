@@ -97,7 +97,7 @@ namespace Model
             void get_frame_rate_data( GLuint& count, GLfloat& rate )
             {
                 count = frame_count_;
-                rate  = 1.0 / avg_seconds_per_frame_;
+                rate  = avg_seconds_per_frame_;
             }
 
             ~Scene_Graph( void );

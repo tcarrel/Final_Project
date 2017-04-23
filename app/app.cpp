@@ -70,7 +70,7 @@ namespace App
     {
         argv_.swap( argv );
         parse_args();
-        window_ = new Window( to_vec_color( Color::COPPER_ROSE ) );
+        window_ = new Window( to_vec_color( Color::GUNMETAL ) );
         input_  = new Input::Input_Handler( window_, &quit_ );
 
         start_up();
@@ -171,11 +171,14 @@ namespace App
         world_->get_frame_rate_data( frames, rate );
 
         printf(
-                red( "%i frames rendered." ).c_str(),
+                bright_cyan( "%i frames rendered.\n" ).c_str(),
                 frames );
+        if( rate > 0 )
+        {
         printf(
-                red("Average frame rate was %f frames/second.\n").c_str(),
-                rate );
+                bright_cyan("Average frame rate was %f frames/second.\n").c_str(),
+                1 / rate );
+        }
         fflush( stdout );
         fflush( stderr );
 

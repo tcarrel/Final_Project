@@ -68,6 +68,47 @@ inline string red( const string& text )
 
 
 
+/**  Return the provided text in bright green.
+ * @param text The text to be changed.
+ */
+inline string bright_green( const string& text )
+{
+    return "\033[1;32m" + text + "\033[0m";
+}
+
+
+
+/**  Return the provided text in green.
+ * @param text The text to be changed.
+ */
+inline string green( const string& text )
+{
+    return "\033[0;32m" + text + "\033[0m";
+}
+
+
+
+/**  Return the provided text in bright cyan.
+ * @param text The text to be changed.
+ */
+inline string bright_cyan( const string& text )
+{
+    return "\033[1;36m" + text + "\033[0m";
+}
+
+
+
+/**  Return the provided text in cyan.
+ * @param text The text to be changed.
+ */
+inline string cyan( const string& text )
+{
+    return "\033[0;36m" + text + "\033[0m";
+}
+
+
+
+
 
 /**  Return the provided text in bold.
  * @param text The text to be changed.

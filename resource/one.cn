@@ -1,9 +1,11 @@
 7
-5.0,1.75,0
+5.1,2.75,0
 0,0.5,0
 0,1,0
 1,45,1,30
 P2simple.v.glsl,simple.f.glsl
-Sright.jpg,left.jpg,top.jpg,bottom.jpg,back.jpg,front.jpg
-Ofernanda.obj,2.5,0,0,0,FAIR,DIAMOND
+#Sright.jpg,left.jpg,top.jpg,bottom.jpg,back.jpg,front.jpg
+Slmcity1.jpg,lmcity2.jpg,lmcity3.jpg,lmcity4.jpg,lmcity5.jpg,lmcity6.jpg
+Osphere.obj,2.5,0.5,0,0,FAIR,DIAMOND
+Oicosphere.obj,2.5,-3,0,0
 
