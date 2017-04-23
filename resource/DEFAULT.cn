@@ -1,13 +1,18 @@
 7
-5.0,1.75,0
+5.0,2.171,0
 0,0,0
 0,1,0
 1,45,1,30
 P2simple.v.glsl,simple.f.glsl
-Sright.jpg,left.jpg,top.jpg,bottom.jpg,back.jpg,front.jpg
-#Outah_teapot.obj,2,0,0,0,TAIR,DIAMOND
-#Otwisted.obj,1.5,2,2,2,TAIR,DIAMOND
-#Ocube.obj,1.2189355324,0.5,0.5,0.5,TAIR,WATER
+#Sright.jpg,left.jpg,top.jpg,bottom.jpg,back.jpg,front.jpg
+#Smorning1.jpg,morning2.jpg,morning3.jpg,morning4.jpg,morning5.jpg,morning6.jpg
+Slmcity1.jpg,lmcity2.jpg,lmcity3.jpg,lmcity4.jpg,lmcity5.jpg,lmcity6.jpg
+Outah_teapot.obj,2,0,0,0,M
+Osphere.obj,2,2,0,2,FAIR,DIAMOND
+Otwisted.obj,1.4,2,0,-2,FAIR,WATER
+Oicosphere.obj,1.33,-2,0,-2
+#Ocube.obj,1.55,-2,0,2,FAIR,WATER
 #OF22.obj,1.7,0,0,0,M
-Otorus90.obj,1.9,0,0,0,M
+#Otorus.obj,1.7,1.5,1.5,1.5,FAIR,WATER
+Otorus90.obj,1.9,-2,0,2,FAIR,WATER
 
