@@ -26,13 +26,11 @@ extern          void                skip_whitespace( istream& );
 
 //Other
 extern          SHADER_TYPE_NAME*   get_shdr( const string& );
-extern          string         shader_filename_to_struct_name(
-        const string& );
+extern          string         shader_filename_to_struct_name( const string& );
 
 //extern          int                 get_bits( const float& );
 
-extern          void                check_SOIL_error( unsigned char*,
-        const string& );
+extern          void  check_SOIL_error( unsigned char*,    const string& );
 
 
 extern          float get_refractive_index( const string& );
@@ -45,7 +43,7 @@ extern          float get_refraction_ratio( const string&, const string& );
 
 #ifndef  __TEXT_FORMATTING_HELPER_FUNCTIONS__
 # define __TEXT_FORMATTING_HELPER_FUNCTIONS__
-// These are defined here so they can be inlined.
+// These are defined here so they can be used inline linkage.
 
 /**  Return the provided text in bright red.
  * @param text The text to be changed.

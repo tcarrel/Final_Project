@@ -431,7 +431,8 @@ namespace Model
     /**  Set the object as fresnel-refractive.
      * @param shader Pointer to the shader for fresnel refraction.
      * @param skybox Pointer to the skybox.
-     * @param rr The ratio of refractivity.
+     * @param refr The ratio of refractivity.
+     * @param refl The reflectivity coefficient.
      */
     void Mesh::set_fresnel(
             Shader* shader,

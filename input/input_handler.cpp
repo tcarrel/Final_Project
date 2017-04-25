@@ -1,9 +1,9 @@
 /**
  *
- * \file input_handler.cpp
- * \author Thomas R. Carrel
+ * @file input_handler.cpp
+ * @author Thomas R. Carrel
  *
- * \brief Input_Handler class definitions.
+ * @brief Input_Handler class definitions.
  */
 
 
@@ -17,7 +17,8 @@ namespace Input
 {
 
     /** Ctor.
-     * \param w The window that the app is running in.
+     * @param w The window that the app is running in.
+     * @param q A pointer to the boolean variable used to exit the game loop.
      */
     Input_Handler::Input_Handler( App::Window* w, bool* q )
     {
@@ -51,6 +52,8 @@ namespace Input
 
 
 
+    /** Dtor.
+     */
     Input_Handler::~Input_Handler( void )
     {
         for( int i = 0; i < NUM_EVENT_SOURCES; i++ )

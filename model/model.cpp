@@ -68,6 +68,7 @@ namespace Model
     /**  Calls the mesh's draw command.
      * @param view The view matrix.
      * @param proj The projection matrix.
+     * @param cam  The camera's position vector.
     */
     void Model::render(
             const glm::mat4& view,

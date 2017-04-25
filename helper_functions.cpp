@@ -122,8 +122,9 @@ inline unsigned get_bits( const float& f )
 
 
 /**  Check an image for errors from the SOIL library.
- * @param image The raw image data.
- * @param file The filename of the image.
+ * @param image The pointer to the image data that was supplied from the SOIL
+ * function for image loading.
+ * @param file The filename.
  */
 void check_SOIL_error( unsigned char* image, const string& file )
 {
