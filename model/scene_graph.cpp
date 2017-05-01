@@ -24,6 +24,9 @@
 #include<cmath>
 
 
+/** Convert degrees to radians.
+ * @param x An angle in degrees.
+ */
 #define DEG_TO_RAD(x) ((x * 3.14159265358979f) / 180.0f)
 
 
@@ -277,15 +280,6 @@ namespace Model
                         z   = view_eye_.z,
                         cs  = cos( angle ),
                         sn  = sin( angle );
-                /*
-                   GLfloat x       =   view_eye_.x,
-                   z               =   view_eye_.z;
-                   GLfloat theta   =   DEG_TO_RAD(2.5f),
-                   cs              =   cos( theta ),
-                   sn              =   sin( theta );
-                   view_eye_.x     = (x * cs) - (z * sn);
-                   view_eye_.z     = (x * sn) + (z * cs);
-                   */
                 
                 view_eye_.x = (x * cs) - (z * sn);
                 view_eye_.z = (x * sn) + (z * cs);
@@ -305,13 +299,15 @@ namespace Model
             models_[i]->render( view_, frustum_, view_eye_ );
         }
 
+        //  The skybox is faster to draw if it can be left until last,
+        // especially in scenes where there is a lot of objects blocking the
+        // view of the sky.
         if( skybox_ )
         {
             skybox_->render( view_, frustum_ );
         }
 
         window_->swap();
-
         frame_count_++;
     }
 
@@ -344,7 +340,7 @@ namespace Model
                 "Skybox loaded, generating reflection and refraction.\n" );
         //Setup reflection shader.
         mirror_ = new Shader;
-        mirror_->add_code( "raytrace.v.glsl" );
+        mirror_->add_code( "env-map.v.glsl" );
         mirror_->add_code( "reflection.f.glsl" );
         skybox_msg( "reflectivity" );
         if( mirror_->compile( "SG( mirror_ )" ) == ERROR )
@@ -354,7 +350,7 @@ namespace Model
 
         //Setup refractivity shader.
         transparent_ = new Shader;
-        transparent_->add_code( "raytrace.v.glsl" );
+        transparent_->add_code( "env-map.v.glsl" );
         transparent_->add_code( "refraction.f.glsl" );
         skybox_msg( "refraction" );
         if( transparent_->compile( "SG( transparent_ )" ) == ERROR )
@@ -365,7 +361,7 @@ namespace Model
 
         //Setup fresnel shader.
         fresnel_ = new Shader;
-        fresnel_->add_code( "raytrace.v.glsl" );
+        fresnel_->add_code( "env-map.v.glsl" );
         fresnel_->add_code( "fresnel.f.glsl" );
         skybox_msg( "fresnel" );
         if( fresnel_->compile( "SG( fresnel_ )" )  == ERROR )
