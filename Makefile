@@ -36,8 +36,10 @@ MODEL_DIR = model
 INPUT_DIR = input
 OBJ_DIR = obj_loader
 TEX_DIR = texture
+LIGHT_DIR = lighting
 OBJ_PATH = $(MODEL_DIR)/$(OBJ_DIR)
 TEX_PATH = $(MODEL_DIR)/$(TEX_DIR)
+LIGHT_PATH = $(MODEL_DIR)/$(LIGHT_DIR)
 DOC_DIR = .doxy
 
 ERROR_DIR = ./Errors
@@ -47,6 +49,14 @@ OBJ_ERROR_DIR = $(MODEL_ERROR_DIR)/$(OBJ_DIR)
 INPUT_ERROR_DIR = $(ERROR_DIR)/$(INPUT_DIR)
 TEX_ERROR_DIR = $(MODEL_ERROR_DIR)/$(TEX_DIR)
 
+ALL_FILES_IN_PROJECT := $(shell ls *.cpp) $(shell ls *.h) \
+		$(shell ls $(APP_DIR)/*.cpp) $(shell ls $(APP_DIR)/*.h) \
+		$(shell ls $(MODEL_DIR)/*.cpp) $(shell ls $(MODEL_DIR)/*.h) \
+		$(shell ls $(INPUT_DIR)/*.cpp) $(shell ls $(INPUT_DIR)/*.h) \
+		$(shell ls $(OBJ_PATH)/*.cpp) $(shell ls $(OBJ_PATH)/*.h) \
+		$(shell ls $(TEX_PATH)/*.cpp) $(shell ls $(TEX_PATH)/*.h) \
+		$(shell ls $(LIGHT_PATH)/*.cpp) $(shell ls $(LIGHT_PATH)/*.h)
+
 DOXY_OUTPUT_DIR = $(ERROR_DIR)/Doxygen
 
 OBJ_FILES = .entry_point.o .app.o .window.o .GLSL_except.o .shader_program.o \
@@ -55,7 +65,7 @@ OBJ_FILES = .entry_point.o .app.o .window.o .GLSL_except.o .shader_program.o \
             .OBJ_except.o .colors.o .null_command.o $(SHADER_OBJ) \
 			.texture_2D.o .texture_base.o .world_loader.o \
 			.Render_except.o .skybox.o .World_loader_exception_class.o \
-			.g-buffer.o
+			.g-buffer.o .function_timer.o
 GLSL_FILES := $(shell ls *.glsl)
 GCCERREXT = gccerr
 
@@ -121,10 +131,13 @@ $(APP_ERROR_DIR): $(ERROR_DIR)
 		$(SHADER_HEADER) $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
-.helper_functions.o: helper_functions.cpp
+.helper_functions.o: helper_functions.cpp $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
-.colors.o: colors.cpp colors.h random.h
+.colors.o: colors.cpp colors.h random.h $(ERROR_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
+.function_timer.o: function_timer.cpp function_timer.h $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 constants.h: colors.h
@@ -174,6 +187,10 @@ $(ERROR_DIR):
 		$(APP_DIR)/window.h $(MODEL_ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
+.renderer.o: $(MODEL_DIR)/renderer.cpp $(MODEL_DIR)/renderer.h \
+		$(MDOEL_ERROR_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
 .Render_except.o: $(MODEL_DIR)/Render_except.cpp $(MODEL_DIR)/Render_except.h \
 		$(MODEL_ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
@@ -186,6 +203,8 @@ $(MDOEL_DIR)/model.h: $(MODEL_DIR)/Render_except.h constants.h shader_program.h
 $(MODEL_DIR)/scene_graph.h: $(MODEL_DIR)/SG_except.h constants.h
 
 $(MODEL_DIR)/sg_setup.h: constants.h $(APP_DIR)/window.h
+
+$(MODEL_DIR)/renderer.h: $(MODEL_DIR)/mesh.h shader_program.h
 
 $(MODEL_ERROR_DIR): $(ERROR_DIR)
 	mkdir -p $@
@@ -276,7 +295,7 @@ clean:
 	rm -rf $(DOC_DIR)
 
 # compile documentation.
-doc: Doxyfile $(DOC_DIR) *.cpp *.h $(MAIN) $(DOXY_OUTPUT_DIR)
+doc: Doxyfile $(ALL_FILES_IN_PROJECT) $(DOC_DIR) $(MAIN) $(DOXY_OUTPUT_DIR)
 	doxygen $(COPYDOXYOUTPUT)
 
 $(DOC_DIR):
@@ -294,4 +313,3 @@ $(DOXY_OUTPUT_DIR): $(ERROR_DIR)
 all: Main doc
 
 Main: $(MAIN)
-
