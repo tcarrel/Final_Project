@@ -1,9 +1,9 @@
 /**
  *
- * \file vertex_array.cpp
- * \author Thomas R. Carrel
+ * @file vertex_array.cpp
+ * @author Thomas R. Carrel
  *
- * \brief Definition for the Vertex_Array class.
+ * @brief Definition for the Vertex_Array class.
  *
  */
 
@@ -20,12 +20,12 @@ namespace Model
      * Selects an arbitrary initial size.
      */
     Vertex_Array::Vertex_Array( void ) :
-        Vertex_Array( 5000 )
+        Vertex_Array( 100000 )
     {}
 
     /** Ctor.
      * Allows the initial size to be set on creation.
-     * \param s The initial size of the array.
+     * @param s The initial size of the array.
      */
     Vertex_Array::Vertex_Array( int s ) :
         size_( 0 ),
@@ -45,7 +45,7 @@ namespace Model
 
 
     /** Fill vertices in the array.  Will grow the array, if necessary.
-     * \param v The vertex to be added.
+     * @param v The vertex to be added.
      */
     void Vertex_Array::add( Vertex v )
     {
@@ -71,11 +71,11 @@ namespace Model
 
         if( max_size_ < 1024 )
         {
-            max_size_ *= 1.5f;
+            max_size_ *= 8.1f;
         }
         else
         {
-            max_size_ += 256;
+            max_size_ *= 4;;
         }
 
         data_ = new Vertex[ max_size_ ];
@@ -120,7 +120,7 @@ namespace Model
     /**  Sets the size of the array.  This provides faster loading if the
      * number of needed verticies is known ahead of time.  Which, in the case
      * of this program, it is.  Any data already in the array is deleted.
-     * \param s The number vertices expected to be loaded.
+     * @param s The number vertices expected to be loaded.
      */
     void Vertex_Array::pre_size( unsigned s )
     {
@@ -211,7 +211,7 @@ namespace Model
             data_[i].pos.z -= offsets[AXIS_Z];
         }
     }
-    
+
 
     Vertex& Vertex_Array::operator[]( const unsigned& i )
     { 

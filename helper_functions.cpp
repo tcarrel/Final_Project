@@ -109,12 +109,10 @@ string shader_filename_to_struct_name( const string& fname )
  * @return An unsigned int that has the same binary representation as the
  * float that had been passed in.
  */
-/*
 inline unsigned get_bits( const float& f )
 {
     return *((int*) &f);
 }
-*/
 
 
 

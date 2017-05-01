@@ -3,7 +3,7 @@
  * \file random.h
  * \author random.cpp
  *
- * \brief A wrapper for random numbers.
+ * \brief Declares and defines template functions for random number generation.
  *
  */
 
@@ -14,32 +14,49 @@
 
 
 #ifndef  _RANDOM_H_
-# define _RANDOM_H_
 
 
-/** Encapsulates random number generation.
-*/
+
+/** Encapsulates random number seeding.
+ *  There is no need to create this outside of the any of the following
+ * template functions, so it's ctor is declared as private with only
+ * the template functions as friend functions being able to create the
+ * object.
+ */
 class Random
 {
-    public:
-        /** Seeds the random number generator only once.
-        */
-        void seed( void )
-        {
-            if( !seeded )
-            {
-                seeded = true;
-                srand( time( NULL ) );
-            }
-        }
+    template<typename T>
+        friend T get_rand( void );
+    template<typename T>
+        friend T get_rand( T );
+    template<typename T>
+        friend T get_rand( T, T );
+    template<typename T, typename U>
+        friend T get_rand( T, U );
+    template<bool>
+        friend bool get_rand( void );
+
     private:
-        static bool seeded;
+    /** Seeds the random number generator only once.
+    */
+    Random( void )
+    {
+        if( !seeded )
+        {
+            seeded = true;
+            srand( time( NULL ) );
+        }
+    }
+
+    static bool seeded;
 };
 
 
 
+
+
 /** Tracks whether or not the random number generator has been seeded.
- */
+*/
 bool Random::seeded = false;
 
 
@@ -52,7 +69,6 @@ bool Random::seeded = false;
 template<typename T> T get_rand( void )
 {
     Random r;
-    r.seed();
 
     return static_cast<T>(rand()) / static_cast<T>(RAND_MAX);
 }
@@ -69,7 +85,6 @@ template<typename T> T get_rand( void )
 template<typename T> T get_rand( T max )
 {
     Random r;
-    r.seed();
 
     return static_cast<T>(rand()) / (static_cast<T>(RAND_MAX/max));
 }
@@ -86,12 +101,14 @@ template<typename T> T get_rand( T max )
 template<typename T> T get_rand( T min, T max )
 {
     Random r;
-    r.seed();
+
     T num = static_cast<T>(rand());
     T den = static_cast<T>(RAND_MAX/(max - min));
 
     return min + (num/den);
 }
+
+
 
 
 
@@ -103,10 +120,28 @@ template<typename T> T get_rand( T min, T max )
 template<typename T, typename U> T get_rand( T min, U max )
 {
     Random r;
-    r.seed();
+
     T num = static_cast<T>(rand());
     T den = static_cast<T>(RAND_MAX/(max - min));
 
     return min + (num/den);
 }
+
+
+
+
+
+/**
+ * Specialization to return a randomized boolean.
+ */
+template<> bool get_rand( void )
+{
+    Random e;
+
+    return rand() & 1;
+}
+
+
+
 #endif
+

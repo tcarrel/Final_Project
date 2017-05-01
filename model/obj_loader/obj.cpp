@@ -18,6 +18,8 @@
 
 #include "../../tracking_list.h"
 
+#include "../../function_timer.h"
+
 #include<iostream>
 using std::istream;
 using std::endl;
@@ -93,8 +95,10 @@ namespace Model
                      );
             }
 
-            std::chrono::high_resolution_clock::time_point start;
-            start = std::chrono::high_resolution_clock::now();
+            char message[256];
+            sprintf( message, "Loading file <%s>", filename_->c_str() );
+            
+            Function_Timer* timer = new Function_Timer( string(message), stderr );
 
             while( !eof() )
             {
@@ -142,20 +146,8 @@ namespace Model
             delete [] min_;
             max_ = min_ = NULL;
 
-            std::chrono::high_resolution_clock::time_point end;
-            end = std::chrono::high_resolution_clock::now();
-
-            //Calculate load time.
-            std::chrono::duration<double> time;
-            time =
-                std::chrono::duration_cast<
-                std::chrono::duration<double>>(end - start);
-
-            fprintf(
-                    stderr,
-                    "Loading <%s> took %f seconds.\n",
-                    filename_->c_str(),
-                    time.count() );
+            delete timer;
+            timer = 0;
         }
 
 
@@ -219,6 +211,8 @@ namespace Model
             string v;
             file >> v;
 
+            //cur_va_->pre_size( vertices_.size() );
+
             if( trace_ )
             {
                 *trace_
@@ -230,6 +224,7 @@ namespace Model
             {
                 int val[3];
                 Index_Set*  index   = new Index_Set;
+
 
                 faces_.push_back( index );
 
@@ -297,7 +292,7 @@ namespace Model
                     x = normals_[index->n].x;
                     y = normals_[index->n].y;
                     z = normals_[index->n].z;
-                    
+
                     x = (x < 0.0f) ? 0.0f : x;
                     x = (x > 1.0f) ? 1.0f : x;
                     y = (y < 0.0f) ? 0.0f : y;
@@ -305,11 +300,11 @@ namespace Model
                     z = (z < 0.0f) ? 0.0f : z;
                     z = (z > 1.0f) ? 1.0f : z;
                     /*
-                    factor  = x * x;
-                    factor += y * y;
-                    factor += z * z;
-                    factor = sqrt(factor);
-                    */
+                       factor  = x * x;
+                       factor += y * y;
+                       factor += z * z;
+                       factor = sqrt(factor);
+                       */
 
                     color = glm::vec4( x, y, z, 1.0f );
                 }
@@ -325,6 +320,30 @@ namespace Model
                         << "\tpos  : " << glm::to_string( vert ) << "\n"
                         << "\tcolor: " << glm::to_string( color ) << endl;
                 }
+
+                /*
+                if( rotate_by.x != 0 ) //About x-axis
+                {
+                    GLfloat cs  =   cos( rotate_by.x ),
+                            sn  =   sin( rotate_by.x );
+                    vert.y = ( vert.y * cs ) - ( vert.z * sn );
+                    vert.z = ( vert.y * sn ) + ( vert.z * cs );
+                }
+                if( rotate_by.y != 0 ) //About y-axis
+                {
+                    GLfloat cs  =   cos( rotate_by.y ),
+                            sn  =   sin( rotate_by.y );
+                    vert.x = ( vert.x * cs ) - ( vert.z * sn );
+                    vert.z = ( vert.x * sn ) + ( vert.z * cs );
+                }
+                if( rotate_by.z != 0 ) //About z-axis
+                {
+                    GLfloat cs  =   cos( rotate_by.z ),
+                            sn  =   sin( rotate_by.z );
+                    vert.x = ( vert.x * cs ) - ( vert.y * sn );
+                    vert.y = ( vert.x * sn ) + ( vert.y * cs );
+                }
+                */
 
                 cur_va_->add( Vertex( vert, color, normal ) );
 
@@ -345,7 +364,7 @@ namespace Model
 
         /** Parses an 'm' line.  Not implemented yet, so they are just
          * ignored.
-        */
+         */
         void OBJ_File::m( std::istream& file )
         {
             if( trace_ )
@@ -756,8 +775,7 @@ namespace Model
                 const string& filename,
                 Shader* shader,
                 bool co,
-                GLfloat size
-                ) throw( OBJ_Exception )
+                GLfloat size ) throw( OBJ_Exception )
         {
             if( filename == "" )
             {

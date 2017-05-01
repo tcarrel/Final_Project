@@ -19,6 +19,8 @@
 #include<limits.h>
 
 #include<string>
+#include<vector>
+using std::vector;
 #include<map>
 
 #include "constants.h"
@@ -30,6 +32,11 @@
 
 #ifndef  __SHADER_PROGRAM_H__
 # define __SHADER_PROGRAM_H__
+
+namespace Model
+{
+    class Model;
+}
 
 
 
@@ -79,14 +86,10 @@ class Shader
 
         std::string id_str( void );
 
-        /*
-        static Shader* check_existance(
-                SHADER_TYPE_NAME*, SHADER_TYPE_NAME*, SHADER_TYPE_NAME*,
-                SHADER_TYPE_NAME*, SHADER_TYPE_NAME*, SHADER_TYPE_NAME* );
-                */
-
     private:
         // Not sure this will work, but I need to prevent implicit deletion.
+        /** @todo Change to using smart pointers.
+         */
         ~Shader(void );
 
         void compile_shader( GLchar*, Shaders, GLuint*, GLint, const string& )
@@ -138,16 +141,28 @@ class Shader
             GLuint  compute;
         } shaders_; ///< The location of the shaders in the GPU's memory.
 
+
+        class Model_Data_Set{
+            public:
+                Model_Data_Set();
+                ~Model_Data_Set( void ) { model_ = NULL; }
+
+                Model::Model*   model_;
+                glm::vec3       position_;
+                glm::vec3       rotation_;
+                GLfloat         scale_;
+        };
+
         GLuint                      program_; ///<  The handle for the shade
-                                      ///< program after it's been compiled.
+        ///< program after it's been compiled.
 
         bool                        ready_; ///<  Flag indicating the shader
-                                    ///< has been compiled, linked, and is
-                                    ///< ready for use.
+        ///< has been compiled, linked, and is
+        ///< ready for use.
 
         static  Shader*             current_program_; ///< Used to reduce the
-                                                      ///< number of
-                                                      ///< glUseProgram calls.
+        ///< number of
+        ///< glUseProgram calls.
 
         GLuint                      qty_in_use_;
 
@@ -160,6 +175,9 @@ class Shader
         Shader(            const Shader& ) { };
         Shader& operator=( const Shader& ) { return *this; }
         inline GLuint new_id( void ){ return id_source_--; }
+
+        vector<Model_Data_Set*>   models_;
+
 };  // Shader class.
 
 extern const char* get_type_string( GLenum );

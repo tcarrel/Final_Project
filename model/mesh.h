@@ -65,9 +65,13 @@ namespace Model
                     const glm::vec3& )
                 throw( Scene_Graph_Exception );
 
+            void render( void );
+
             void add_child( Mesh* );
             void set_size( const GLfloat&, const GLfloat& );
             void done( void );
+
+            void bind_vao( void );
 
             /** Return the address of the matrix array.
             */

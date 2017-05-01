@@ -14,6 +14,7 @@
 
 #include "shader_program.h"
 #include "helper_functions.h"
+#include "model/model.h"
 
 #include<fstream>
 #include<sstream>

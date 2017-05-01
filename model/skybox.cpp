@@ -3,6 +3,7 @@
  * @file skybox.cpp
  * @author Thomas R. Carrel
  *
+ * @brief defines functions for the Skybox class.
  */
 
 
@@ -155,7 +156,7 @@ namespace Model
         glBindTexture( type, texture_handle_ );
         glActiveTexture( TEX_ );
 
-        //Unrolled loop
+        //Manually unrolled loop
         image = SOIL_load_image(
                 faces[0].c_str(),  &w, &h, NULL, SOIL_LOAD_RGB );
         check_SOIL_error( image, faces[0] );

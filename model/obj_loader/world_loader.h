@@ -41,6 +41,7 @@ namespace App
 namespace Model
 {    
     class Mesh;
+    class Model;
     class SG_Setup;
     class Scene_Graph;
 
@@ -84,6 +85,12 @@ namespace Model
                 void    load_shader( void );
                 void    load_skybox( void );
 
+                void    mirrored( Model* );
+                void    transparent( Model* );
+                void    fresnel_transparency( Model* );
+
+                void    read_vec3( glm::vec3& );
+
                 inline void print_option( const char& c )
                 { fprintf( stderr, "Option: %c ", c ); }
 
@@ -95,7 +102,6 @@ namespace Model
 
                 //Error handling.
                 static std::vector<std::string*>*   error_msgs_;
-
 
                 std::ifstream*                      file_;
 

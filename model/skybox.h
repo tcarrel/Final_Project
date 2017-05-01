@@ -3,6 +3,7 @@
  * @file skybox.h
  * @author Thomas R. Carrel
  *
+ * @brief Provides functionality for skyboxes and environment mapping.
  */
 
 #include<GL/glew.h>
@@ -27,6 +28,8 @@ class Shader;
 namespace Model
 {
 
+    /**  Handles skyboxes/cubemaps and environment maps.
+     */
     class Skybox
     {
         public:

@@ -122,7 +122,7 @@ namespace Model
     {
         shader_->delete_this();
 
-        fprintf( stderr, "***\n" );
+        //fprintf( stderr, "***\n" );
 
         glDeleteVertexArrays( 1, &vao_ );
         glDeleteBuffers( 1, &vbo_ );
@@ -195,6 +195,19 @@ namespace Model
 
 
 
+    void Mesh::render( void )
+    {
+        glBindVertexArray( vao_ );
+        glDrawArrays( mode_, 0, qty_ );
+
+        for( GLuint i = 0; i < child_qty_; i++ )
+        {
+            children_[i]->render();
+        }
+    }
+
+
+
 
     /**  Use normal rendering method.
      * @param m The model matrix.
@@ -223,6 +236,7 @@ namespace Model
             children_[i]->regular_draw( m, v, p, true );
         }
     }
+
 
 
 
@@ -291,7 +305,7 @@ namespace Model
         glBindVertexArray( vao_ );
         glBindTexture( GL_TEXTURE_CUBE_MAP, skybox_->get_tex_handle() );
         glDrawArrays( mode_, 0, qty_ );
-        
+
         for( GLuint i = 0; i < child_qty_; i++ )
         {
             children_[i]->transparent_draw( m, v, p, c, true );

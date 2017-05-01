@@ -1,4 +1,10 @@
-
+/**
+ *
+ * @file g-buffer.cpp
+ * @author Thomas R. Carrel
+ *
+ * @brief Defines functions for the G_Buffer class.
+ */
 
 
 
@@ -11,6 +17,9 @@
 namespace Model
 {
 
+    /** Ctor
+     * @param w The window is needed for the aspect ratio.
+     */
     G_Buffer::G_Buffer( App::Window* w )
     {
         GLint width   =   w->w();
@@ -104,7 +113,6 @@ namespace Model
                     stderr,
                     "Incomplete g-buffer.\n" );
         }
-
         //Load shaders.
     }
 

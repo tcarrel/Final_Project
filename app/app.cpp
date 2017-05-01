@@ -26,6 +26,7 @@
 #undef  GLM_INCLUDED
 
 
+
 namespace App
 {
 
@@ -68,6 +69,7 @@ namespace App
         level_filename_( NULL ),
         quit_( false )
     {
+
         argv_.swap( argv );
         parse_args();
         window_ = new Window( to_vec_color( Color::GUNMETAL ) );
@@ -158,7 +160,7 @@ namespace App
      */
     int Application::run( void )
     {
-        assert( world_ != NULL );
+        //assert( world_ != NULL );
 
         while( !quit_ )
         {
@@ -171,13 +173,15 @@ namespace App
         world_->get_frame_rate_data( frames, rate );
 
         printf(
-                bright_cyan( "%i frames rendered.\n" ).c_str(),
+                ( bright_cyan("%i") + " frames rendered.\n" ).c_str(),
                 frames );
         if( rate > 0 )
         {
-        printf(
-                bright_cyan("Average frame rate was %f frames/second.\n").c_str(),
-                1 / rate );
+            printf(
+                    ("Average frame rate was "
+                     + bright_cyan("%f")
+                     + " frames/second.\n").c_str(),
+                    1 / rate );
         }
         fflush( stdout );
         fflush( stderr );

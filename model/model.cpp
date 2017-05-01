@@ -10,7 +10,7 @@
 #include "model.h"
 #include "mesh.h"
 
-
+#include<glm/gtx/transform.hpp>
 
 
 
@@ -65,6 +65,20 @@ namespace Model
     }
 
 
+
+
+
+/*
+    void Model::first_pass(
+            const glm::mat4& view,
+            const glm::mat4& proj,
+            const glm::
+*/
+
+
+
+
+
     /**  Calls the mesh's draw command.
      * @param view The view matrix.
      * @param proj The projection matrix.
@@ -95,7 +109,6 @@ namespace Model
             }
             return;
         }
-
 
         throw( Render_Exception( "No mesh provided for model" ) );
     }
@@ -224,15 +237,38 @@ namespace Model
 
 
     /**  Sets the position vector.
-     * @param x The x-coordinate.
-     * @param y The y-coordinate.
-     * @param z The z-coordinate.
+     * @param pos The position vector.
      */
-    void Model::set_position( GLfloat& x, GLfloat& y, GLfloat& z )
+    void Model::set_position( const glm::vec3& pos )
     {
-        translation_ = glm::translate( glm::vec3( x, y, z ) );
+        translation_ = glm::translate( pos );
     }
 
+
+
+    /**  Rotate the model.
+     *  @param rotate_by Rotates the model about any combination of three axes
+     * in the order x, z, y.  If it is undesired to rotate about an axis, leave
+     * that position in the vector 0.
+     */
+    void Model::rotate( const glm::vec3& rotate_by )
+    {
+        if( rotate_by.x != 0 )
+        {
+            translation_ =
+                glm::rotate( translation_, glm::radians( rotate_by.x ), glm::vec3( 1, 0, 0 ) );
+        }
+        if( rotate_by.z != 0 )
+        {
+            translation_ =
+                glm::rotate( translation_, glm::radians( rotate_by.z ), glm::vec3( 0, 0, 1 ) );
+        }
+        if( rotate_by.y != 0 )
+        {
+            translation_ =
+                glm::rotate( translation_, glm::radians( rotate_by.y ), glm::vec3( 0, 1, 0 ) );
+        }
+    }
 } //Model namespace.
 
 

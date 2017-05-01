@@ -1,0 +1,14 @@
+7
+5.1,1.76,0
+0,0.5,0
+0,1,0
+1,45,1,30
+P2simple.v.glsl,simple.f.glsl
+#Sright.jpg,left.jpg,top.jpg,bottom.jpg,back.jpg,front.jpg
+#Slmcity1.jpg,lmcity2.jpg,lmcity3.jpg,lmcity4.jpg,lmcity5.jpg,lmcity6.jpg
+Sdesert1.jpg,desert2.jpg,desert3.jpg,desert4.jpg,desert5.jpg,desert6.jpg
+# file, scale, position(x,y,z), euler rotation(x,y,z)[,render mode(M,T(refractive index),F(refractive_index)]
+#OF22.obj,3,2,0.1,0,-90,30,0
+#OF22.obj,3,-1,0.1,1.732050807,-90,30,0,M
+OF22.obj,3,-1,0.1,1.732050807,-90,45,0,F3
+

@@ -47,8 +47,6 @@ namespace Input
             SDL_Event q_;
 
             Command* com_[NUM_EVENT_SOURCES];
-            
-//            Command* exit_;
     };
 } //Input namespace.
 

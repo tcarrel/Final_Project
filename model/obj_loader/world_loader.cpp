@@ -165,7 +165,6 @@ namespace Model
 
 
 
-
         bool World_Loader::operator()(
                 const std::string&  p,
                 const std::string&  level_filename,
@@ -296,44 +295,47 @@ namespace Model
                 bool coloring ) throw( World_Exception )
         {
             std::string filename;
-            GLfloat floats[3];
+            GLfloat scale;
             GLchar option = '^';
-            floats[0] = floats[1] = floats[2] = 0.0f;
+            glm::vec3*  position = new glm::vec3;
+            glm::vec3*  rotation = new glm::vec3;
+//            floats[0] = floats[1] = floats[2] = 0.0f;
 
             getline( *file_, filename, ',' );
 
             filename = path + filename;
-            *file_ >> floats[0];
+
+            *file_ >> scale; //scale
             file_->ignore();
 
-            fprintf(
-                    stderr,
-                    "filename:\t%s\nscale:\t\t%f\n",
-                    filename.c_str(),
-                    floats[0] );
+            read_vec3( *position );
+            file_->ignore();
+            read_vec3( *rotation );
 
             Model* mdl = new Model;
             Mesh*  msh = obj_ld_.load_file(
                     filename,
                     cur_shader_,
                     coloring,
-                    floats[0] );
+                    scale );
 
-            for( int i = 0; i < 3; i++ )
-            {
-                *file_ >> floats[i];
-                if( i < 2 )
-                {
-                    file_->ignore();
-                }
-            }
-
-            fprintf( 
+            fprintf(
+                    stderr,
+                    "filename:\t%s\nscale:\t\t%f\n",
+                    filename.c_str(),
+                    scale );
+            fprintf(
                     stderr,
                     "position = ( %f, %f, %f )\n",
-                    floats[0], floats[1], floats[2]
-                   );
-            mdl->set_position( floats[0], floats[1], floats[2] );
+                    position->x, position->y, position->z );
+
+
+
+            mdl->set_position( *position );
+            mdl->rotate( *rotation );
+
+            delete position; position = NULL;
+            delete rotation; rotation = NULL;
 
             mdl->add( msh );
 
@@ -347,73 +349,104 @@ namespace Model
                     case 'M': //Mirrored
                         //fallthrough.
                     case 'm':
-                        {
-                            mdl->set_reflect(
-                                    sg_->get_mirror_prog(),
-                                    sg_->get_skybox_ptr() );
-                        }
+                        mirrored( mdl );
                         break;
                     case 'T': //Transparent
                         //fallthrough
                     case 't':
-                        {
-                            GLfloat refr; //Index of refraction;
-                            if( isdigit( file_->peek() ) )
-                            {
-                                *file_ >> refr;
-                            }
-                            else
-                            {
-                                string out, in;
-                                getline( *file_, out, ',' );
-                                *file_ >> in;
-                                refr = get_refraction_ratio( out, in );
-                            }
-                            mdl->set_refract(
-                                    sg_->get_refract_prog(),
-                                    sg_->get_skybox_ptr(),
-                                    refr );
-                        }
+                        transparent( mdl );
                         break;
                     case 'F': //Fresnel
                         //fallthrough
                     case 'f':
-                        {
-                            //Indices of reflection.
-                            GLfloat n1, n0; 
-                            if( isdigit( file_->peek() ) )
-                            {
-                                *file_ >> n0;
-                                file_->ignore();
-                                *file_ >> n1;
-                                mdl->set_fresnel(
-                                        sg_->get_fresnel_prog(),
-                                        sg_->get_skybox_ptr(),
-                                        n0, n1 );
-                            }
-                            else
-                            {
-                                string out, in;
-                                getline( *file_, out, ',' );
-                                *file_ >> in;
-                                n0 = get_refractive_index( out );
-                                n1 = get_refractive_index( in );
-                                mdl->set_fresnel(
-                                        sg_->get_fresnel_prog(),
-                                        sg_->get_skybox_ptr(),
-                                        n0 / n1,
-                                        (n0 - n1) / (n0 + n1 ) );
-                            }
-                        }
+                        fresnel_transparency( mdl );
                         break;
                     default:
                         fprintf( stderr, "Invalid render mode.\n" );
+                        while( file_->peek() != '\n' )
+                        {
+                            file_->ignore();
+                        }
                 }
             }
 
             sg_->add_models( &mdl, 1 );
 
             obj_ld_.reset();
+        }
+
+
+
+
+        /**  Sets a model to be rendered as reflective.
+         * @param mod A pointer to the model.
+         */
+        void World_Loader::mirrored( Model* mod )
+        {
+            mod->set_reflect( sg_->get_mirror_prog(), sg_->get_skybox_ptr() );
+        }
+
+
+
+
+
+        /**  Sets a model to be rendered with pure refraction.
+         * @param mod A pointer to the model.
+         */
+        void World_Loader::transparent( Model* mod )
+        {
+            GLfloat refr; //Index of refraction;
+
+            if( isdigit( file_->peek() ) )
+            {
+                *file_ >> refr;
+            }
+            else
+            {
+                string out, in;
+                getline( *file_, out, ',' );
+                *file_ >> in;
+                refr = get_refraction_ratio( out, in );
+            }
+            mod->set_refract(
+                    sg_->get_refract_prog(),
+                    sg_->get_skybox_ptr(),
+                    refr );
+        }
+
+
+
+
+
+        /**
+         */
+        void World_Loader::fresnel_transparency( Model* mod )
+        {
+            //Indices of reflection.
+            GLfloat n1, n0; 
+            if( isdigit( file_->peek() ) )
+            {
+                *file_ >> n0;
+                file_->ignore();
+                *file_ >> n1;
+                mod->set_fresnel(
+                        sg_->get_fresnel_prog(),
+                        sg_->get_skybox_ptr(),
+                        n0, n1 );
+            }
+            else
+            {
+                string out, in;
+                getline( *file_, out, ',' );
+                *file_ >> in;
+                n0 = get_refractive_index( out );
+                n1 = get_refractive_index( in );
+                mod->set_fresnel(
+                        sg_->get_fresnel_prog(),
+                        sg_->get_skybox_ptr(),
+                        n0 / n1,
+                        (n0 - n1) / (n0 + n1 ) );
+            }
         }
 
 
@@ -515,15 +548,20 @@ namespace Model
 
 
 
-        /*
-           void World_Loader::get_command( std::string& cmd, std::string& tail )
-           {
-           size_t paren = 1 + cmd.find_first_of( '(' );
 
-           tail = cmd.substr( paren );
-           cmd = cmd.substr( 0, paren );
-           }
-           */
+
+        /**  Read in a vec3.
+         * @param vec The vector to read into.
+         */
+        void    World_Loader::read_vec3( glm::vec3& vec )
+        {
+            *file_ >> vec.x;
+            file_->ignore();
+            *file_ >> vec.y;
+            file_->ignore();
+            *file_ >> vec.z;
+        }
+
 
     } //OBJ namespace.
 

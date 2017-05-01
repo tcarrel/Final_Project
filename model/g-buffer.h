@@ -3,8 +3,7 @@
  * @file g-buffer.h
  * @author Thomas R. Carrel
  *
- * @brief Used for two-pass rendering. (Deferred shading)
- *
+ * @brief Provides functionality for deferred/multipass shading.
  */
 
 #include<GL/glew.h>
@@ -31,6 +30,8 @@ namespace App
 namespace Model
 {
 
+    /** Manages the buffers for multipass rendering.
+     */
     class G_Buffer
     {
         public:
@@ -42,11 +43,16 @@ namespace Model
         private:
             struct
             {
+                /** Handle for the overall frame buffer. */
                 GLuint Buffer;
+                /** Handle for the position texture. */
                 GLuint Position;
+                /** Handle for the normal texture. */
                 GLuint Normal;
+                /** Handle for the albedo and specular texture. */
                 GLuint Albedo_Spec;
             } g;
+            /** Depth buffer. */
             GLuint rbo_depth_;
     };
 

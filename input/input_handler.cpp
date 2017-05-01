@@ -132,7 +132,7 @@ namespace Input
             case SDL_KEYUP:
                 switch( q_.key.keysym.sym )
                 {
-                    case SDLK_F12:
+                    case SDLK_F11:
                         return EXIT_COMMAND;
                     case SDLK_F8:
                         //case SDLK_PRINTSCREEN:

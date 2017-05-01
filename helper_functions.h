@@ -1,8 +1,8 @@
 /*
- * \file helper_functions.h
- * \author Thomas R. Carrel
+ * @file helper_functions.h
+ * @author Thomas R. Carrel
  *
- * \brief Declares some useful helper functions.
+ * @brief Exports helper functions.
  *
  */
 
@@ -31,7 +31,6 @@ extern          string         shader_filename_to_struct_name( const string& );
 //extern          int                 get_bits( const float& );
 
 extern          void  check_SOIL_error( unsigned char*,    const string& );
-
 
 extern          float get_refractive_index( const string& );
 extern          float get_refraction_ratio( const string&, const string& );

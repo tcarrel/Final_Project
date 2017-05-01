@@ -8,6 +8,9 @@ out vec4 color;
 uniform vec3 cam_pos;
 uniform samplerCube sky;
 
+
+
+
 void main()
 {
   vec3 I = normalize( Position - cam_pos );
