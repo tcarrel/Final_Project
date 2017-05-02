@@ -136,8 +136,6 @@ namespace App
 
         if( window_ )
             SDL_DestroyWindow( window_ );
-
-        fprintf( stderr, "(((\n" );
     }
 
 
@@ -268,7 +266,9 @@ namespace App
             return;
         }
 
-        if( SDL_GL_SetSwapInterval(1) < 0 )
+
+
+        if( SDL_GL_SetSwapInterval(0) < 0 )
         {
             fprintf(
                     stderr,
@@ -277,6 +277,9 @@ namespace App
                     SDL_GetError()
                    );
         }
+
+//        sdl2::video::gl_set_swap_interval(0);
+
 
         /*
          * Additional OpenGL initializations go here.
