@@ -64,6 +64,7 @@ namespace App
         input_( NULL ),
         world_( NULL ),
         mesh_( NULL ),
+        vsync_on_off_( 1 ),
         wireframe_( 0 ),
         deg_per_sec_( NULL ),
         level_filename_( NULL ),
@@ -72,7 +73,7 @@ namespace App
 
         argv_.swap( argv );
         parse_args();
-        window_ = new Window( to_vec_color( Color::GUNMETAL ) );
+        window_ = new Window( to_vec_color( Color::GUNMETAL ), vsync_on_off_ );
         input_  = new Input::Input_Handler( window_, &quit_ );
 
         start_up();
@@ -171,6 +172,8 @@ namespace App
         unsigned frames;
         float    rate;
         world_->get_frame_rate_data( frames, rate );
+
+        printf( "Scene contained %i vertices.\n", world_->get_vertex_qty() );
 
         printf(
                 ( bright_cyan("%i") + " frames rendered.\n" ).c_str(),
@@ -321,6 +324,15 @@ namespace App
             {
                 level_filename_ = new string( **( iter + 1 ) );
                 argv_.erase(iter + 1);
+            }
+
+            if( arg == "--vsync=off" )
+            {
+                vsync_on_off_ = 0;
+            }
+            else if( arg == "--vsync=on" )
+            {
+                vsync_on_off_ = 1;
             }
 
             /*

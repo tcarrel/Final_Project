@@ -13,6 +13,7 @@
 #include "model.h"
 #include "mesh.h"
 #include "skybox.h"
+#include "instanced.h"
 
 #include "../shader_program.h"
 
@@ -116,7 +117,8 @@ namespace Model
         models_( NULL ),
         frame_count_( 0 ),
         degrees_per_second_( 10.0f ),
-        avg_seconds_per_frame_( 0.0f )
+        avg_seconds_per_frame_( 0.0f ),
+        instanced_( NULL )
     {
         assert( su != NULL );
 
@@ -299,6 +301,13 @@ namespace Model
             models_[i]->render( view_, frustum_, view_eye_ );
         }
 
+
+        if( instanced_ )
+        {
+//            fprintf( stderr, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n" );
+            instanced_->render( view_, frustum_ );
+        }
+
         //  The skybox is faster to draw if it can be left until last,
         // especially in scenes where there is a lot of objects blocking the
         // view of the sky.
@@ -382,4 +391,24 @@ namespace Model
         skybox_->set_wireframe();
     }
 
+
+
+    void Scene_Graph::set_instanced( Instanced* inst )
+    {
+        instanced_ = inst;
+    }
+
+
+
+    int Scene_Graph::get_vertex_qty( void )
+    {
+        int qty = skybox_ ? 8 : 0;
+
+        for( unsigned i = 0; i < model_qty_; i++ )
+        {
+            qty += models_[i]->get_vertex_qty();
+        }
+
+        return qty;
+    }
 } //Model namespace.

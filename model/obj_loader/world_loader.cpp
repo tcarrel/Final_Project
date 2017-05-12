@@ -11,11 +11,13 @@
 
 
 
+#include "obj.h"
 #include "world_loader.h"
 
 #include "../scene_graph.h"
 #include "../sg_setup.h"
 #include "../mesh.h"
+#include "../instanced.h"
 
 #include "../../shaders.h"
 #include "../../shader_program.h"
@@ -227,8 +229,15 @@ namespace Model
                         fprintf( stderr, "Object File\n" );
                         load_object( path, coloring );
                         break;
+                    case 'I': // (I)nstanced.
+                        fprintf( stderr, "Instanced\n" );
+                        load_instanced( path, coloring );
+                        break;
                     default:
-                        fprintf( stderr, "Unknown\n" );
+                        fprintf(
+                                stderr,
+                                "Unknown, '%c' was read.\n",
+                                input_type );
                         break;
                 }
 
@@ -299,7 +308,6 @@ namespace Model
             GLchar option = '^';
             glm::vec3*  position = new glm::vec3;
             glm::vec3*  rotation = new glm::vec3;
-//            floats[0] = floats[1] = floats[2] = 0.0f;
 
             getline( *file_, filename, ',' );
 
@@ -560,6 +568,47 @@ namespace Model
             *file_ >> vec.y;
             file_->ignore();
             *file_ >> vec.z;
+        }
+
+
+
+
+
+        void    World_Loader::load_instanced( const string& path, bool col )
+        {
+            string model_file = "";
+            GLint qty;
+            GLfloat offset, radius, scale;
+
+            getline( *file_, model_file, ',' );
+            model_file = path + model_file;
+            *file_ >> qty;
+            file_->ignore();
+            *file_ >> radius;
+            file_->ignore();
+            *file_ >> offset;
+            file_->ignore();
+            *file_ >> scale;
+
+            fprintf( stderr,
+                    "Instanced (%s)\n"
+                    "\tQuantity:\t%i\n"
+                    "\tRadius:\t\t%f\n"
+                    "\tOffset:\t\t%f\n"
+                    "\tScale:\t\t%f\n",
+                    model_file.c_str(),
+                    qty, radius, offset, scale );
+
+//            Mesh* msh = obj_ld_.load_file( model_file, NULL, col, 1 );
+
+            sg_->set_instanced( new Instanced(
+                    qty,
+                    radius,
+                    offset,
+                    scale,
+                    model_file,
+                    &obj_ld_,
+                    col ) );
         }
 
 

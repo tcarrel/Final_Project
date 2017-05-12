@@ -48,7 +48,7 @@ namespace Model
     class Model;
     class SG_Setup;
     class Skybox;
-
+    class Instanced;
 
     /**
      * The scene graph.  Renders the world, and acts as the camera view.
@@ -94,6 +94,8 @@ namespace Model
             inline Shader* get_fresnel_prog( void )
             { return fresnel_; }
 
+            void set_instanced( Instanced* );
+
             void get_frame_rate_data( GLuint& count, GLfloat& rate )
             {
                 count = frame_count_;
@@ -101,6 +103,9 @@ namespace Model
             }
 
             ~Scene_Graph( void );
+
+
+            int get_vertex_qty( void );
 
         private:
             
@@ -147,6 +152,7 @@ namespace Model
             GLfloat degrees_per_second_;
             GLfloat avg_seconds_per_frame_;
 
+            Instanced*  instanced_;
 
             /** Generic ctor is disabled.
             */

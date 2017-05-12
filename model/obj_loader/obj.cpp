@@ -1,7 +1,7 @@
 /**
  *
- * \file obj.cpp
- * \author Thomas R. Carrel
+ * @file obj.cpp
+ * @author Thomas R. Carrel
  *
  */
 
@@ -13,12 +13,16 @@
 #include "../vertex.h"
 #include "../mesh.h"
 
+#include "../material.h"
+
 #include "../../colors.h"
 #include "../../shader_program.h"
 
 #include "../../tracking_list.h"
 
 #include "../../function_timer.h"
+
+#include "../texture/__all_texture_types.h"
 
 #include<iostream>
 using std::istream;
@@ -59,6 +63,9 @@ namespace Model
             max_(NULL),
             top_mesh_(NULL),
             mesh_qty_(0),
+            cur_va_(NULL),
+            material_(NULL),
+            texture_(NULL),
             color_by_(true),
             already_loaded_(false),
             loading_(false)
@@ -77,6 +84,7 @@ namespace Model
         {
             reset();
             stop_trace();
+            texture_ = NULL;
         }
 
 
@@ -98,7 +106,8 @@ namespace Model
             char message[256];
             sprintf( message, "Loading file <%s>", filename_->c_str() );
             
-            Function_Timer* timer = new Function_Timer( string(message), stderr );
+            Function_Timer* timer =
+                new Function_Timer( string(message), stderr );
 
             while( !eof() )
             {
@@ -126,7 +135,7 @@ namespace Model
                         f( *file_ );
                         break;
                     case 'm':
-                        m( *file_ );
+                        m( *file_, filename_->substr( 0, filename_->find_last_of( '/' ) ) );
                         break;
                     case 's':
                         s( *file_ );
@@ -299,18 +308,12 @@ namespace Model
                     y = (y > 1.0f) ? 1.0f : y;
                     z = (z < 0.0f) ? 0.0f : z;
                     z = (z > 1.0f) ? 1.0f : z;
-                    /*
-                       factor  = x * x;
-                       factor += y * y;
-                       factor += z * z;
-                       factor = sqrt(factor);
-                       */
 
                     color = glm::vec4( x, y, z, 1.0f );
                 }
                 else
                 {
-                    color= to_vec_color( Color::random_color() | 0xFF );
+                    color = to_vec_color( Color::random_color() | 0xFF );
                 }
                 glm::vec3 normal = normals_[index->n];
 
@@ -321,33 +324,7 @@ namespace Model
                         << "\tcolor: " << glm::to_string( color ) << endl;
                 }
 
-                /*
-                if( rotate_by.x != 0 ) //About x-axis
-                {
-                    GLfloat cs  =   cos( rotate_by.x ),
-                            sn  =   sin( rotate_by.x );
-                    vert.y = ( vert.y * cs ) - ( vert.z * sn );
-                    vert.z = ( vert.y * sn ) + ( vert.z * cs );
-                }
-                if( rotate_by.y != 0 ) //About y-axis
-                {
-                    GLfloat cs  =   cos( rotate_by.y ),
-                            sn  =   sin( rotate_by.y );
-                    vert.x = ( vert.x * cs ) - ( vert.z * sn );
-                    vert.z = ( vert.x * sn ) + ( vert.z * cs );
-                }
-                if( rotate_by.z != 0 ) //About z-axis
-                {
-                    GLfloat cs  =   cos( rotate_by.z ),
-                            sn  =   sin( rotate_by.z );
-                    vert.x = ( vert.x * cs ) - ( vert.y * sn );
-                    vert.y = ( vert.x * sn ) + ( vert.y * cs );
-                }
-                */
-
                 cur_va_->add( Vertex( vert, color, normal ) );
-
-
 
                 //Index set has already been pushed onto the vector.
                 index = NULL;
@@ -365,13 +342,30 @@ namespace Model
         /** Parses an 'm' line.  Not implemented yet, so they are just
          * ignored.
          */
-        void OBJ_File::m( std::istream& file )
+        void OBJ_File::m( std::istream& file, const std::string& path )
         {
             if( trace_ )
             {
-                *trace_ << "### m ###" << endl;
+                *trace_ << "### m ###\n" << endl;
             }
-            comment( file );
+
+            string cmd;
+            file >> cmd;
+
+            if( cmd == "mtllib" )
+            {
+                file >> cmd;
+                if( trace_ )
+                {
+                    *trace_ << "\tmtllib " << path << "/" << cmd << endl;
+                }
+
+                fprintf( stderr, "mtllib %s/%s\n", path.c_str(), cmd.c_str() );
+
+                material_ = new Material( path, cmd );
+            }
+
+            return;
         }
 
 
@@ -427,7 +421,21 @@ namespace Model
             {
                 *trace_ << "### u ###" << endl;
             }
-            comment( file );
+
+            string cmd, arg;
+            file >> cmd;
+            file >> arg;
+
+            fprintf( stderr, "%s %s\n", cmd.c_str(), arg.c_str() );
+
+            if( cmd == "usemtl" )
+            {
+                texture_ = NULL;
+                texture_ = material_->get_tex( arg );
+                return;
+            }
+
+            fprintf( stderr, "Unknown command %s.\n", cmd.c_str() );
         }
 
 
@@ -585,7 +593,7 @@ namespace Model
 
 
         /**  Outputs a trace of the obj parsing into a text file for debugging.
-         * \param name The name of the file to be output to.
+         * @param name The name of the file to be output to.
          */
         void OBJ_File::trace( const string& name )
         {
@@ -640,9 +648,9 @@ namespace Model
 
 
         /** Records the min and max values along each axis.
-         * \param x X-axis value.
-         * \param y Y-axis value.
-         * \param z Z-axis value.
+         * @param x X-axis value.
+         * @param y Y-axis value.
+         * @param z Z-axis value.
          */
         void OBJ_File::measure( const float& x, const float& y, const float& z )
         {
@@ -744,6 +752,8 @@ namespace Model
             { 
                 top_mesh_   = mesh;
                 mesh_qty_   = 1;
+
+                top_mesh_->set_texture( texture_ ? texture_ : new Texture::Texture_Default );
                 return;
             }
 
@@ -758,13 +768,13 @@ namespace Model
 
 
         /**  Load an .obj file.
-         * \param filename The path and file to be loaded.
-         * \param shader The shader to be used during the rendering of the
+         * @param filename The path and file to be loaded.
+         * @param shader The shader to be used during the rendering of the
          * mesh.
-         * \param co Set to true to give a randomized color to each vertex,
+         * @param co Set to true to give a randomized color to each vertex,
          * set to false to use the normal vertex for coloring. (This will not
          * be needed later.)
-         * \param size The 'actual' size of the object in centimeters, this
+         * @param size The 'actual' size of the object in centimeters, this
          * allows objects to be modelled at different sizes and the scaled into
          * the coordinate system of this world.  In other words, a traveling
          * 1-unit in this coordinate system is the same as traveling 1-cm in

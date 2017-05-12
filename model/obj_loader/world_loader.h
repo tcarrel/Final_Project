@@ -26,8 +26,6 @@
 #include<string>
 #include<vector>
 
-#include "obj.h"
-
 #include "World_except.h"
 
 
@@ -48,6 +46,7 @@ namespace Model
     namespace OBJ
     {
         class World_Exception;
+        class OBJ_File;
 
         class World_Loader
         {
@@ -90,6 +89,8 @@ namespace Model
                 void    fresnel_transparency( Model* );
 
                 void    read_vec3( glm::vec3& );
+
+                void    load_instanced( const std::string&, bool );
 
                 inline void print_option( const char& c )
                 { fprintf( stderr, "Option: %c ", c ); }

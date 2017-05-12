@@ -10,56 +10,11 @@
 
 #include<cstdint>
 #include<cstdlib>
-#include<ctime>
 
+#include "random_seed.h"
 
 #ifndef  _RANDOM_H_
-
-
-
-/** Encapsulates random number seeding.
- *  There is no need to create this outside of the any of the following
- * template functions, so it's ctor is declared as private with only
- * the template functions as friend functions being able to create the
- * object.
- */
-class Random
-{
-    template<typename T>
-        friend T get_rand( void );
-    template<typename T>
-        friend T get_rand( T );
-    template<typename T>
-        friend T get_rand( T, T );
-    template<typename T, typename U>
-        friend T get_rand( T, U );
-    template<bool>
-        friend bool get_rand( void );
-
-    private:
-    /** Seeds the random number generator only once.
-    */
-    Random( void )
-    {
-        if( !seeded )
-        {
-            seeded = true;
-            srand( time( NULL ) );
-        }
-    }
-
-    static bool seeded;
-};
-
-
-
-
-
-/** Tracks whether or not the random number generator has been seeded.
-*/
-bool Random::seeded = false;
-
-
+# define _RANDOM_H_
 
 
 
@@ -68,7 +23,7 @@ bool Random::seeded = false;
  */
 template<typename T> T get_rand( void )
 {
-    Random r;
+    __Seed r;
 
     return static_cast<T>(rand()) / static_cast<T>(RAND_MAX);
 }
@@ -80,11 +35,11 @@ template<typename T> T get_rand( void )
 
 /**
  *@param max the top end of the range to be returned.
- * @return Random number [0, max).
+ * @return __Seed number [0, max).
  */
 template<typename T> T get_rand( T max )
 {
-    Random r;
+    __Seed r;
 
     return static_cast<T>(rand()) / (static_cast<T>(RAND_MAX/max));
 }
@@ -96,11 +51,11 @@ template<typename T> T get_rand( T max )
 /**
  * @param min The minimum of the range.
  * @param max The maximum of the range.
- * @return Random number in the range [min,max].
+ * @return __Seed number in the range [min,max].
  */
 template<typename T> T get_rand( T min, T max )
 {
-    Random r;
+    __Seed r;
 
     T num = static_cast<T>(rand());
     T den = static_cast<T>(RAND_MAX/(max - min));
@@ -115,11 +70,11 @@ template<typename T> T get_rand( T min, T max )
 /**
  * @param min The minimum of the range.
  * @param max The maximum of the range.
- * @return Random number in the range [min,max].
+ * @return __Seed number in the range [min,max].
  */
 template<typename T, typename U> T get_rand( T min, U max )
 {
-    Random r;
+    __Seed r;
 
     T num = static_cast<T>(rand());
     T den = static_cast<T>(RAND_MAX/(max - min));
@@ -134,12 +89,14 @@ template<typename T, typename U> T get_rand( T min, U max )
 /**
  * Specialization to return a randomized boolean.
  */
-template<> bool get_rand( void )
-{
-    Random e;
+/*
+   template<> bool get_rand( void )
+   {
+   __Seed e;
 
-    return rand() & 1;
-}
+   return rand() & 1;
+   }
+   */
 
 
 

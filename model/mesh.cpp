@@ -14,6 +14,8 @@
 #include "skybox.h"
 #include "vertex.h"
 
+#include "texture/__all_texture_types.h"
+
 #include<stdio.h>
 #include<glm/ext.hpp>
 
@@ -54,7 +56,8 @@ namespace Model
         is_refractive_( false ),
         skybox_( NULL ),
         refractivity_ratio_( 1.0f ),
-        r_0_( 0.52f / 2.52f )
+        r_0_( 0.52f / 2.52f ),
+        texture_( NULL )
     {
 #ifdef DEBUG
         draw_message_shown_ = false;
@@ -656,5 +659,33 @@ namespace Model
         }
     }
 
+
+    void Mesh::set_texture( Texture::Texture_base* t )
+    {
+        fprintf( stderr, "%s, setting texture to ", name_.c_str() );
+        t->print();
+        texture_ = t;
+    }
+
+
+
+    void Mesh::bind_texture( void )
+    {
+        if( texture_ )
+        {
+            texture_->bind();
+        }
+    }
+
+
+
+
+    int  Mesh::get_vertex_qty( void )
+    {
+        return qty_;
+    }
+
+
 } //Model namespace.
+
 

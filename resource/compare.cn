@@ -1,12 +1,13 @@
 7
-5.0,2.75,0
-0,0,0
-0,1,0
-1,45,1,30
+5.0, 1.75,  0
+  0,    0,  0
+  0,    1,  0
+  1,   45,  1, 30
 P2simple.v.glsl,simple.f.glsl
-Sright.jpg,left.jpg,top.jpg,bottom.jpg,back.jpg,front.jpg
-Osphere1.obj,2,0,0,0
-Osphere2.obj,2,2.5,0,0,M
-Osphere3.obj,2,-2.5,0,0,TAIR,WATER
-Osphere4.obj,2,0,0,2.5,FAIR,WATER
-Osphere5.obj,2,0,0,-2.5,FAIR,DIAMOND
+#Sright.jpg,left.jpg,top.jpg,bottom.jpg,back.jpg,front.jpg
+Salps1.jpg,alps2.jpg,alps3.jpg,alps4.jpg,alps5.jpg,alps6.jpg
+Osphere1.obj, 2,    0, 0,    0, 0, 0, 0
+Osphere2.obj, 2,  2.5, 0,    0, 0, 0, 0,M
+Osphere3.obj, 2, -2.5, 0,    0, 0, 0, 0,TAIR,WATER
+Osphere4.obj, 2,    0, 0,  2.5, 0, 0, 0,FAIR,WATER
+Osphere5.obj, 2,    0, 0, -2.5, 0, 0, 0,FAIR,DIAMOND

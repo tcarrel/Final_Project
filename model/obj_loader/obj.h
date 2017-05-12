@@ -25,6 +25,7 @@ using std::map;
 # include "../model.h"
 # include "OBJ_except.h"
 
+#include "../texture/__all_texture_types.h"
 
 template<typename> class Tracking_List;
 class Shader;
@@ -35,6 +36,7 @@ namespace Model
     class Mesh;
     class Vertex_Array;
     class Vertex;
+    class Material;
 
     namespace OBJ
     {
@@ -105,7 +107,7 @@ namespace Model
                 void v( std::istream& );
                 void g_or_o( std::istream& );
                 void f( std::istream& );
-                void m( std::istream& );
+                void m( std::istream&, const std::string& );
                 void s( std::istream& );
                 void u( std::istream& );
                 void comment( std::istream& );
@@ -157,8 +159,10 @@ namespace Model
                 Vertex_Array*
                             cur_va_;
 
+                Material*               material_;
+                Texture::Texture_base*  texture_;
+
                 Tracking_List<Mesh> m_list_;
-//                Model_list  m_list_;
 
                 bool        color_by_;
                 bool        already_loaded_;

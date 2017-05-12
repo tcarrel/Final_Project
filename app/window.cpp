@@ -29,39 +29,60 @@ namespace App
      * ideally, this ctor should not be used in the final game..
      */
     Window::Window(void) :
-        Window(0.7f, 0.5f, 0.25f )
+        Window(0.7f, 0.5f, 0.25f, 1 )
     {}
 
 
     /** Create window using the first three elements in a vec4 to fill the
      * colors.
-     * \param c Clear color.
+     * @param c Clear color.
      */
     Window::Window( glm::vec4 c ) :
-        Window( c.x, c.y, c.z )
+        Window( c.x, c.y, c.z, 1 )
+    {}
+
+
+
+    /** Create window using the first three elements in a vec4 to fill the
+     * colors.
+     * @param c Clear color.
+     * @param v V-sync on(1) or off(0).
+     */
+    Window::Window( glm::vec4 c, GLint v ) :
+        Window( c.x, c.y, c.z, v )
     {}
 
 
     /** Create window using a vec3 for the clear color.
-     * \param c Clear color.
+     * @param c Clear color.
      */
     Window::Window( glm::vec3 c ) :
-        Window( c.x, c.y, c.z )
+        Window( c.x, c.y, c.z, 1 )
+    {}
+    
+
+    /** Create window using a vec3 for the clear color.
+     * @param c Clear color.
+     * @param v V-sync on(1) or off(0).
+     */
+    Window::Window( glm::vec3 c, GLint v ) :
+        Window( c.x, c.y, c.z, v )
     {}
 
     /** Create default window.  Also sets the clear color for OpenGL.  The
      * alpha value if fixed to 100%.
-     * param r Red value as a percentage (between 0.0 and 1.0.)
-     * param g Green value as a percentage (between 0.0 and 1.0.)
-     * param b Blue value as a percentage (between 0.0 and 1.0.)
+     * @param r Red value as a percentage (between 0.0 and 1.0.)
+     * @param g Green value as a percentage (between 0.0 and 1.0.)
+     * @param b Blue value as a percentage (between 0.0 and 1.0.)
      */
-    Window::Window( float r, float g, float b ) :
+    Window::Window( float r, float g, float b, GLint v ) :
         clear_color_{r, g, b, 1.0f },
         is_good_( true ),
         window_( NULL ),
         gl_( NULL ),
         gl_face_(GL_FRONT),
-        gl_mode_(GL_FILL)
+        gl_mode_(GL_FILL),
+        vsync_( v )
         {
 
             if( !(SDL_WasInit( SDL_INIT_EVERYTHING ) & SDL_INIT_VIDEO) )
@@ -268,17 +289,29 @@ namespace App
 
 
 
-        if( SDL_GL_SetSwapInterval(0) < 0 )
+        if( SDL_GL_SetSwapInterval(vsync_) < 0 )
         {
-            fprintf(
-                    stderr,
-                    "%s\tUnable to set VSync.\tSDL Error:\t%s\n",
-                    WARNING,
-                    SDL_GetError()
-                   );
+            if( vsync_ )
+            {
+                fprintf(
+                        stderr,
+                        "%s\tUnable to set VSync.\tSDL Error:\t%s\n",
+                        WARNING,
+                        SDL_GetError()
+                       );
+            }
+            else
+            {
+                fprintf(
+                        stderr,
+                        "%s\tUnable to disable VSync.\tSDL Error:\t%s\n",
+                        WARNING,
+                        SDL_GetError()
+                       );
+            }
         }
 
-//        sdl2::video::gl_set_swap_interval(0);
+        //        sdl2::video::gl_set_swap_interval(0);
 
 
         /*

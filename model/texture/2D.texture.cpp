@@ -22,12 +22,14 @@ namespace Model
         Texture_2D::Texture_2D( const std::string& filename) :
             Texture_base(filename, GL_TEXTURE_2D)
         {
+            /* 
             if( loaded_ )
             {
                 // The image has already been loaded and the base class has
                 //already setup the object as needed.
                 return;
             }
+            */
 
             unsigned char* image = NULL;
             int width, height;

@@ -67,6 +67,8 @@ namespace Model
             void set_fresnel(   Shader*, Skybox*, const GLfloat&, const GLfloat& );
 
             void render_models( void );
+
+            int  get_vertex_qty( void );
         private:
 
             Mesh*                       mesh_;

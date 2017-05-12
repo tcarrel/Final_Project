@@ -65,7 +65,8 @@ OBJ_FILES = .entry_point.o .app.o .window.o .GLSL_except.o .shader_program.o \
             .OBJ_except.o .colors.o .null_command.o $(SHADER_OBJ) \
 			.texture_2D.o .texture_base.o .world_loader.o \
 			.Render_except.o .skybox.o .World_loader_exception_class.o \
-			.g-buffer.o .function_timer.o
+			.g-buffer.o .function_timer.o .random_seed.o .instanced.o \
+			.material.o ._texture.o
 GLSL_FILES := $(shell ls *.glsl)
 GCCERREXT = gccerr
 
@@ -140,7 +141,12 @@ $(APP_ERROR_DIR): $(ERROR_DIR)
 .function_timer.o: function_timer.cpp function_timer.h $(ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
+.random_seed.o: random_seed.cpp random_seed.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
 constants.h: colors.h
+
+random.h: random_seed.h
 
 shader_program.h: constants.h GLSL_except.h $(SHADER_HEADER) \
 		helper_functions.h tracking_list.h
@@ -189,6 +195,14 @@ $(ERROR_DIR):
 
 .renderer.o: $(MODEL_DIR)/renderer.cpp $(MODEL_DIR)/renderer.h \
 		$(MDOEL_ERROR_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
+.instanced.o: $(MODEL_DIR)/instanced.cpp $(MODEL_DIR)/instanced.h \
+		$(MODEL_DIR)/mesh.h random.h shader_program.h
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
+.material.o: $(MODEL_DIR)/material.cpp $(MODEL_DIR)/material.h \
+		$(TEX_PATH)/__all_texture_types.h
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
 .Render_except.o: $(MODEL_DIR)/Render_except.cpp $(MODEL_DIR)/Render_except.h \
@@ -246,7 +260,13 @@ $(OBJ_ERROR_DIR): $(ERROR_DIR) $(MODEL_ERROR_DIR)
 		$(TEX_PATH)/texture_base.h $(TEX_ERROR_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
 
-__all_texture_types.h: $(TEX_PATH)/texture_base.h $(TEX_PATH)/2D.texture.h
+._texture.o: $(TEX_PATH)/default.texture.cpp \
+		$(TEX_PATH)/default.texture.h colors.h random.h \
+		$(TEX_PATH)/texture_base.h $(TEX_ERROR_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(COPYOUTPUT)
+
+$(TEX_PATH)/__all_texture_types.h: $(TEX_PATH)/texture_base.h \
+		$(TEX_PATH)/2D.texture.h $(TEX_PATH)/default.texture.h
 
 $(TEX_ERROR_DIR): $(MODEL_ERROR_DIR) $(ERROR_DIR)
 	mkdir -p $@

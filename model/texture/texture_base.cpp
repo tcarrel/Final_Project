@@ -20,7 +20,7 @@ namespace Model
     namespace Texture
     {
 
-        Tracking_List<Texture_base> Texture_base::list_;
+//        Tracking_List<Texture_base> Texture_base::list_;
 
 
 
@@ -31,11 +31,14 @@ namespace Model
          * @param T The type enumeration from OpenGL.
          */
         Texture_base::Texture_base( const string& filename, const GLenum& T ) :
+            file_(filename),
             type_(T),
             loaded_( false )
         {
+            /*
             string name = filename + "_" + tex_type_to_string(T);
             Texture_base* tex = list_.get(name);
+
 
             if( tex && (tex->type_ == T) )
             {
@@ -47,6 +50,7 @@ namespace Model
 
             //Texture has not yet been loaded.
             list_.add( name, this );
+            */
 
             glGenTextures( 1, &handle_ );
         }
@@ -94,6 +98,21 @@ namespace Model
 
 
 
+        Texture_base::~Texture_base( void )
+        {
+            //Clear tracking list.
+        }
+
+
+
+
+        void Texture_base::print( void )
+        {
+            fprintf(
+                    stderr,
+                    "%s\n",
+                    file_.c_str() );
+        }
     } //Texture namespace.
 
 } //Model namespace.

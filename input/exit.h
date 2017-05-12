@@ -34,6 +34,8 @@ namespace Input
             void execute( void )
             { *quit_ = true; }
 
+            ~Exit_Command( void ){ quit_ = NULL; }
+
         private:
             static const Commands_Enum TYPE = EXIT_COMMAND;
 

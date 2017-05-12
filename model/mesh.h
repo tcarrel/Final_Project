@@ -25,6 +25,8 @@ using std::string;
 
 # include "../constants.h"
 
+
+
 //# define DEBUG_MESH
 
 class Shader;
@@ -42,6 +44,12 @@ namespace Model
     {
         class OBJ_File;
     }
+    namespace Texture
+    {
+        class Texture_base;
+        class Texture_2D;
+        class Texture_Default;
+    }
     class Skybox;
 
     /**
@@ -57,6 +65,7 @@ namespace Model
             void set_reflect( Shader*, Skybox* );
             void set_refract( Shader*, Skybox*, const GLfloat& );
             void set_fresnel( Shader*, Skybox*, const GLfloat&, const GLfloat& );
+            void set_texture( Texture::Texture_base* t );
 
             void draw(
                     const glm::mat4&,
@@ -71,7 +80,10 @@ namespace Model
             void set_size( const GLfloat&, const GLfloat& );
             void done( void );
 
-            void bind_vao( void );
+            inline void bind_vao( void )
+            { glBindVertexArray( vao_ ); }
+
+            void bind_texture( void );
 
             /** Return the address of the matrix array.
             */
@@ -85,6 +97,8 @@ namespace Model
 
             Mesh* get_ptr( void );
             bool delete_this( void );
+
+            int get_vertex_qty( void );
 
         private:
             /** Array of vertex data.
@@ -158,6 +172,9 @@ namespace Model
             Skybox*         skybox_;
             GLfloat         refractivity_ratio_;
             GLfloat         r_0_;
+
+
+            Texture::Texture_base* texture_;
 
             /** See the Shader dtor for why it is necessary this be private.
              */

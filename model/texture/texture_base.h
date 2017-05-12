@@ -32,7 +32,7 @@ namespace Model
         class Texture_base
         {
             public:
-                virtual ~Texture_base( void ) {}
+                virtual ~Texture_base( void );
 
                 /** Return the location of the texture on the GPU.
                  */
@@ -41,11 +41,19 @@ namespace Model
                     return handle_;
                 }
 
+                void print( void );
                 void error_check( unsigned char*, std::string& );
+
+                inline void bind( void )
+                {
+                    glBindTexture( type_, handle_ );
+                }
 
             protected:
                 //Object can only be created as part of a child object.
                 Texture_base( const string&, const GLenum& );
+
+                string file_;
 
                 /**  The 'name' of the texture on the gpu.
                  */
@@ -59,7 +67,7 @@ namespace Model
                 bool                                loaded_;
                 /** We want to avoid repeatedly loading the same texture.
                  */
-                static  Tracking_List<Texture_base> list_;
+//                static  Tracking_List<Texture_base> list_;
         };
 
         extern const string tex_type_to_string( GLenum );

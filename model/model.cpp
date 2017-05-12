@@ -68,17 +68,6 @@ namespace Model
 
 
 
-/*
-    void Model::first_pass(
-            const glm::mat4& view,
-            const glm::mat4& proj,
-            const glm::
-*/
-
-
-
-
-
     /**  Calls the mesh's draw command.
      * @param view The view matrix.
      * @param proj The projection matrix.
@@ -268,6 +257,25 @@ namespace Model
             translation_ =
                 glm::rotate( translation_, glm::radians( rotate_by.y ), glm::vec3( 0, 1, 0 ) );
         }
+    }
+
+
+
+
+
+    int Model::get_vertex_qty( void )
+    {
+        int qty = mesh_->get_vertex_qty();
+
+        if( children_ )
+        {
+            for( auto it = children_->begin(); it != children_->end(); it++ )
+            {
+                qty += (*it)->get_vertex_qty();
+            }
+        }
+
+        return qty;
     }
 } //Model namespace.
 

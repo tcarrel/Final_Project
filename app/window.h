@@ -73,8 +73,10 @@ namespace App
 
             Window( void );
             Window( glm::vec3 );
+            Window( glm::vec3, GLint );
             Window( glm::vec4 );
-            Window( float, float, float );
+            Window( glm::vec4, GLint );
+            Window( float, float, float, GLint );
 
             void init_gl( void );
             void set_gl_attribs( void );
@@ -97,6 +99,8 @@ namespace App
 
             GLenum          gl_face_; ///< GL_FRONT, GL_BACK, GL_FRONT_AND_BACK
             GLenum          gl_mode_; ///< GL_FILL, GL_LINE
+
+            GLint           vsync_; ///< For enabling or disabling vsync.
     };
 
 } //App namespace.

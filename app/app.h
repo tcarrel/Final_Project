@@ -69,6 +69,7 @@ namespace App
             int                         argc_;
             std::vector<std::string*>   argv_;
 
+            int     vsync_on_off_;
             int     wireframe_;
             float*  deg_per_sec_;
 
