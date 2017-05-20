@@ -1,6 +1,13 @@
 
 #Untitled 3D Graphics Engine 
 
+The poster used at the poster session is included in the Poster directory.
+
+#Original Plan
+Later, I will update this to match the outcome of the final project.  For now,
+suffice to say that I intend to redo the project from scratch purely in Vulkan
+using what I learned from this project as a foundation.
+
 A 3D graphics engine that can be used as a component of a larger game engine.
 Primary features/goals:
 * Be operating system agnostic.  Will be initially programmed on Linux, but
