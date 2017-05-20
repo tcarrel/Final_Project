@@ -509,6 +509,7 @@ namespace Model
         //        vertices_->center();
         vertices_->scale( scale_factor_ );
 
+        /*
         fprintf(
                 stderr,
                 "Vertex size = %li\nvec3 size = %li\nvec4 size = %li\nGLfloat size = %li\n",
@@ -516,6 +517,7 @@ namespace Model
                 sizeof(glm::vec3),
                 sizeof(glm::vec4),
                 sizeof(GLfloat) );
+                */
 
         GLsizei stride = sizeof(Vertex);
 

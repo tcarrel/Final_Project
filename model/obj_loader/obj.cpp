@@ -104,7 +104,7 @@ namespace Model
             }
 
             char message[256];
-            sprintf( message, "Loading file <%s>", filename_->c_str() );
+            sprintf( message, "Loading object file <%s>", filename_->c_str() );
             
             Function_Timer* timer =
                 new Function_Timer( string(message), stderr );

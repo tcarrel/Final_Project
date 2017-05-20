@@ -25,6 +25,8 @@
 
 #include "../../app/window.h"
 
+#include "../../function_timer.h"
+
 #include<cctype>
 
 namespace Model
@@ -174,6 +176,10 @@ namespace Model
                 bool                coloring = false
                 )
         {
+            char message[256];
+            sprintf( message, red("Loading world file <%s> took").c_str(), level_filename.c_str() );
+            Function_Timer* fff = new Function_Timer( string(message), stderr );
+
             std::string path = p + "/";
 
             int qty = 0;
@@ -247,6 +253,8 @@ namespace Model
             file_->close();
             delete file_;
             file_ = NULL;
+
+            delete fff;
             return false;
         }
 

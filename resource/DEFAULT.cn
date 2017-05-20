@@ -1,10 +1,11 @@
 7
-5.0,1.171,0
+7.0,1.171,0
 0,0,0
 0,1,0
 1,45,1,30
 P2simple.v.glsl,simple.f.glsl
 #Sright.jpg,left.jpg,top.jpg,bottom.jpg,back.jpg,front.jpg
+#Ssolid1.jpg,solid2.jpg,solid3.jpg,solid4.jpg,solid5.jpg,solid6.jpg
 Smorning1.jpg,morning2.jpg,morning3.jpg,morning4.jpg,morning5.jpg,morning6.jpg
 #Slmcity1.jpg,lmcity2.jpg,lmcity3.jpg,lmcity4.jpg,lmcity5.jpg,lmcity6.jpg
 #Sdarkskies1.jpg,darkskies2.jpg,darkskies3.jpg,darkskies4.jpg,darkskies5.jpg,darkskies6.jpg
@@ -19,6 +20,5 @@ Ocube.obj,1.55,-5.5,0,2,45,0,45,FAIR,DIAMOND
 OF22.obj,1.7,2,2,0,-90,30,0,M
 Otorus.obj,1.7,1.5,1.5,1.5,-9,12,17
 Otorus90.obj,1.9,-2,0,2,0,0,0,FAIR,WATER
-Ocastle.obj,1.7,-2.75,.5,1,0,0,0,M
-Obunny.obj,1.7,-8.25,.5,1,0,0,0,M
-
+Ocastle.obj,1.7,-2.75,.5,1,0,0,0,M 
+Obunny.obj,1.7,-5.5,1,-5.5,-90,0,0,M 

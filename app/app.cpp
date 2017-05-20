@@ -173,7 +173,11 @@ namespace App
         float    rate;
         world_->get_frame_rate_data( frames, rate );
 
-        printf( "Scene contained %i vertices.\n", world_->get_vertex_qty() );
+        printf( 
+                ("Scene contained "
+                 + bright_cyan("%i") 
+                 + " vertices.\n").c_str(),
+                world_->get_vertex_qty() );
 
         printf(
                 ( bright_cyan("%i") + " frames rendered.\n" ).c_str(),
